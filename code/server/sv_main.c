@@ -217,6 +217,8 @@ void QDECL SV_SendServerCommand(client_t *cl, const char *fmt, ...) {
 =======================================================================================================================================
 */
 
+#define HEARTBEAT_MSEC 300 * 1000
+
 /*
 =======================================================================================================================================
 SV_MasterHeartbeat
@@ -226,7 +228,6 @@ We will also have a heartbeat sent when a server changes from empty to non-empty
 or exit.
 =======================================================================================================================================
 */
-#define HEARTBEAT_MSEC 300 * 1000
 void SV_MasterHeartbeat(const char *message) {
 	static netadr_t adr[MAX_MASTER_SERVERS][2]; // [2] for v4 and v6 address for the same address string.
 	int i;

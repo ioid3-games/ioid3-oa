@@ -442,6 +442,7 @@ void weapon_supershotgun_fire(gentity_t *ent) {
 
 	// send shotgun blast
 	tent = G_TempEntity(muzzle, EV_SHOTGUN);
+
 	VectorScale(forward, 4096, tent->s.origin2);
 	SnapVector(tent->s.origin2);
 // Sago: This sound like a bad idea...
@@ -486,7 +487,7 @@ void weapon_grenadelauncher_fire(gentity_t *ent) {
 /*
 =======================================================================================================================================
 
-ROCKET
+	ROCKET
 
 =======================================================================================================================================
 */

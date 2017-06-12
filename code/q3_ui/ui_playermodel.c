@@ -663,7 +663,7 @@ static void PlayerModel_MenuInit(void) {
 	Menu_AddItem(&s_playermodel.menu, &s_playermodel.right);
 	Menu_AddItem(&s_playermodel.menu, &s_playermodel.back);
 	// find all available models
-//	PlayerModel_BuildList();
+	//PlayerModel_BuildList();
 	// set initial states
 	PlayerModel_SetMenuItems();
 	// update user interface

@@ -42,7 +42,7 @@ static void *S_CodecGetSound(const char *filename, snd_info_t *info) {
 	ext = COM_GetExtension(localName);
 
 	if (*ext) {
-		// Look for the correct loader and use it
+		// look for the correct loader and use it
 		for (codec = codecs; codec; codec = codec->next) {
 			if (!Q_stricmp(ext, codec->ext)) {
 				// Load
@@ -55,15 +55,15 @@ static void *S_CodecGetSound(const char *filename, snd_info_t *info) {
 				break;
 			}
 		}
-		// A loader was found
+		// a loader was found
 		if (codec) {
 			if (!rtn) {
-				// Loader failed, most likely because the file isn't there; try again without the extension
+				// loader failed, most likely because the file isn't there; try again without the extension
 				orgNameFailed = qtrue;
 				orgCodec = codec;
 				COM_StripExtension(filename, localName, MAX_QPATH);
 			} else {
-				// Something loaded
+				// something loaded
 				return rtn;
 			}
 		}
@@ -75,7 +75,7 @@ static void *S_CodecGetSound(const char *filename, snd_info_t *info) {
 		}
 
 		Com_sprintf(altName, sizeof(altName), "%s.%s", localName, codec->ext);
-		// Load
+		// load
 		if (info) {
 			rtn = codec->load(altName, info);
 		} else {
@@ -194,21 +194,21 @@ snd_stream_t *S_CodecUtilOpen(const char *filename, snd_codec_t *codec) {
 	fileHandle_t hnd;
 	int length;
 
-	// Try to open the file
+	// try to open the file
 	length = FS_FOpenFileRead(filename, &hnd, qtrue);
 
 	if (!hnd) {
 		Com_DPrintf("Can't read sound file %s\n", filename);
 		return NULL;
 	}
-	// Allocate a stream
+	// allocate a stream
 	stream = Z_Malloc(sizeof(snd_stream_t));
 
 	if (!stream) {
 		FS_FCloseFile(hnd);
 		return NULL;
 	}
-	// Copy over, return
+	// copy over, return
 	stream->codec = codec;
 	stream->file = hnd;
 	stream->length = length;

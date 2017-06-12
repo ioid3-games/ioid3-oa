@@ -1,22 +1,17 @@
 /*
 =======================================================================================================================================
-Copyright(C) 1999 - 2005 Id Software, Inc.
+Copyright (C) 1999-2005 Id Software, Inc.
 
 This file is part of Quake III Arena source code.
 
-Quake III Arena source code is free software; you can redistribute it
-and / or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or(at your option) any later version.
+Quake III Arena source code is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
+License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 
-Quake III Arena source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Quake III Arena source code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Quake III Arena source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+You should have received a copy of the GNU General Public License along with Quake III Arena source code; if not, write to the Free
+Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 =======================================================================================================================================
 */
 
@@ -178,35 +173,35 @@ void G_RankFireWeapon(int self, int weapon) {
 	trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED, 1, 1);
 
 	switch (weapon) {
-	case WP_MACHINEGUN:
-		trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED_MACHINEGUN, 1, 1);
-		break;
-	case WP_SHOTGUN:
-		trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED_SHOTGUN, 1, 1);
-		break;
-	case WP_GRENADE_LAUNCHER:
-		trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED_GRENADE, 1, 1);
-		break;
-	case WP_ROCKET_LAUNCHER:
-		trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED_ROCKET, 1, 1);
-		break;
-	case WP_LIGHTNING:
-		trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED_LIGHTNING, 1, 1);
-		break;
-	case WP_RAILGUN:
-		trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED_RAILGUN, 1, 1);
-		break;
-	case WP_PLASMAGUN:
-		trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED_PLASMA, 1, 1);
-		break;
-	case WP_BFG:
-		trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED_BFG, 1, 1);
-		break;
-	case WP_GRAPPLING_HOOK:
-		trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED_GRAPPLE, 1, 1);
-		break;
-	default:
-		break;
+		case WP_MACHINEGUN:
+			trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED_MACHINEGUN, 1, 1);
+			break;
+		case WP_SHOTGUN:
+			trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED_SHOTGUN, 1, 1);
+			break;
+		case WP_GRENADE_LAUNCHER:
+			trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED_GRENADE, 1, 1);
+			break;
+		case WP_ROCKET_LAUNCHER:
+			trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED_ROCKET, 1, 1);
+			break;
+		case WP_LIGHTNING:
+			trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED_LIGHTNING, 1, 1);
+			break;
+		case WP_RAILGUN:
+			trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED_RAILGUN, 1, 1);
+			break;
+		case WP_PLASMAGUN:
+			trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED_PLASMA, 1, 1);
+			break;
+		case WP_BFG:
+			trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED_BFG, 1, 1);
+			break;
+		case WP_GRAPPLING_HOOK:
+			trap_RankReportInt(self, -1, QGR_KEY_SHOT_FIRED_GRAPPLE, 1, 1);
+			break;
+		default:
+			break;
 	}
 }
 
@@ -244,97 +239,94 @@ void G_RankDamage(int self, int attacker, int damage, int means_of_death) {
 	}
 	// don't track hazard damage, just deaths
 	switch (means_of_death) {
-	case MOD_WATER:
-	case MOD_SLIME:
-	case MOD_LAVA:
-	case MOD_CRUSH:
-	case MOD_TELEFRAG:
-	case MOD_FALLING:
-	case MOD_SUICIDE:
-	case MOD_TRIGGER_HURT:
-		return;
-	default:
-		break;
+		case MOD_WATER:
+		case MOD_SLIME:
+		case MOD_LAVA:
+		case MOD_CRUSH:
+		case MOD_TELEFRAG:
+		case MOD_FALLING:
+		case MOD_SUICIDE:
+		case MOD_TRIGGER_HURT:
+			return;
+		default:
+			break;
 	}
 	// get splash damage
 	switch (means_of_death) {
-	case MOD_GRENADE_SPLASH:
-	case MOD_ROCKET_SPLASH:
-	case MOD_PLASMA_SPLASH:
-	case MOD_BFG_SPLASH:
-		splash = damage;
-		break;
-	default:
-		splash = 0;
-		key_splash = -1;
-		break;
+		case MOD_GRENADE_SPLASH:
+		case MOD_ROCKET_SPLASH:
+		case MOD_PLASMA_SPLASH:
+		case MOD_BFG_SPLASH:
+			splash = damage;
+			break;
+		default:
+			splash = 0;
+			key_splash = -1;
+			break;
 	}
-	
 	// hit, damage, and splash taken
 	switch (means_of_death) {
-	case MOD_GAUNTLET:
-		key_hit = QGR_KEY_HIT_TAKEN_GAUNTLET;
-		key_damage = QGR_KEY_DAMAGE_TAKEN_GAUNTLET;
-		break;
-	case MOD_MACHINEGUN:
-		key_hit = QGR_KEY_HIT_TAKEN_MACHINEGUN;
-		key_damage = QGR_KEY_DAMAGE_TAKEN_MACHINEGUN;
-		break;
-	case MOD_SHOTGUN:
-		key_hit = QGR_KEY_HIT_TAKEN_SHOTGUN;
-		key_damage = QGR_KEY_DAMAGE_TAKEN_SHOTGUN;
-		break;
-	case MOD_GRENADE:
-	case MOD_GRENADE_SPLASH:
-		key_hit = QGR_KEY_HIT_TAKEN_GRENADE;
-		key_damage = QGR_KEY_DAMAGE_TAKEN_GRENADE;
-		key_splash = QGR_KEY_SPLASH_TAKEN_GRENADE;
-		break;
-	case MOD_ROCKET:
-	case MOD_ROCKET_SPLASH:
-		key_hit = QGR_KEY_HIT_TAKEN_ROCKET;
-		key_damage = QGR_KEY_DAMAGE_TAKEN_ROCKET;
-		key_splash = QGR_KEY_SPLASH_TAKEN_ROCKET;
-		break;
-	case MOD_PLASMA:
-	case MOD_PLASMA_SPLASH:
-		key_hit = QGR_KEY_HIT_TAKEN_PLASMA;
-		key_damage = QGR_KEY_DAMAGE_TAKEN_PLASMA;
-		key_splash = QGR_KEY_SPLASH_TAKEN_PLASMA;
-		break;
-	case MOD_RAILGUN:
-		key_hit = QGR_KEY_HIT_TAKEN_RAILGUN;
-		key_damage = QGR_KEY_DAMAGE_TAKEN_RAILGUN;
-		break;
-	case MOD_LIGHTNING:
-		key_hit = QGR_KEY_HIT_TAKEN_LIGHTNING;
-		key_damage = QGR_KEY_DAMAGE_TAKEN_LIGHTNING;
-		break;
-	case MOD_BFG:
-	case MOD_BFG_SPLASH:
-		key_hit = QGR_KEY_HIT_TAKEN_BFG;
-		key_damage = QGR_KEY_DAMAGE_TAKEN_BFG;
-		key_splash = QGR_KEY_SPLASH_TAKEN_BFG;
-		break;
-	case MOD_GRAPPLE:
-		key_hit = QGR_KEY_HIT_TAKEN_GRAPPLE;
-		key_damage = QGR_KEY_DAMAGE_TAKEN_GRAPPLE;
-		break;
-	default:
-		key_hit = QGR_KEY_HIT_TAKEN_UNKNOWN;
-		key_damage = QGR_KEY_DAMAGE_TAKEN_UNKNOWN;
-		break;
+		case MOD_GAUNTLET:
+			key_hit = QGR_KEY_HIT_TAKEN_GAUNTLET;
+			key_damage = QGR_KEY_DAMAGE_TAKEN_GAUNTLET;
+			break;
+		case MOD_MACHINEGUN:
+			key_hit = QGR_KEY_HIT_TAKEN_MACHINEGUN;
+			key_damage = QGR_KEY_DAMAGE_TAKEN_MACHINEGUN;
+			break;
+		case MOD_SHOTGUN:
+			key_hit = QGR_KEY_HIT_TAKEN_SHOTGUN;
+			key_damage = QGR_KEY_DAMAGE_TAKEN_SHOTGUN;
+			break;
+		case MOD_GRENADE:
+		case MOD_GRENADE_SPLASH:
+			key_hit = QGR_KEY_HIT_TAKEN_GRENADE;
+			key_damage = QGR_KEY_DAMAGE_TAKEN_GRENADE;
+			key_splash = QGR_KEY_SPLASH_TAKEN_GRENADE;
+			break;
+		case MOD_ROCKET:
+		case MOD_ROCKET_SPLASH:
+			key_hit = QGR_KEY_HIT_TAKEN_ROCKET;
+			key_damage = QGR_KEY_DAMAGE_TAKEN_ROCKET;
+			key_splash = QGR_KEY_SPLASH_TAKEN_ROCKET;
+			break;
+		case MOD_PLASMA:
+		case MOD_PLASMA_SPLASH:
+			key_hit = QGR_KEY_HIT_TAKEN_PLASMA;
+			key_damage = QGR_KEY_DAMAGE_TAKEN_PLASMA;
+			key_splash = QGR_KEY_SPLASH_TAKEN_PLASMA;
+			break;
+		case MOD_RAILGUN:
+			key_hit = QGR_KEY_HIT_TAKEN_RAILGUN;
+			key_damage = QGR_KEY_DAMAGE_TAKEN_RAILGUN;
+			break;
+		case MOD_LIGHTNING:
+			key_hit = QGR_KEY_HIT_TAKEN_LIGHTNING;
+			key_damage = QGR_KEY_DAMAGE_TAKEN_LIGHTNING;
+			break;
+		case MOD_BFG:
+		case MOD_BFG_SPLASH:
+			key_hit = QGR_KEY_HIT_TAKEN_BFG;
+			key_damage = QGR_KEY_DAMAGE_TAKEN_BFG;
+			key_splash = QGR_KEY_SPLASH_TAKEN_BFG;
+			break;
+		case MOD_GRAPPLE:
+			key_hit = QGR_KEY_HIT_TAKEN_GRAPPLE;
+			key_damage = QGR_KEY_DAMAGE_TAKEN_GRAPPLE;
+			break;
+		default:
+			key_hit = QGR_KEY_HIT_TAKEN_UNKNOWN;
+			key_damage = QGR_KEY_DAMAGE_TAKEN_UNKNOWN;
+			break;
 	}
 	// report general and specific hit taken
 	if (new_hit) {
 		trap_RankReportInt(self, -1, QGR_KEY_HIT_TAKEN, 1, 1);
 		trap_RankReportInt(self, -1, key_hit, 1, 1);
 	}
-	
 	// report general and specific damage taken
 	trap_RankReportInt(self, -1, QGR_KEY_DAMAGE_TAKEN, damage, 1);
 	trap_RankReportInt(self, -1, key_damage, damage, 1);
-
 	// report general and specific splash taken
 	if (splash != 0) {
 		trap_RankReportInt(self, -1, QGR_KEY_SPLASH_TAKEN, splash, 1);
@@ -343,58 +335,58 @@ void G_RankDamage(int self, int attacker, int damage, int means_of_death) {
 	// hit, damage, and splash given
 	if ((attacker != ENTITYNUM_WORLD) && (attacker != self)) {
 		switch (means_of_death) {
-		case MOD_GAUNTLET:
-			key_hit = QGR_KEY_HIT_GIVEN_GAUNTLET;
-			key_damage = QGR_KEY_DAMAGE_GIVEN_GAUNTLET;
-			break;
-		case MOD_MACHINEGUN:
-			key_hit = QGR_KEY_HIT_GIVEN_MACHINEGUN;
-			key_damage = QGR_KEY_DAMAGE_GIVEN_MACHINEGUN;
-			break;
-		case MOD_SHOTGUN:
-			key_hit = QGR_KEY_HIT_GIVEN_SHOTGUN;
-			key_damage = QGR_KEY_DAMAGE_GIVEN_SHOTGUN;
-			break;
-		case MOD_GRENADE:
-		case MOD_GRENADE_SPLASH:
-			key_hit = QGR_KEY_HIT_GIVEN_GRENADE;
-			key_damage = QGR_KEY_DAMAGE_GIVEN_GRENADE;
-			key_splash = QGR_KEY_SPLASH_GIVEN_GRENADE;
-			break;
-		case MOD_ROCKET:
-		case MOD_ROCKET_SPLASH:
-			key_hit = QGR_KEY_HIT_GIVEN_ROCKET;
-			key_damage = QGR_KEY_DAMAGE_GIVEN_ROCKET;
-			key_splash = QGR_KEY_SPLASH_GIVEN_ROCKET;
-			break;
-		case MOD_PLASMA:
-		case MOD_PLASMA_SPLASH:
-			key_hit = QGR_KEY_HIT_GIVEN_PLASMA;
-			key_damage = QGR_KEY_DAMAGE_GIVEN_PLASMA;
-			key_splash = QGR_KEY_SPLASH_GIVEN_PLASMA;
-			break;
-		case MOD_RAILGUN:
-			key_hit = QGR_KEY_HIT_GIVEN_RAILGUN;
-			key_damage = QGR_KEY_DAMAGE_GIVEN_RAILGUN;
-			break;
-		case MOD_LIGHTNING:
-			key_hit = QGR_KEY_HIT_GIVEN_LIGHTNING;
-			key_damage = QGR_KEY_DAMAGE_GIVEN_LIGHTNING;
-			break;
-		case MOD_BFG:
-		case MOD_BFG_SPLASH:
-			key_hit = QGR_KEY_HIT_GIVEN_BFG;
-			key_damage = QGR_KEY_DAMAGE_GIVEN_BFG;
-			key_splash = QGR_KEY_SPLASH_GIVEN_BFG;
-			break;
-		case MOD_GRAPPLE:
-			key_hit = QGR_KEY_HIT_GIVEN_GRAPPLE;
-			key_damage = QGR_KEY_DAMAGE_GIVEN_GRAPPLE;
-			break;
-		default:
-			key_hit = QGR_KEY_HIT_GIVEN_UNKNOWN;
-			key_damage = QGR_KEY_DAMAGE_GIVEN_UNKNOWN;
-			break;
+			case MOD_GAUNTLET:
+				key_hit = QGR_KEY_HIT_GIVEN_GAUNTLET;
+				key_damage = QGR_KEY_DAMAGE_GIVEN_GAUNTLET;
+				break;
+			case MOD_MACHINEGUN:
+				key_hit = QGR_KEY_HIT_GIVEN_MACHINEGUN;
+				key_damage = QGR_KEY_DAMAGE_GIVEN_MACHINEGUN;
+				break;
+			case MOD_SHOTGUN:
+				key_hit = QGR_KEY_HIT_GIVEN_SHOTGUN;
+				key_damage = QGR_KEY_DAMAGE_GIVEN_SHOTGUN;
+				break;
+			case MOD_GRENADE:
+			case MOD_GRENADE_SPLASH:
+				key_hit = QGR_KEY_HIT_GIVEN_GRENADE;
+				key_damage = QGR_KEY_DAMAGE_GIVEN_GRENADE;
+				key_splash = QGR_KEY_SPLASH_GIVEN_GRENADE;
+				break;
+			case MOD_ROCKET:
+			case MOD_ROCKET_SPLASH:
+				key_hit = QGR_KEY_HIT_GIVEN_ROCKET;
+				key_damage = QGR_KEY_DAMAGE_GIVEN_ROCKET;
+				key_splash = QGR_KEY_SPLASH_GIVEN_ROCKET;
+				break;
+			case MOD_PLASMA:
+			case MOD_PLASMA_SPLASH:
+				key_hit = QGR_KEY_HIT_GIVEN_PLASMA;
+				key_damage = QGR_KEY_DAMAGE_GIVEN_PLASMA;
+				key_splash = QGR_KEY_SPLASH_GIVEN_PLASMA;
+				break;
+			case MOD_RAILGUN:
+				key_hit = QGR_KEY_HIT_GIVEN_RAILGUN;
+				key_damage = QGR_KEY_DAMAGE_GIVEN_RAILGUN;
+				break;
+			case MOD_LIGHTNING:
+				key_hit = QGR_KEY_HIT_GIVEN_LIGHTNING;
+				key_damage = QGR_KEY_DAMAGE_GIVEN_LIGHTNING;
+				break;
+			case MOD_BFG:
+			case MOD_BFG_SPLASH:
+				key_hit = QGR_KEY_HIT_GIVEN_BFG;
+				key_damage = QGR_KEY_DAMAGE_GIVEN_BFG;
+				key_splash = QGR_KEY_SPLASH_GIVEN_BFG;
+				break;
+			case MOD_GRAPPLE:
+				key_hit = QGR_KEY_HIT_GIVEN_GRAPPLE;
+				key_damage = QGR_KEY_DAMAGE_GIVEN_GRAPPLE;
+				break;
+			default:
+				key_hit = QGR_KEY_HIT_GIVEN_UNKNOWN;
+				key_damage = QGR_KEY_DAMAGE_GIVEN_UNKNOWN;
+				break;
 		}
 		// report general and specific hit given
 		// jwu 8/26/00

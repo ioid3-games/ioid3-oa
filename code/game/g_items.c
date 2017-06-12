@@ -138,7 +138,6 @@ int Pickup_PersistantPowerup(gentity_t *ent, gentity_t *other) {
 			other->client->ps.stats[STAT_MAX_HEALTH] = max;
 			other->client->ps.stats[STAT_ARMOR] = max;
 			other->client->pers.maxHealth = max;
-
 			break;
 		case PW_SCOUT:
 			clientNum = other->client->ps.clientNum;

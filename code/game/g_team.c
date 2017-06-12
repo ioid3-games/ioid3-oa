@@ -1068,21 +1068,22 @@ void Team_TakeFlagSound(gentity_t *ent, int team) {
 		G_Printf("Warning: NULL passed to Team_TakeFlagSound\n");
 		return;
 	}
-	// only play sound when the flag was at the base
-	// or not picked up the last 10 seconds
+	// only play sound when the flag was at the base or not picked up the last 10 seconds
 	switch (team) {
 		case TEAM_RED:
 			if (teamgame.blueStatus != FLAG_ATBASE) {
-				if (teamgame.blueTakenTime > level.time - 10000 && g_gametype.integer != GT_CTF_ELIMINATION)
+				if (teamgame.blueTakenTime > level.time - 10000 && g_gametype.integer != GT_CTF_ELIMINATION) {
 					return;
+				}
 			}
 
 			teamgame.blueTakenTime = level.time;
 			break;
 		case TEAM_BLUE: // CTF
 			if (teamgame.redStatus != FLAG_ATBASE) {
-				if (teamgame.redTakenTime > level.time - 10000 && g_gametype.integer != GT_CTF_ELIMINATION)
+				if (teamgame.redTakenTime > level.time - 10000 && g_gametype.integer != GT_CTF_ELIMINATION) {
 					return;
+				}
 			}
 
 			teamgame.redTakenTime = level.time;
@@ -2049,7 +2050,7 @@ void TeamplayInfoMessage(gentity_t *ent) {
 			Com_sprintf(entry, sizeof(entry), " %i %i %i %i %i %i", i, player->client->pers.teamState.location, h, a, w, player->s.powerups);
 			j = strlen(entry);
 
-			if (stringlength + j > sizeof(string))
+			if (stringlength + j > sizeof(string)) {
 				break;
 			}
 

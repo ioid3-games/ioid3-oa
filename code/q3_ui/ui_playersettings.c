@@ -251,7 +251,7 @@ static void PlayerSettings_DrawPlayer(void *self) {
 		UI_PlayerInfo_SetInfo(&s_playersettings.playerinfo, LEGS_IDLE, TORSO_STAND, viewangles, vec3_origin, WP_MACHINEGUN, qfalse);
 	}
 
-	b = (menubitmap_s *) self;
+	b = (menubitmap_s *)self;
 
 	UI_DrawPlayer(b->generic.x, b->generic.y, b->width, b->height, &s_playersettings.playerinfo, uis.realtime / 2);
 }

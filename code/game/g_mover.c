@@ -468,6 +468,7 @@ G_RunMover
 =======================================================================================================================================
 */
 void G_RunMover(gentity_t *ent) {
+
 	// if not a team captain, don't do anything, because the captain will handle everything
 	if (ent->flags & FL_TEAMSLAVE) {
 		return;
@@ -1057,6 +1058,7 @@ Don't allow decent if a living player is on it.
 =======================================================================================================================================
 */
 void Touch_Plat(gentity_t *ent, gentity_t *other, trace_t *trace) {
+
 	if (!other->client || other->client->ps.stats[STAT_HEALTH] <= 0) {
 		return;
 	}
@@ -1074,6 +1076,7 @@ If the plat is at the bottom position, start it going up.
 =======================================================================================================================================
 */
 void Touch_PlatCenterTrigger(gentity_t *ent, gentity_t *other, trace_t *trace) {
+
 	if (!other->client) {
 		return;
 	}

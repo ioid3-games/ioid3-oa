@@ -179,7 +179,7 @@ static void CG_ShotgunEjectBrass(centity_t *cent) {
 		le->leMarkType = LEMT_NONE;
 	}
 }
-// #ifdef MISSIONPACK
+
 /*
 =======================================================================================================================================
 CG_NailgunEjectBrass
@@ -210,7 +210,7 @@ static void CG_NailgunEjectBrass(centity_t *cent) {
 	// use the optimized local entity add
 	smoke->leType = LE_SCALE_FADE;
 }
-// #endif
+
 /*
 =======================================================================================================================================
 CG_RailTrail
@@ -1367,11 +1367,10 @@ static float CG_MachinegunSpinAngle(centity_t *cent) {
 		cent->pe.barrelTime = cg.time;
 		cent->pe.barrelAngle = AngleMod(angle);
 		cent->pe.barrelSpinning = !!(cent->currentState.eFlags & EF_FIRING);
-// #ifdef MISSIONPACK
+
 		if (cent->currentState.weapon == WP_CHAINGUN && !cent->pe.barrelSpinning) {
 			trap_S_StartSound(NULL, cent->currentState.number, CHAN_WEAPON, trap_S_RegisterSound("sound/weapons/vulcan/wvulwind.wav", qfalse));
 		}
-// #endif
 	}
 
 	return angle;
@@ -1549,10 +1548,6 @@ void CG_AddPlayerWeapon(refEntity_t *parent, playerState_t *ps, centity_t *cent,
 	}
 
 	CG_PositionRotatedEntityOnTag(&flash, &gun, weapon->weaponModel, "tag_flash");
-
-// 	if (!weapon->lfx && !cg_leiEnhancement.integer)
-	// 		flash.hModel = NULL;
-
 	trap_R_AddRefEntityToScene(&flash);
 
 	if (ps || cg.renderingThirdPerson || cent->currentState.number != cg.predictedPlayerState.clientNum) {
@@ -3001,7 +2996,7 @@ void CG_MissileHitWall(int weapon, int clientNum, vec3_t origin, vec3_t dir, imp
 
 	switch (weapon) {
 		default:
-// #ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 		case WP_NAILGUN:
 			if (soundType == IMPACTSOUND_FLESH) {
 				sfx = cgs.media.sfx_nghitflesh;
@@ -3019,7 +3014,7 @@ void CG_MissileHitWall(int weapon, int clientNum, vec3_t origin, vec3_t dir, imp
 			}
 
 			break;
-// #endif
+//#endif
 		case WP_LIGHTNING:
 			// no explosion at LG impact, it is added with the beam
 			r = rand() & 3;
@@ -3035,7 +3030,7 @@ void CG_MissileHitWall(int weapon, int clientNum, vec3_t origin, vec3_t dir, imp
 			mark = cgs.media.holeMarkShader;
 			radius = 12;
 			break;
-// #ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 		case WP_PROX_LAUNCHER:
 			mod = cgs.media.dishFlashModel;
 			shader = cgs.media.grenadeExplosionShader;
@@ -3050,9 +3045,8 @@ void CG_MissileHitWall(int weapon, int clientNum, vec3_t origin, vec3_t dir, imp
 				trap_R_LFX_ParticleEffect(11, origin, dir); // that was easy.
 			}
 			// LEILEI END enhancement
-
 			break;
-// #endif
+//#endif
 		case WP_GRENADE_LAUNCHER:
 			mod = cgs.media.dishFlashModel;
 			shader = cgs.media.grenadeExplosionShader;
@@ -3171,7 +3165,7 @@ void CG_MissileHitWall(int weapon, int clientNum, vec3_t origin, vec3_t dir, imp
 
 			radius = 8;
 			break;
-		// Shared with Vulcan / Chaingun
+			// shared with Vulcan/Chaingun
 		case WP_MACHINEGUN:
 			mod = cgs.media.bulletFlashModel;
 			shader = cgs.media.bulletExplosionShader;
@@ -3245,11 +3239,11 @@ void CG_MissileHitPlayer(int weapon, vec3_t origin, vec3_t dir, int entityNum) {
 	switch (weapon) {
 	case WP_GRENADE_LAUNCHER:
 	case WP_ROCKET_LAUNCHER:
-// #ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	case WP_NAILGUN:
 	case WP_CHAINGUN:
 	case WP_PROX_LAUNCHER:
-// #endif
+//#endif
 		CG_MissileHitWall(weapon, 0, origin, dir, IMPACTSOUND_FLESH);
 		break;
 	default:
@@ -3273,7 +3267,7 @@ CG_ShotgunPellet
 static void CG_ShotgunPellet(vec3_t start, vec3_t end, int skipNum) {
 	trace_t tr;
 	int sourceContentType, destContentType;
-// LEILEI ENHACNEMENT
+	// LEILEI ENHACNEMENT
 	vec3_t kapow;
 
 	CG_Trace(&tr, start, NULL, NULL, end, skipNum, MASK_SHOT);
@@ -3533,7 +3527,7 @@ void CG_Bullet(vec3_t end, int sourceEntityNum, vec3_t normal, qboolean flesh, i
 	trace_t trace;
 	int sourceContentType, destContentType;
 	vec3_t start;
-// LEILEI ENHACNEMENT
+	// LEILEI ENHACNEMENT
 	vec3_t kapow;
 
 	// if the shooter is currently valid, calc a source point and possibly do trail effects

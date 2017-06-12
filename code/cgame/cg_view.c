@@ -207,7 +207,7 @@ static void CG_CalcVrect(void) {
 			trap_Cvar_Set("cg_viewsize", "30");
 			size = 30;
 		} else if (cg_viewsize.integer > 120) {
-			trap_Cvar_Set("cg_viewsize", "120");	// leilei - increased to 120 for retro sbar disabling
+			trap_Cvar_Set("cg_viewsize", "120"); // leilei - increased to 120 for retro sbar disabling
 			size = 120;
 		} else {
 			size = cg_viewsize.integer;
@@ -650,7 +650,7 @@ static int CG_CalcFov(void) {
 	// warp if underwater
 	contents = CG_PointContents(cg.refdef.vieworg, -1);
 
-	if (contents & (CONTENTS_WATER|CONTENTS_SLIME|CONTENTS_LAVA)){
+	if (contents & (CONTENTS_WATER|CONTENTS_SLIME|CONTENTS_LAVA)) {
 		phase = cg.time / 1000.0 * WAVE_FREQUENCY * M_PI * 2;
 		v = WAVE_AMPLITUDE * sin(phase);
 		fov_x += v;

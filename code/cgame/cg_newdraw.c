@@ -239,7 +239,6 @@ static void CG_DrawPlayerArmorValue(rectDef_t *rect, float scale, vec4_t color, 
 	playerState_t *ps;
 
 	ps = &cg.snap->ps;
-
 	value = ps->stats[STAT_ARMOR];
 
 	if (shader) {
@@ -1578,8 +1577,6 @@ static void CG_Text_Paint_Limit(float *maxX, float x, float y, float scale, vec4
 	glyphInfo_t *glyph;
 
 	if (text) {
-		// TTimo: FIXME
-		// const unsigned char *s = text; // bk001206 - unsigned
 		const char *s = text;
 		float max = *maxX;
 		float useScale;
@@ -2270,11 +2267,8 @@ static void CG_DrawCaptureLimit(rectDef_t *rect, float text_x, float text_y, vec
 		CG_DrawLoadingString(rect, text_x, text_y, color, scale, align, textStyle, va("%i", value));
 	}
 }
-
-
 #endif
 // end loadingscreen
-
 /*
 =======================================================================================================================================
 CG_OwnerDraw
@@ -2661,6 +2655,7 @@ void CG_ShowResponseHead(void) {
 
 	Menus_OpenByName("voiceMenu");
 	trap_Cvar_Set("cl_conXOffset", "72");
+
 	cg.voiceTime = cg.time;
 }
 

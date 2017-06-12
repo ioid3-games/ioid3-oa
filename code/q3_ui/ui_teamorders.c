@@ -23,9 +23,7 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 US
 =======================================================================================================================================
 */
 
-
 #include "ui_local.h"
-
 
 #define ART_FRAME "menu/" MENU_ART_DIR "/addbotframe"
 #define ART_BACK0 "menu/" MENU_ART_DIR "/back_0"
@@ -33,11 +31,10 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 US
 
 #define ID_LIST_BOTS		10
 #define ID_LIST_CTF_ORDERS	11
-#define ID_LIST_CTF1F_ORDERS	12
+#define ID_LIST_CTF1F_ORDERS 12
 #define ID_LIST_BASE_ORDERS	13
 #define ID_LIST_TEAM_ORDERS	14
 #define ID_LIST_DD_ORDERS	15
-
 
 typedef struct {
 	menuframework_s menu;

@@ -25,7 +25,6 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 US
 
 #include "ui_local.h"
 
-
 #define ART_BACK0 "menu/" MENU_ART_DIR "/back_0"
 #define ART_BACK1 "menu/" MENU_ART_DIR "/back_1"
 #define ART_FIGHT0 "menu/" MENU_ART_DIR "/load_0"

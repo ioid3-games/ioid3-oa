@@ -728,7 +728,7 @@ void G_InitGame(int levelTime, int randomSeed, int restart) {
 	char mapname[MAX_CVAR_VALUE_STRING];
 
 
-	G_Printf("------- Game Initialization-------\n");
+	G_Printf("------- Game Initialization -------\n");
 	G_Printf("gamename: %s\n", GAMEVERSION);
 	G_Printf("gamedate: %s\n", __DATE__);
 
@@ -767,7 +767,7 @@ void G_InitGame(int levelTime, int randomSeed, int restart) {
 
 			trap_GetServerinfo(serverinfo, sizeof(serverinfo));
 
-			G_LogPrintf("------------------------------------------------------------ \n");
+			G_LogPrintf("------------------------------------------------------------\n");
 			G_LogPrintf("InitGame: %s\n", serverinfo);
 			G_LogPrintf("Info: ServerInfo length: %ld of %d\n", strlen(serverinfo), MAX_INFO_STRING);
 		}
@@ -782,7 +782,6 @@ void G_InitGame(int levelTime, int randomSeed, int restart) {
 	G_admin_readconfig(NULL, 0);
 	// Let's Load up any killing sprees / multikills
 	G_ReadAltKillSettings(NULL, 0);
-
 	// initialize all entities for this game
 	memset(g_entities, 0, MAX_GENTITIES * sizeof(g_entities[0]));
 

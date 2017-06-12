@@ -14,8 +14,11 @@ You should have received a copy of the GNU General Public License along with Qua
 Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 =======================================================================================================================================
 */
-//
-// cg_players.c-- handle the media and animation for player entities
+
+/**************************************************************************************************************************************
+ Handle the media and animation for player entities.
+**************************************************************************************************************************************/
+
 #include "cg_local.h"
 
 char *cg_customSoundNames[MAX_CUSTOM_SOUNDS] = {
@@ -73,7 +76,7 @@ sfxHandle_t CG_CustomSound(int clientNum, const char *soundName) {
 /*
 =======================================================================================================================================
 
-CLIENT INFO
+	CLIENT INFO
 
 =======================================================================================================================================
 */
@@ -499,14 +502,12 @@ static qboolean CG_FindClientModelFile(char *filename, int length, clientInfo_t 
 
 	if (cgs.gametype >= GT_TEAM && cgs.ffa_gt != 1) {
 		switch (ci->team) {
-			case TEAM_BLUE:
-			{
+			case TEAM_BLUE: {
 				team = "blue";
 				break;
 			}
 
-			default:
-			{
+			default: {
 				team = "red";
 				break;
 			}
@@ -579,14 +580,12 @@ static qboolean CG_FindClientHeadFile(char *filename, int length, clientInfo_t *
 
 	if (cgs.gametype >= GT_TEAM && cgs.ffa_gt != 1) {
 		switch (ci->team) {
-			case TEAM_BLUE:
-			{
+			case TEAM_BLUE: {
 				team = "blue";
 				break;
 			}
 
-			default:
-			{
+			default: {
 				team = "red";
 				break;
 			}
@@ -907,7 +906,7 @@ static void CG_ColorFromString(const char *v, vec3_t color) {
 =======================================================================================================================================
 CG_LoadClientInfo
 
-Load it now, taking the disk hits. This will usually be deferred to a safe time
+Load it now, taking the disk hits. This will usually be deferred to a safe time.
 =======================================================================================================================================
 */
 static void CG_LoadClientInfo(int clientNum, clientInfo_t *ci) {
@@ -1240,7 +1239,7 @@ void CG_NewClientInfo(int clientNum) {
 			if ((skin = strchr(modelStr, '/')) == NULL) {
 				skin = "default";
 			} else {
-				*skin ++= 0;
+				*skin++ = 0;
 			}
 
 			Q_strncpyz(newInfo.headSkinName, skin, sizeof(newInfo.headSkinName));
@@ -2316,7 +2315,7 @@ static qboolean CG_PlayerShadow(centity_t *cent, float *shadowPlane) {
 	}
 	// fade the shadow out with height
 	alpha = 1.0 - trace.fraction;
-	// bk0101022 - hack / FPE - bogus planes?
+	// bk0101022 - hack/FPE - bogus planes?
 	//assert(DotProduct(trace.plane.normal, trace.plane.normal) != 0.0f)
 	// add the mark as a temporary, so it goes directly to the renderer without taking a spot in the cg_marks array
 	CG_ImpactMark(cgs.media.shadowMarkShader, trace.endpos, trace.plane.normal, cent->pe.legs.yawAngle, alpha, alpha, alpha, 1, qfalse, 24, qtrue);
@@ -2594,9 +2593,9 @@ void CG_Player(centity_t *cent) {
 		if (!cg.renderingThirdPerson) {
 			renderfx = RF_THIRD_PERSON; // only draw in mirrors
 		} else {
-			//	if (cg_cameraMode.integer) {
-			//		return;
-			//	}
+			//if (cg_cameraMode.integer) {
+			//	return;
+			//}
 		}
 	}
 
@@ -3080,6 +3079,7 @@ void CG_ResetPlayerEntity(centity_t *cent) {
 	cent->pe.torso.pitching = qfalse;
 
 	memset(&cent->pe.head, 0, sizeof(cent->pe.head));
+
 	cent->pe.head.yawAngle = cent->rawAngles[YAW];
 	cent->pe.head.yawing = qfalse;
 	cent->pe.head.pitchAngle = cent->rawAngles[PITCH];

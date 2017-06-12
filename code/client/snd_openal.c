@@ -502,8 +502,8 @@ typedef struct src_s {
 	sfxHandle_t sfx;			// sound effect in use
 	int lastUsedTime;			// last time used
 	alSrcPriority_t priority;	// priority
-	int entity;					// owning entity(-1 if none)
-	int channel;				// associated channel(-1 if none)
+	int entity;					// owning entity (-1 if none)
+	int channel;				// associated channel (-1 if none)
 	qboolean isActive;			// is this source currently in use?
 	qboolean isPlaying;			// is this source currently playing, or stopped?
 	qboolean isLocked;			// this is locked (un-allocatable)
@@ -1475,7 +1475,7 @@ static void S_AL_AllocateStreamChannel(int stream, int entityNum) {
 	srcHandle_t cursrc;
 	ALuint alsrc;
 
-	if ((stream < 0) || (stream >= MAX_RAW_STREAMS)) {
+	if (stream < 0 || stream >= MAX_RAW_STREAMS) {
 		return;
 	}
 
@@ -1529,7 +1529,7 @@ S_AL_FreeStreamChannel
 */
 static void S_AL_FreeStreamChannel(int stream) {
 
-	if ((stream < 0) || (stream >= MAX_RAW_STREAMS)) {
+	if (stream < 0 || stream >= MAX_RAW_STREAMS) {
 		return;
 	}
 	// detach any buffers
@@ -1557,7 +1557,7 @@ static void S_AL_RawSamples(int stream, int samples, int rate, int width, int ch
 	ALuint buffer;
 	ALuint format;
 
-	if ((stream < 0) || (stream >= MAX_RAW_STREAMS)) {
+	if (stream < 0 || stream >= MAX_RAW_STREAMS) {
 		return;
 	}
 
@@ -1625,7 +1625,7 @@ static void S_AL_StreamUpdate(int stream) {
 	int numBuffers;
 	ALint state;
 
-	if ((stream < 0) || (stream >= MAX_RAW_STREAMS)) {
+	if (stream < 0 || stream >= MAX_RAW_STREAMS) {
 		return;
 	}
 
@@ -1665,7 +1665,7 @@ S_AL_StreamDie
 */
 static void S_AL_StreamDie(int stream) {
 
-	if ((stream < 0) || (stream >= MAX_RAW_STREAMS)) {
+	if (stream < 0 || stream >= MAX_RAW_STREAMS) {
 		return;
 	}
 
@@ -1808,7 +1808,7 @@ static void S_AL_MusicProcess(ALuint b) {
 		} else {
 			mus_stream = S_CodecOpenStream(s_backgroundLoop);
 		}
-		
+
 		curstream = mus_stream;
 
 		if (!curstream) {

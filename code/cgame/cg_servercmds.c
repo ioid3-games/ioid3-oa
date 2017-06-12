@@ -370,6 +370,7 @@ void CG_ParseServerinfo(void) {
 	}
 
 	trap_Cvar_Set("g_gametype", va("%i", cgs.gametype));
+
 	cgs.dmflags = atoi(Info_ValueForKey(info, "dmflags"));
 	cgs.videoflags = atoi(Info_ValueForKey(info, "videoflags"));
 	cgs.elimflags = atoi(Info_ValueForKey(info, "elimflags"));
@@ -384,6 +385,7 @@ void CG_ParseServerinfo(void) {
 	cgs.altExcellent = atoi(Info_ValueForKey(info, "g_altExcellent"));
 	mapname = Info_ValueForKey(info, "mapname");
 	Com_sprintf(cgs.mapname, sizeof(cgs.mapname), "maps/%s.bsp", mapname);
+
 	Q_strncpyz(cgs.redTeam, Info_ValueForKey(info, "g_redTeam"), sizeof(cgs.redTeam));
 	trap_Cvar_Set("g_redTeam", cgs.redTeam);
 	Q_strncpyz(cgs.blueTeam, Info_ValueForKey(info, "g_blueTeam"), sizeof(cgs.blueTeam));
@@ -445,13 +447,11 @@ void CG_SetConfigValues(void) {
 		s = CG_ConfigString(CS_FLAGSTATUS);
 		cgs.redflag = s[0] - '0';
 		cgs.blueflag = s[1] - '0';
-	}
-// #ifdef MISSIONPACK
-	else if (cgs.gametype == GT_1FCTF || cgs.gametype == GT_POSSESSION) {
+	} else if (cgs.gametype == GT_1FCTF || cgs.gametype == GT_POSSESSION) {
 		s = CG_ConfigString(CS_FLAGSTATUS);
 		cgs.flagStatus = s[0] - '0';
 	}
-// #endif
+
 	cg.warmup = atoi(CG_ConfigString(CS_WARMUP));
 }
 
@@ -540,7 +540,7 @@ static void CG_ConfigStringModified(void) {
 		Q_strncpyz(cgs.voteString, str, sizeof(cgs.voteString));
 #ifdef MISSIONPACK
 		trap_S_StartLocalSound(cgs.media.voteNow, CHAN_ANNOUNCER);
-#endif// MISSIONPACK
+#endif // MISSIONPACK
 	} else if (num >= CS_TEAMVOTE_TIME && num <= CS_TEAMVOTE_TIME + 1) {
 		cgs.teamVoteTime[num - CS_TEAMVOTE_TIME] = atoi(str);
 		cgs.teamVoteModified[num - CS_TEAMVOTE_TIME] = qtrue;
@@ -568,19 +568,15 @@ static void CG_ConfigStringModified(void) {
 		CG_BuildSpectatorString();
 	} else if (num == CS_FLAGSTATUS) {
 		if (cgs.gametype == GT_CTF || cgs.gametype == GT_CTF_ELIMINATION || cgs.gametype == GT_DOUBLE_D) {
-			// format is rb where its red / blue, 0 is at base, 1 is taken, 2 is dropped
+			// format is rb where its red/blue, 0 is at base, 1 is taken, 2 is dropped
 			cgs.redflag = str[0] - '0';
 			cgs.blueflag = str[1] - '0';
-		}
-// #ifdef MISSIONPACK
-		else if (cgs.gametype == GT_1FCTF || cgs.gametype == GT_POSSESSION) {
+		} else if (cgs.gametype == GT_1FCTF || cgs.gametype == GT_POSSESSION) {
 			cgs.flagStatus = str[0] - '0';
 		}
-// #endif
 	} else if (num == CS_SHADERSTATE) {
 		CG_ShaderStateChanged();
 	}
-		
 }
 
 /*
@@ -678,7 +674,9 @@ static void CG_MapRestart(void) {
 	cg.fraglimitWarnings = 0;
 	cg.timelimitWarnings = 0;
 	cg.intermissionStarted = qfalse;
+
 	cgs.voteTime = 0;
+
 	cg.mapRestart = qtrue;
 
 	CG_StartMusic();
@@ -1194,9 +1192,7 @@ void CG_VoiceChat(int mode) {
 	cmd = CG_Argv(4);
 
 	if (cg_noTaunt.integer != 0) {
-		if (strequals(cmd, VOICECHAT_KILLINSULT) || strequals(cmd, VOICECHAT_TAUNT) || 
-			strequals(cmd, VOICECHAT_DEATHINSULT) || strequals(cmd, VOICECHAT_KILLGAUNTLET) || 
-			strequals(cmd, VOICECHAT_PRAISE)) {
+		if (strequals(cmd, VOICECHAT_KILLINSULT) || strequals(cmd, VOICECHAT_TAUNT) ||  strequals(cmd, VOICECHAT_DEATHINSULT) || strequals(cmd, VOICECHAT_KILLGAUNTLET) ||  strequals(cmd, VOICECHAT_PRAISE)) {
 			return;
 		}
 	}
@@ -1370,7 +1366,7 @@ static void CG_ServerCommand(void) {
 
 			trap_R_RemapShader(shader1, shader2, shader3);
 		}
-		
+
 		return;
 	}
 	// loaddeferred can be both a servercmd and a consolecmd

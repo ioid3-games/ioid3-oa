@@ -1336,15 +1336,14 @@ static void CG_RegisterGraphics(void) {
 	trap_R_RegisterModel("models/players/sorceress/upper.mdr");
 	trap_R_RegisterModel("models/players/sorceress/head.md3");
 #endif
-	//	CG_ClearParticles();
+	//CG_ClearParticles();
 /*
 	for (i = 1; i < MAX_PARTICLES_AREAS; i++) {
-		{
-			int rval;
+		int rval;
 
 		rval = CG_NewParticleArea(CS_PARTICLES + i);
 
-		if (!rval)
+		if (!rval) {
 			break;
 		}
 	}
@@ -1871,8 +1870,9 @@ void CG_ParseMenu(const char *menuFile) {
 		if (!trap_PC_ReadToken(handle, &token)) {
 			break;
 		}
+
 		//if (!Q_strequal(token, "{")) {
-		//	Com_Printf("Missing {in menu file\n");
+		//	Com_Printf("Missing { in menu file\n");
 		//	break;
 		//}
 
@@ -2621,8 +2621,7 @@ Called before every level change or subsystem restart.
 =======================================================================================================================================
 */
 void CG_Shutdown(void) {
-	// some mods may need to do cleanup work here,
-	// like closing files or archiving session data
+	// some mods may need to do cleanup work here, like closing files or archiving session data
 	challenges_save();
 }
 #ifndef MISSIONPACK

@@ -46,18 +46,16 @@ void CG_CheckAmmo(void) {
 		}
 
 		switch (i) {
-		case WP_ROCKET_LAUNCHER:
-		case WP_GRENADE_LAUNCHER:
-		case WP_RAILGUN:
-		case WP_SHOTGUN:
-// #ifdef MISSIONPACK
-		case WP_PROX_LAUNCHER:
-// #endif
-			total += cg.snap->ps.ammo[i] * 1000;
-			break;
-		default:
-			total += cg.snap->ps.ammo[i] * 200;
-			break;
+			case WP_ROCKET_LAUNCHER:
+			case WP_GRENADE_LAUNCHER:
+			case WP_RAILGUN:
+			case WP_SHOTGUN:
+			case WP_PROX_LAUNCHER:
+				total += cg.snap->ps.ammo[i] * 1000;
+				break;
+			default:
+				total += cg.snap->ps.ammo[i] * 200;
+				break;
 		}
 
 		if (total >= 5000) {
@@ -145,7 +143,7 @@ void CG_DamageFeedback(int yawByte, int pitchByte, int damage) {
 			dist = 0.1f;
 		}
 
-		cg.v_dmg_roll = kick * left;		
+		cg.v_dmg_roll = kick * left;
 		cg.v_dmg_pitch = -kick * front;
 
 		if (front <= 0.1) {
@@ -366,7 +364,7 @@ void CG_CheckLocalSounds(playerState_t *ps, playerState_t *ops) {
 #endif
 			pushReward(sfx, cgs.media.medalExcellent, ps->persistant[PERS_EXCELLENT_COUNT]);
 			reward = qtrue;
-			// Com_Printf("excellent\n");
+			//Com_Printf("excellent\n");
 		}
 	}
 
@@ -410,9 +408,7 @@ void CG_CheckLocalSounds(playerState_t *ps, playerState_t *ops) {
 	}
 	// check for flag pickup
 	if (cgs.gametype > GT_TEAM) {
-		if ((ps->powerups[PW_REDFLAG] != ops->powerups[PW_REDFLAG] && ps->powerups[PW_REDFLAG]) ||
-			(ps->powerups[PW_BLUEFLAG] != ops->powerups[PW_BLUEFLAG] && ps->powerups[PW_BLUEFLAG]) ||
-			(ps->powerups[PW_NEUTRALFLAG] != ops->powerups[PW_NEUTRALFLAG] && ps->powerups[PW_NEUTRALFLAG])) {
+		if ((ps->powerups[PW_REDFLAG] != ops->powerups[PW_REDFLAG] && ps->powerups[PW_REDFLAG]) || (ps->powerups[PW_BLUEFLAG] != ops->powerups[PW_BLUEFLAG] && ps->powerups[PW_BLUEFLAG]) || (ps->powerups[PW_NEUTRALFLAG] != ops->powerups[PW_NEUTRALFLAG] && ps->powerups[PW_NEUTRALFLAG])) {
 			trap_S_StartLocalSound(cgs.media.youHaveFlagSound, CHAN_ANNOUNCER);
 		}
 	}

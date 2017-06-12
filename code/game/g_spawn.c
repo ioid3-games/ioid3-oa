@@ -192,16 +192,15 @@ void SP_team_neutralobelisk(gentity_t *ent);
 void SP_item_botroam(gentity_t *ent) {}
 
 spawn_t spawns[] = {
-	// info entities don't do anything at all, but provide positional
-	// information for things controlled by other processes
+	// info entities don't do anything at all, but provide positional information for things controlled by other processes
 	{"info_player_start", SP_info_player_start},
 	{"info_player_deathmatch", SP_info_player_deathmatch},
 	{"info_player_intermission", SP_info_player_intermission},
-// Double Domination player spawn:
+	// Double Domination player spawn:
 	{"info_player_dd", SP_info_player_deathmatch},
 	{"info_player_dd_red", SP_info_player_deathmatch},
 	{"info_player_dd_blue", SP_info_player_deathmatch},
-// Standard Domination point spawn:
+	// Standard Domination point spawn:
 	{"domination_point", SP_domination_point},
 	{"info_player_dom_red", SP_info_player_deathmatch},
 	{"info_player_dom_blue", SP_info_player_deathmatch},

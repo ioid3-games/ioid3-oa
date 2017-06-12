@@ -283,7 +283,7 @@ static bind_t g_bindings[] = {
 	{"messagemode4",	"chat-attacker",	ID_CHAT4,		ANIM_CHAT,		-1,				-1, -1, -1},
 	{"+voiprecord",		"voice chat",		ID_VOIP_TALK, 	ANIM_CHAT,		'q', 			-1, -1, -1},
 	{"+acc",			"show accuracy",	ID_ACCURACY,	ANIM_IDLE,		-1,				-1, -1, -1},
-	{(char *)NULL, 	(char *)NULL, 	0, 			0, 			 -1, 			 -1, 	 -1,  -1},
+	{(char *)NULL,		(char *)NULL,		0,				0,				-1,				-1,	-1,	-1},
 };
 
 static configcvar_t g_configcvars[] = {
