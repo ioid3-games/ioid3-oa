@@ -113,12 +113,13 @@ const char *Sys_DefaultHomePath(void) {
 	return homePath;
 }
 
+int sys_timeBase;
+
 /*
 =======================================================================================================================================
 Sys_Milliseconds
 =======================================================================================================================================
 */
-int sys_timeBase;
 int Sys_Milliseconds(void) {
 	int sys_curtime;
 	static qboolean initialized = qfalse;
