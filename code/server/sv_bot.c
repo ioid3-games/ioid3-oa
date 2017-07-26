@@ -417,6 +417,7 @@ BotImport_DebugLineCreate
 */
 static int BotImport_DebugLineCreate(void) {
 	vec3_t points[1];
+
 	return BotImport_DebugPolygonCreate(0, 0, points);
 }
 
@@ -518,8 +519,7 @@ int SV_BotLibSetup(void) {
 =======================================================================================================================================
 SV_BotLibShutdown
 
-Called when either the entire server is being killed, or it is changing to a
-different game directory.
+Called when either the entire server is being killed, or it is changing to a different game directory.
 =======================================================================================================================================
 */
 int SV_BotLibShutdown(void) {

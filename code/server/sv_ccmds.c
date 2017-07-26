@@ -51,12 +51,13 @@ static client_t *SV_GetPlayerByHandle(void) {
 	}
 
 	s = Cmd_Argv(1);
-	// Check whether this is a numeric player handle
+	// check whether this is a numeric player handle
 	for (i = 0; s[i] >= '0' && s[i] <= '9'; i++);
 
 	if (!s[i]) {
 		int plid = atoi(s);
-		// Check for numeric playerid match
+
+		// check for numeric playerid match
 		if (plid >= 0 && plid < sv_maxclients->integer) {
 			cl = &svs.clients[plid];
 
@@ -174,6 +175,7 @@ static void SV_Map_f(void) {
 		Cvar_SetValue("g_doWarmup", 0);
 		// may not set sv_maxclients directly, always set latched
 		Cvar_SetLatched("sv_maxclients", "8");
+
 		cmd += 2;
 
 		if (!Q_stricmp(cmd, "devmap")) {
@@ -267,6 +269,7 @@ static void SV_MapRestart_f(void) {
 	// generate a new serverid
 	// TTimo - don't update restartedserverId there, otherwise we won't deal correctly with multiple map_restart
 	sv.serverId = com_frameTime;
+
 	Cvar_Set("sv_serverid", va("%i", sv.serverId));
 	// if a map_restart occurs while a client is changing maps, we need to give them the correct time so that when they finish loading
 	// they don't violate the backwards time check in cl_cgame.c
@@ -285,6 +288,7 @@ static void SV_MapRestart_f(void) {
 	// run a few frames to allow everything to settle
 	for (i = 0; i < 3; i++) {
 		VM_Call(gvm, GAME_RUN_FRAME, sv.time);
+
 		sv.time += 100;
 		svs.time += 100;
 	}
@@ -326,6 +330,7 @@ static void SV_MapRestart_f(void) {
 	}
 	// run another frame to allow things to look at all the players
 	VM_Call(gvm, GAME_RUN_FRAME, sv.time);
+
 	sv.time += 100;
 	svs.time += 100;
 }
@@ -366,6 +371,7 @@ static void SV_Kick_f(void) {
 				}
 
 				SV_DropClient(cl, "was kicked");
+
 				cl->lastPacketTime = svs.time; // in case there is a funny zombie
 			}
 		} else if (!Q_stricmp(Cmd_Argv(1), "allbots")) {
@@ -379,6 +385,7 @@ static void SV_Kick_f(void) {
 				}
 
 				SV_DropClient(cl, "was kicked");
+
 				cl->lastPacketTime = svs.time; // in case there is a funny zombie
 			}
 		}
@@ -392,6 +399,7 @@ static void SV_Kick_f(void) {
 	}
 
 	SV_DropClient(cl, "was kicked");
+
 	cl->lastPacketTime = svs.time; // in case there is a funny zombie
 }
 
@@ -422,6 +430,7 @@ static void SV_KickBots_f(void) {
 		}
 
 		SV_DropClient(cl, "was kicked");
+
 		cl->lastPacketTime = svs.time; // in case there is a funny zombie
 	}
 }
@@ -453,6 +462,7 @@ static void SV_KickAll_f(void) {
 		}
 
 		SV_DropClient(cl, "was kicked");
+
 		cl->lastPacketTime = svs.time; // in case there is a funny zombie
 	}
 }
@@ -490,6 +500,7 @@ static void SV_KickNum_f(void) {
 	}
 
 	SV_DropClient(cl, "was kicked");
+
 	cl->lastPacketTime = svs.time; // in case there is a funny zombie
 }
 #ifndef STANDALONE
@@ -535,6 +546,7 @@ static void SV_Ban_f(void) {
 		}
 
 		svs.authorizeAddress.port = BigShort(PORT_AUTHORIZE);
+
 		Com_Printf("%s resolved to %i.%i.%i.%i:%i\n", AUTHORIZE_SERVER_NAME, svs.authorizeAddress.ip[0], svs.authorizeAddress.ip[1], svs.authorizeAddress.ip[2], svs.authorizeAddress.ip[3], BigShort(svs.authorizeAddress.port));
 	}
 	// otherwise send their ip to the authorize server
@@ -585,6 +597,7 @@ static void SV_BanNum_f(void) {
 		}
 
 		svs.authorizeAddress.port = BigShort(PORT_AUTHORIZE);
+
 		Com_Printf("%s resolved to %i.%i.%i.%i:%i\n", AUTHORIZE_SERVER_NAME, svs.authorizeAddress.ip[0], svs.authorizeAddress.ip[1], svs.authorizeAddress.ip[2], svs.authorizeAddress.ip[3], BigShort(svs.authorizeAddress.port));
 	}
 	// otherwise send their ip to the authorize server
@@ -628,7 +641,6 @@ static void SV_RehashBans_f(void) {
 		}
 
 		curpos = textbuf = Z_Malloc(filelen);
-
 		filelen = FS_Read(textbuf, filelen, readfrom);
 
 		FS_FCloseFile(readfrom);
@@ -1322,7 +1334,7 @@ void SV_AddOperatorCommands(void) {
 	Cmd_AddCommand("kickbots", SV_KickBots_f);
 	Cmd_AddCommand("kickall", SV_KickAll_f);
 	Cmd_AddCommand("kicknum", SV_KickNum_f);
-	Cmd_AddCommand("clientkick", SV_KickNum_f); // Legacy command
+	Cmd_AddCommand("clientkick", SV_KickNum_f); // legacy command
 	Cmd_AddCommand("status", SV_Status_f);
 	Cmd_AddCommand("serverinfo", SV_Serverinfo_f);
 	Cmd_AddCommand("systeminfo", SV_Systeminfo_f);

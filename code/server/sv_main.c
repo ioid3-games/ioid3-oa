@@ -173,8 +173,7 @@ void SV_AddServerCommand(client_t *client, const char *cmd) {
 =======================================================================================================================================
 SV_SendServerCommand
 
-Sends a reliable command string to be interpreted by the client game module:
-"cp", "print", "chat", etc.
+Sends a reliable command string to be interpreted by the client game module: "cp", "print", "chat", etc.
 A NULL client will broadcast to all clients.
 =======================================================================================================================================
 */
@@ -260,6 +259,7 @@ void SV_MasterHeartbeat(const char *message) {
 
 			if (netenabled & NET_ENABLEV4) {
 				Com_Printf("Resolving %s (IPv4)\n", sv_master[i]->string);
+
 				res = NET_StringToAdr(sv_master[i]->string, &adr[i][0], NA_IP);
 
 				if (res == 2) {
@@ -276,6 +276,7 @@ void SV_MasterHeartbeat(const char *message) {
 
 			if (netenabled & NET_ENABLEV6) {
 				Com_Printf("Resolving %s (IPv6)\n", sv_master[i]->string);
+
 				res = NET_StringToAdr(sv_master[i]->string, &adr[i][1], NA_IP6);
 
 				if (res == 2) {
@@ -504,6 +505,7 @@ Rate limit for a particular address.
 qboolean SVC_RateLimitAddress(netadr_t from, int burst, int period) {
 
 	leakyBucket_t *bucket = SVC_BucketForAddress(from, burst, period);
+
 	return SVC_RateLimit(bucket, burst, period);
 }
 
@@ -1121,6 +1123,8 @@ void SV_Frame(int msec) {
 	SV_MasterHeartbeat(HEARTBEAT_FOR_MASTER);
 }
 
+#define UDPIP_HEADER_SIZE 28
+#define UDPIP6_HEADER_SIZE 48
 /*
 =======================================================================================================================================
 SV_RateMsec
@@ -1128,9 +1132,6 @@ SV_RateMsec
 Return the number of msec until another message can be sent to a client based on its rate settings.
 =======================================================================================================================================
 */
-#define UDPIP_HEADER_SIZE 28
-#define UDPIP6_HEADER_SIZE 48
-
 int SV_RateMsec(client_t *client) {
 	int rate, rateMsec;
 	int messageSize;

@@ -601,9 +601,7 @@ int main(int argc, char **argv) {
 	}
 
 	Com_Init(commandLine);
-
 	NET_Init();
-
 	CON_Init();
 
 	signal(SIGILL, Sys_SigHandler);

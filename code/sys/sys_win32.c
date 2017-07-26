@@ -38,7 +38,7 @@ void Sys_ShowConsole(int visLevel, qboolean quitOnClose);
 void Conbuf_AppendText(const char *pMsg);
 void Sys_DestroyConsole(void);
 #endif
-// Used to determine where to store user-specific files
+// used to determine where to store user-specific files
 static char homePath[MAX_OSPATH] = {0};
 #ifndef DEDICATED
 static UINT timerResolution = 0;
@@ -430,6 +430,7 @@ char **Sys_ListFiles(const char *directory, const char *extension, char *filter,
 	if (filter) {
 		nfiles = 0;
 		Sys_ListFilteredFiles(directory, "", filter, list, &nfiles);
+
 		list[nfiles] = 0;
 		*numfiles = nfiles;
 
@@ -478,7 +479,7 @@ char **Sys_ListFiles(const char *directory, const char *extension, char *filter,
 			list[nfiles] = CopyString(findinfo.name);
 			nfiles++;
 		}
-	} while (_findnext(findhandle, &findinfo)!= -1);
+	} while (_findnext(findhandle, &findinfo) != -1);
 
 	list[nfiles] = 0;
 
@@ -504,6 +505,7 @@ char **Sys_ListFiles(const char *directory, const char *extension, char *filter,
 		for (i = 1; i < nfiles; i++) {
 			if (strgtr(listCopy[i - 1], listCopy[i])) {
 				char *temp = listCopy[i];
+
 				listCopy[i] = listCopy[i - 1];
 				listCopy[i - 1] = temp;
 				flag = 1;
@@ -610,14 +612,14 @@ void Sys_ErrorDialog(const char *error) {
 			char buffer[1024];
 			unsigned int size;
 
-			while ((size = CON_LogRead(buffer, sizeof (buffer))) > 0) {
+			while ((size = CON_LogRead(buffer, sizeof(buffer))) > 0) {
 				Com_Memcpy(p, buffer, size);
 				p += size;
 			}
 
 			*p = '\0';
 
-			if (OpenClipboard(NULL) && EmptyClipboard())	
+			if (OpenClipboard(NULL) && EmptyClipboard()) {
 				SetClipboardData(CF_TEXT, memoryHandle);
 			}
 
@@ -838,7 +840,7 @@ qboolean Sys_PIDIsRunning(int pid) {
 			return qtrue;
 		}
 	}
-	
+
 	return qfalse;
 }
 // leilei - win32 console restoration
