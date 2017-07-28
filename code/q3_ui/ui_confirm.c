@@ -175,6 +175,7 @@ void UI_ConfirmMenu_Style(const char *question, int style, void (*draw)(void), v
 	s_confirm.draw = draw;
 	s_confirm.action = action;
 	s_confirm.style = style;
+
 	s_confirm.menu.draw = ConfirmMenu_Draw;
 	s_confirm.menu.key = ConfirmMenu_Key;
 	s_confirm.menu.wrapAround = qtrue;
@@ -245,6 +246,7 @@ void UI_Message(const char **lines) {
 
 	s_confirm.lines = lines;
 	s_confirm.style = UI_CENTER|UI_INVERSE|UI_SMALLFONT;
+
 	s_confirm.menu.draw = MessageMenu_Draw;
 	s_confirm.menu.key = ConfirmMenu_Key;
 	s_confirm.menu.wrapAround = qtrue;

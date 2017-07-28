@@ -392,9 +392,10 @@ Break it up into multiple console lines
 =======================================================================================================================================
 */
 void Com_ParseCommandLine(char *commandLine) {
-    int inq = 0;
-    com_consoleLines[0] = commandLine;
-    com_numConsoleLines = 1;
+	int inq = 0;
+
+	com_consoleLines[0] = commandLine;
+	com_numConsoleLines = 1;
 
     while (*commandLine) {
         if (*commandLine == '"') {
@@ -1111,8 +1112,10 @@ void Z_LogZoneHeap(memzone_t *zone, char *name) {
 			}
 
 			dump[j] = '\0';
-			Com_sprintf(buf, sizeof(buf), "size = %8d: %s, line: %d(%s) [%s]\r\n", block->d.allocSize, block->d.file, block->d.line, block->d.label, dump);
+
+			Com_sprintf(buf, sizeof(buf), "size = %8d: %s, line: %d (%s) [%s]\r\n", block->d.allocSize, block->d.file, block->d.line, block->d.label, dump);
 			FS_Write(buf, strlen(buf), logfile);
+
 			allocSize += block->d.allocSize;
 #endif
 			size += block->size;
@@ -1127,6 +1130,7 @@ void Z_LogZoneHeap(memzone_t *zone, char *name) {
 #endif
 	Com_sprintf(buf, sizeof(buf), "%d %s memory in %d blocks\r\n", size, name, numBlocks);
 	FS_Write(buf, strlen(buf), logfile);
+
 	Com_sprintf(buf, sizeof(buf), "%d %s memory overhead\r\n", size - allocSize, name);
 	FS_Write(buf, strlen(buf), logfile);
 }
@@ -1419,6 +1423,7 @@ Com_InitZoneMemory
 =======================================================================================================================================
 */
 void Com_InitSmallZoneMemory(void) {
+
 	s_smallZoneTotal = 512 * 1024;
 	smallzone = calloc(s_smallZoneTotal, 1);
 
@@ -1587,6 +1592,7 @@ void Com_InitHunkMemory(void) {
 	}
 	// cacheline align
 	s_hunkData = (byte *)(((intptr_t)s_hunkData + 31) & ~31);
+
 	Hunk_Clear();
 
 	Cmd_AddCommand("meminfo", Com_Meminfo_f);
@@ -1621,6 +1627,7 @@ The server calls this after the level and game VM have been loaded
 =======================================================================================================================================
 */
 void Hunk_SetMark(void) {
+
 	hunk_low.mark = hunk_low.permanent;
 	hunk_high.mark = hunk_high.permanent;
 }
@@ -1633,6 +1640,7 @@ The client calls this before starting a vid_restart or snd_restart
 =======================================================================================================================================
 */
 void Hunk_ClearToMark(void) {
+
 	hunk_low.permanent = hunk_low.temp = hunk_low.mark;
 	hunk_high.permanent = hunk_high.temp = hunk_high.mark;
 }
@@ -1685,6 +1693,7 @@ void Hunk_Clear(void) {
 	hunk_temp = &hunk_high;
 
 	Com_Printf("Hunk_Clear: reset the hunk ok\n");
+
 	VM_Clear();
 #ifdef HUNK_DEBUG
 	hunkblocks = NULL;
@@ -2346,7 +2355,7 @@ For controlling environment variables
 
 void Com_ExecuteCfg(void) {
 	Cbuf_ExecuteText(EXEC_NOW, "exec default.cfg\n");
-	Cbuf_Execute(); // Always execute after exec to prevent text buffer overflowing
+	Cbuf_Execute(); // always execute after exec to prevent text buffer overflowing
 
 	if (!Com_SafeMode()) {
 		// skip the q3config.cfg and autoexec.cfg if "safe" is on the command line
@@ -2570,6 +2579,7 @@ static void Com_DetectAltivec(void) {
 	}
 }
 
+#if id386 || idx64
 /*
 =======================================================================================================================================
 Com_DetectSSE
@@ -2642,7 +2652,7 @@ void Com_Init(char *commandLine) {
 	if (setjmp(abortframe)) {
 		Sys_Error("Error during initialization");
 	}
-	// Clear queues
+	// clear queues
 	Com_Memset(&eventQueue[0], 0, MAX_QUEUED_EVENTS * sizeof(sysEvent_t));
 
 	// initialize the weak pseudo - random number generator for use later.
@@ -2700,7 +2710,6 @@ void Com_Init(char *commandLine) {
 	Cmd_AddCommand("writeconfig", Com_WriteConfig_f);
 	Cmd_SetCommandCompletionFunc("writeconfig", Cmd_CompleteCfgName);
 	Cmd_AddCommand("game_restart", Com_GameRestart_f);
-
 	Com_ExecuteCfg();
 
 	// override anything from the config files with command line args
@@ -3072,7 +3081,7 @@ void Com_Frame(void) {
 	if (com_speeds->integer) {
 		timeBeforeFirstEvents = Sys_Milliseconds();
 	}
-	// Figure out how much time we have
+	// figure out how much time we have
 	if (!com_timedemo->integer) {
 		if (com_dedicated->integer)
 			minMsec = SV_FrameMsec();

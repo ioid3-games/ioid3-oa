@@ -258,6 +258,7 @@ static void UI_AddBotsMenu_Init(void) {
 	char info[MAX_INFO_STRING];
 
 	trap_GetConfigString(CS_SERVERINFO, info, MAX_INFO_STRING);
+
 	gametype = atoi(Info_ValueForKey(info, "g_gametype"));
 
 	memset(&addBotsMenuInfo, 0, sizeof(addBotsMenuInfo));

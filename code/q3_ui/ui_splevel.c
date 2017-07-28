@@ -200,6 +200,7 @@ static void UI_SPLevelMenu_SetBots(void) {
 		}
 
 		Q_CleanStr(levelMenuInfo.botNames[levelMenuInfo.numBots]);
+
 		levelMenuInfo.numBots++;
 	}
 }
@@ -410,7 +411,6 @@ static void UI_SPLevelMenu_LevelEvent(void *ptr, int notification) {
 	levelMenuInfo.selectedArenaInfo = UI_GetArenaInfoByNumber(selectedArenaSet * ARENAS_PER_TIER + selectedArena);
 
 	UI_SPLevelMenu_SetBots();
-
 	trap_Cvar_SetValue("ui_spSelection", selectedArenaSet * ARENAS_PER_TIER + selectedArena);
 }
 
@@ -538,13 +538,12 @@ static void UI_SPLevelMenu_CustomEvent(void *ptr, int notification) {
 	UI_StartServerMenu(qfalse);
 }
 
+#define LEVEL_DESC_LEFT_MARGIN 332
 /*
 =======================================================================================================================================
 UI_SPLevelMenu_MenuDraw
 =======================================================================================================================================
 */
-#define LEVEL_DESC_LEFT_MARGIN 332
-
 static void UI_SPLevelMenu_MenuDraw(void) {
 	int n, i;
 	int x, y;

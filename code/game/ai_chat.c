@@ -475,6 +475,7 @@ int BotValidChatPosition(bot_state_t *bs) {
 	// must be standing on the world entity
 	VectorCopy(bs->origin, start);
 	VectorCopy(bs->origin, end);
+
 	start[2] += 1;
 	end[2] -= 10;
 
@@ -732,6 +733,7 @@ int BotChat_Death(bot_state_t *bs) {
 		}
 
 		BotAI_BotInitialChat(bs, "death_teammate", name, NULL);
+
 		bs->chatto = CHAT_TEAM;
 	} else {
 		// teamplay
@@ -830,6 +832,7 @@ int BotChat_Kill(bot_state_t *bs) {
 
 	if (TeamPlayIsOn() && BotSameTeam(bs, bs->lastkilledplayer)) {
 		BotAI_BotInitialChat(bs, "kill_teammate", name, NULL);
+
 		bs->chatto = CHAT_TEAM;
 	} else {
 		// don't chat in teamplay
@@ -973,6 +976,7 @@ int BotChat_HitTalking(bot_state_t *bs) {
 	}
 
 	ClientName(g_entities[bs->client].client->lasthurt_client, name, sizeof(name));
+
 	weap = BotWeaponNameForMeansOfDeath(g_entities[bs->client].client->lasthurt_mod);
 
 	BotAI_BotInitialChat(bs, "hit_talking", name, weap, NULL);
@@ -1050,6 +1054,7 @@ int BotChat_HitNoDeath(bot_state_t *bs) {
 	}
 
 	ClientName(lasthurt_client, name, sizeof(name));
+
 	weap = BotWeaponNameForMeansOfDeath(g_entities[bs->client].client->lasthurt_mod);
 
 	BotAI_BotInitialChat(bs, "hit_nodeath", name, weap, NULL);
@@ -1112,6 +1117,7 @@ int BotChat_HitNoKill(bot_state_t *bs) {
 	}
 
 	ClientName(bs->enemy, name, sizeof(name));
+
 	weap = BotWeaponNameForMeansOfDeath(g_entities[bs->enemy].client->lasthurt_mod);
 
 	BotAI_BotInitialChat(bs, "hit_nokill", name, weap, NULL);

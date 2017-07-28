@@ -1485,6 +1485,7 @@ void NET_Shutdown(void) {
 
 #ifdef _WIN32
 	WSACleanup();
+
 	winsockInitialized = qfalse;
 #endif
 }

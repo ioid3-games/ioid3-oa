@@ -317,6 +317,7 @@ static void UI_TeamOrdersMenu_ListDraw(void *self) {
 		}
 
 		UI_DrawProportionalString(x, y, l->itemnames[i], style, color);
+
 		y += PROP_HEIGHT;
 	}
 }
@@ -409,6 +410,7 @@ static void UI_TeamOrdersMenu_BuildBotList(void) {
 	trap_GetClientState(&cs);
 
 	Q_strncpyz(teamOrdersMenuInfo.botNames[0], "Everyone", 16);
+
 	teamOrdersMenuInfo.numBots = 1;
 
 	trap_GetConfigString(CS_SERVERINFO, info, sizeof(info));
@@ -438,6 +440,7 @@ static void UI_TeamOrdersMenu_BuildBotList(void) {
 
 		Q_strncpyz(teamOrdersMenuInfo.botNames[teamOrdersMenuInfo.numBots], Info_ValueForKey(info, "n"), 16);
 		Q_CleanStr(teamOrdersMenuInfo.botNames[teamOrdersMenuInfo.numBots]);
+
 		teamOrdersMenuInfo.numBots++;
 	}
 }

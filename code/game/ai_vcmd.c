@@ -243,9 +243,10 @@ void BotVoiceChat_Camp(bot_state_t *bs, int client, int mode) {
 
 		if (areanum) { // && trap_AAS_AreaReachability(areanum)) {
 			// NOTE: just assume the bot knows where the person is
-			// if (BotEntityVisible(bs->entitynum, bs->eye, bs->viewangles, 360, client)) {
+			//if (BotEntityVisible(bs->entitynum, bs->eye, bs->viewangles, 360, client)) {
 				bs->teamgoal.entitynum = client;
 				bs->teamgoal.areanum = areanum;
+
 				VectorCopy(entinfo.origin, bs->teamgoal.origin);
 				VectorSet(bs->teamgoal.mins, -8, -8, -8);
 				VectorSet(bs->teamgoal.maxs, 8, 8, 8);
@@ -435,7 +436,6 @@ void BotVoiceChat_WantOnDefense(bot_state_t *bs, int client, int mode) {
 	preference & = ~TEAMTP_ATTACKER;
 	preference|= TEAMTP_DEFENDER;
 	BotSetTeamMateTaskPreference(bs, client, preference);
-
 	EasyClientName(client, netname, sizeof(netname));
 	BotAI_BotInitialChat(bs, "keepinmind", netname, NULL);
 	trap_BotEnterChat(bs->cs, client, CHAT_TELL);
@@ -456,7 +456,6 @@ void BotVoiceChat_WantOnOffense(bot_state_t *bs, int client, int mode) {
 	preference & = ~TEAMTP_DEFENDER;
 	preference|= TEAMTP_ATTACKER;
 	BotSetTeamMateTaskPreference(bs, client, preference);
-
 	EasyClientName(client, netname, sizeof(netname));
 	BotAI_BotInitialChat(bs, "keepinmind", netname, NULL);
 	trap_BotEnterChat(bs->cs, client, CHAT_TELL);
@@ -465,6 +464,7 @@ void BotVoiceChat_WantOnOffense(bot_state_t *bs, int client, int mode) {
 }
 
 void BotVoiceChat_Dummy(bot_state_t *bs, int client, int mode) {
+
 }
 
 voiceCommand_t voiceCommands[] = {
@@ -498,6 +498,7 @@ int BotVoiceChatCommand(bot_state_t *bs, int mode, char *voiceChat) {
 	}
 
 	Q_strncpyz(buf, voiceChat, sizeof(buf));
+
 	cmd = buf;
 
 	for (ptr = cmd; *cmd && *cmd > ' '; cmd++);

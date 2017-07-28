@@ -247,6 +247,7 @@ static void StartServer_Update(void) {
 		}
 
 		info = UI_GetArenaInfoByNumber(s_startserver.maplist[top + i]);
+
 		Q_strncpyz(mapname, Info_ValueForKey(info, "map"), MAX_NAMELENGTH);
 		Q_strupr(mapname);
 
@@ -1420,6 +1421,7 @@ static void ServerOptions_InitBotNames(void) {
 		}
 
 		Q_strncpyz(s_serveroptions.playerNameBuffers[count], bot, sizeof(s_serveroptions.playerNameBuffers[count]));
+
 		count++;
 	}
 	// set the rest of the bot slots to to other bots
@@ -1604,13 +1606,12 @@ static void PlayerName_Draw(void *item) {
 	UI_DrawString(x + SMALLCHAR_WIDTH, y, s->string, style|UI_LEFT, color);
 }
 
+#define OPTIONS_X 456
 /*
 =======================================================================================================================================
 ServerOptions_MenuInit
 =======================================================================================================================================
 */
-#define OPTIONS_X 456
-
 static void ServerOptions_MenuInit(qboolean multiplayer) {
 	int y;
 	int n;
@@ -1765,6 +1766,7 @@ static void ServerOptions_MenuInit(qboolean multiplayer) {
 
 	if (s_serveroptions.multiplayer) {
 		y += BIGCHAR_HEIGHT + 2;
+
 		s_serveroptions.hostname.generic.type = MTYPE_FIELD;
 		s_serveroptions.hostname.generic.name = "Hostname:";
 		s_serveroptions.hostname.generic.flags = QMF_SMALLFONT;
@@ -2072,6 +2074,7 @@ static void UI_BotSelectMenu_UpdateGrid(void) {
 			ServerPlayerIcon(Info_ValueForKey(info, "model"), botSelectInfo.boticons[i], MAX_QPATH);
 			Q_strncpyz(botSelectInfo.botnames[i], Info_ValueForKey(info, "name"), 16);
 			Q_CleanStr(botSelectInfo.botnames[i]);
+
 			botSelectInfo.pics[i].generic.name = botSelectInfo.boticons[i];
 
 			if (BotAlreadySelected(botSelectInfo.botnames[i])) {

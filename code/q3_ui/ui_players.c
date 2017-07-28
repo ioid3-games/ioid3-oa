@@ -758,7 +758,6 @@ void UI_DrawPlayer(float x, float y, float w, float h, playerInfo_t *pi, int tim
 	torso.customSkin = pi->torsoSkin;
 
 	VectorCopy(origin, torso.lightingOrigin);
-
 	UI_PositionRotatedEntityOnTag(&torso, &legs, pi->legsModel, "tag_torso");
 
 	torso.renderfx = renderfx;
@@ -774,7 +773,6 @@ void UI_DrawPlayer(float x, float y, float w, float h, playerInfo_t *pi, int tim
 	head.customSkin = pi->headSkin;
 
 	VectorCopy(origin, head.lightingOrigin);
-
 	UI_PositionRotatedEntityOnTag(&head, &torso, pi->torsoModel, "tag_head");
 
 	head.renderfx = renderfx;
@@ -786,7 +784,6 @@ void UI_DrawPlayer(float x, float y, float w, float h, playerInfo_t *pi, int tim
 
 		gun.hModel = pi->weaponModel;
 		VectorCopy(origin, gun.lightingOrigin);
-
 		UI_PositionEntityOnTag(&gun, &torso, pi->torsoModel, "tag_weapon");
 
 		gun.renderfx = renderfx;
@@ -808,9 +805,7 @@ void UI_DrawPlayer(float x, float y, float w, float h, playerInfo_t *pi, int tim
 		angles[ROLL] = UI_MachinegunSpinAngle(pi);
 
 		AnglesToAxis(angles, barrel.axis);
-
 		UI_PositionRotatedEntityOnTag(&barrel, &gun, pi->weaponModel, "tag_barrel");
-
 		trap_R_AddRefEntityToScene(&barrel);
 	}
 	// add muzzle flash
@@ -820,7 +815,6 @@ void UI_DrawPlayer(float x, float y, float w, float h, playerInfo_t *pi, int tim
 
 			flash.hModel = pi->flashModel;
 			VectorCopy(origin, flash.lightingOrigin);
-
 			UI_PositionEntityOnTag(&flash, &gun, pi->weaponModel, "tag_flash");
 
 			flash.renderfx = renderfx;
@@ -976,7 +970,6 @@ static qboolean UI_ParseAnimationFile(const char *filename, animation_t *animati
 		}
 
 		animations[i].numFrames = atoi(token);
-
 		token = COM_Parse(&text_p);
 
 		if (!token) {
@@ -984,7 +977,6 @@ static qboolean UI_ParseAnimationFile(const char *filename, animation_t *animati
 		}
 
 		animations[i].loopFrames = atoi(token);
-
 		token = COM_Parse(&text_p);
 
 		if (!token) {

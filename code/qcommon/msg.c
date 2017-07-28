@@ -58,6 +58,7 @@ void MSG_InitOOB(msg_t *buf, byte *data, int length) {
 }
 
 void MSG_Clear(msg_t *buf) {
+
 	buf->cursize = 0;
 	buf->overflowed = qfalse;
 	buf->bit = 0;					// < - in bits
@@ -69,12 +70,14 @@ void MSG_Bitstream(msg_t *buf) {
 }
 
 void MSG_BeginReading(msg_t *msg) {
+
 	msg->readcount = 0;
 	msg->bit = 0;
 	msg->oob = qfalse;
 }
 
 void MSG_BeginReadingOOB(msg_t *msg) {
+
 	msg->readcount = 0;
 	msg->bit = 0;
 	msg->oob = qtrue;
@@ -160,6 +163,7 @@ void MSG_WriteBits(msg_t *msg, int value, int bits) {
 
 		if (bits&7) {
 			int nbits;
+
 			nbits = bits&7;
 			for (i = 0;i < nbits;i++) {
 				Huff_putBit((value&1), msg->data, &msg->bit);
@@ -298,6 +302,7 @@ void MSG_WriteLong(msg_t *sb, int c) {
 void MSG_WriteFloat(msg_t *sb, float f) {
 	floatint_t dat;
 	dat.f = f;
+
 	MSG_WriteBits(sb, dat.i, 32);
 }
 
@@ -730,6 +735,7 @@ void MSG_ReadDeltaUsercmdKey(msg_t *msg, int key, usercmd_t *from, usercmd_t *to
 
 	if (MSG_ReadBits(msg, 1)) {
 		key ^= to->serverTime;
+
 		to->angles[0] = MSG_ReadDeltaKey(msg, key, from->angles[0], 16);
 		to->angles[1] = MSG_ReadDeltaKey(msg, key, from->angles[1], 16);
 		to->angles[2] = MSG_ReadDeltaKey(msg, key, from->angles[2], 16);
@@ -1758,22 +1764,23 @@ void MSG_NUinitHuffman() {
 		array[i] = 0;
 	}
 
-	for (i = 0;i < size;i++) {
+	for (i = 0; i < size; i++) {
 		ch = data[i];
-		Huff_addRef(&msgHuff.compressor, ch);			// Do update
-		Huff_addRef(&msgHuff.decompressor, ch);			// Do update
+
+		Huff_addRef(&msgHuff.compressor, ch); // do update
+		Huff_addRef(&msgHuff.decompressor, ch); // do update
 		array[ch]++;
 	}
 
 	Com_Printf("msg_hData {\n");
 
-	for (i = 0;i < 256;i++) {
+	for (i = 0; i < 256; i++) {
 		if (array[i] == 0) {
-			Huff_addRef(&msgHuff.compressor, i);			// Do update
-			Huff_addRef(&msgHuff.decompressor, i);			// Do update
+			Huff_addRef(&msgHuff.compressor, i); // do update
+			Huff_addRef(&msgHuff.decompressor, i); // do update
 		}
 
-		Com_Printf("%d, 		// %d\n", array[i], i);
+		Com_Printf("%d, // %d\n", array[i], i);
 	}
 
 	Com_Printf("};\n");

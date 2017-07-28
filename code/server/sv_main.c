@@ -1175,6 +1175,8 @@ int SV_RateMsec(client_t *client) {
 	}
 }
 
+#define UDPIP_HEADER_SIZE 28
+#define UDPIP6_HEADER_SIZE 48
 /*
 =======================================================================================================================================
 SV_SendQueuedPackets

@@ -220,13 +220,14 @@ void UI_DrawConnectScreen(qboolean overlay) {
 		passwordField.generic.callback = 0;
 		passwordField.generic.x = 10;
 		passwordField.generic.y = 180;
+
 		Field_Clear(&passwordField.field);
+
 		passwordField.width = 256;
 		passwordField.field.widthInChars = 16;
+
 		Q_strncpyz(passwordField.field.buffer, Cvar_VariableString("password"), sizeof(passwordField.field.buffer));
-
 		Menu_AddItem(&s_ingame_menu, (void *)&s_customize_player_action);
-
 		MField_Draw(&passwordField);
 	}
 #endif

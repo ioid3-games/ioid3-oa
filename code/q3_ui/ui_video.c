@@ -176,8 +176,7 @@ static void UI_DriverInfo_Menu(void) {
 	s_driverinfo.back.focuspic = DRIVERINFO_BACK1;
 	// TTimo: overflow with particularly long GL extensions (such as the gf3)
 	// https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=399
-	// NOTE: could have pushed the size of stringbuff, but the list is already out of the screen
-	// (no matter what your resolution)
+	// NOTE: could have pushed the size of stringbuff, but the list is already out of the screen (no matter what your resolution)
 	Q_strncpyz(s_driverinfo.stringbuff, uis.glconfig.extensions_string, 1024);
 	// build null terminated extension strings
 	eptr = s_driverinfo.stringbuff;
@@ -807,7 +806,6 @@ void GraphicsOptions_MenuDraw(void) {
 
 	// APSFIX - rework this
 	GraphicsOptions_UpdateMenuItems();
-
 	Menu_Draw(&s_graphicsoptions.menu);
 }
 
@@ -960,6 +958,7 @@ void GraphicsOptions_MenuInit(void) {
 	};
 
 	int y;
+
 	// zero set all our globals
 	memset(&s_graphicsoptions, 0, sizeof(graphicsoptions_t));
 

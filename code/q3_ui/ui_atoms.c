@@ -136,6 +136,7 @@ UI_PopMenu
 =======================================================================================================================================
 */
 void UI_PopMenu(void) {
+
 	trap_S_StartLocalSound(menu_out_sound, CHAN_LOCAL_SOUND);
 
 	uis.menusp--;
@@ -600,6 +601,7 @@ void UI_DrawProportionalString_AutoWrapped(int x, int y, int xmax, int ystep, co
 	sizeScale = UI_ProportionalSizeScale(style);
 
 	Q_strncpyz(buf, str, sizeof(buf));
+
 	s1 = s2 = s3 = buf;
 
 	while (1) {
@@ -1110,6 +1112,7 @@ UI_Shutdown
 =======================================================================================================================================
 */
 void UI_Shutdown(void) {
+
 }
 
 /*

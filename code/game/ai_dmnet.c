@@ -384,6 +384,7 @@ int BotGetLongTermGoal(bot_state_t *bs, int tfl, int retreat, bot_goal_t *goal) 
 				// update team goal
 				bs->teamgoal.entitynum = bs->teammate;
 				bs->teamgoal.areanum = areanum;
+
 				VectorCopy(entinfo.origin, bs->teamgoal.origin);
 				VectorSet(bs->teamgoal.mins, -8, -8, -8);
 				VectorSet(bs->teamgoal.maxs, 8, 8, 8);
@@ -515,6 +516,7 @@ int BotGetLongTermGoal(bot_state_t *bs, int tfl, int retreat, bot_goal_t *goal) 
 				// update team goal
 				bs->teamgoal.entitynum = bs->teammate;
 				bs->teamgoal.areanum = areanum;
+
 				VectorCopy(entinfo.origin, bs->teamgoal.origin);
 				VectorSet(bs->teamgoal.mins, -8, -8, -8);
 				VectorSet(bs->teamgoal.maxs, 8, 8, 8);
@@ -1197,6 +1199,7 @@ int BotLongTermGoal(bot_state_t *bs, int tfl, int retreat, bot_goal_t *goal) {
 				// update team goal
 				bs->lead_teamgoal.entitynum = bs->lead_teammate;
 				bs->lead_teamgoal.areanum = areanum;
+
 				VectorCopy(entinfo.origin, bs->lead_teamgoal.origin);
 				VectorSet(bs->lead_teamgoal.mins, -8, -8, -8);
 				VectorSet(bs->lead_teamgoal.maxs, 8, 8, 8);
@@ -1212,6 +1215,7 @@ int BotLongTermGoal(bot_state_t *bs, int tfl, int retreat, bot_goal_t *goal) {
 		}
 		// distance towards the team mate
 		VectorSubtract(bs->origin, bs->lead_teamgoal.origin, dir);
+
 		squaredist = VectorLengthSquared(dir);
 		// if backing up towards the team mate
 		if (bs->leadbackup_time > FloatTime()) {
@@ -1469,7 +1473,9 @@ void BotClearPath(bot_state_t *bs, bot_moveresult_t *moveresult) {
 			//
 			BotAI_GetEntityState(bs->kamikazebody, &state);
 			VectorCopy(state.pos.trBase, target);
+
 			target[2] += 8;
+
 			VectorSubtract(target, bs->eye, dir);
 			vectoangles(dir, moveresult->ideal_viewangles);
 			//
@@ -1528,7 +1534,9 @@ void BotClearPath(bot_state_t *bs, bot_moveresult_t *moveresult) {
 			// rockets or plasma cells etc. at them
 			BotAI_GetEntityState(bs->proxmines[bestmine], &state);
 			VectorCopy(state.pos.trBase, target);
+
 			target[2] += 2;
+
 			VectorSubtract(target, bs->eye, dir);
 			vectoangles(dir, moveresult->ideal_viewangles);
 			// if the bot has a weapon that does splash damage
