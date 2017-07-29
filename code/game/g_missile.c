@@ -35,6 +35,7 @@ void G_BounceMissile(gentity_t *ent, trace_t *trace) {
 	BG_EvaluateTrajectoryDelta(&ent->s.pos, hitTime, velocity);
 
 	dot = DotProduct(velocity, trace->plane.normal);
+
 	VectorMA(velocity, -2 * dot, trace->plane.normal, ent->s.pos.trDelta);
 
 	if (ent->s.eFlags & EF_BOUNCE_HALF) {
@@ -107,6 +108,7 @@ ProximityMine_Die
 =======================================================================================================================================
 */
 static void ProximityMine_Die(gentity_t *ent, gentity_t *inflictor, gentity_t *attacker, int damage, int mod) {
+
 	ent->think = ProximityMine_Explode;
 	ent->nextthink = level.time + 1;
 }
@@ -395,9 +397,10 @@ void G_MissileImpact(gentity_t *ent, trace_t *trace) {
 
 		SnapVectorTowards(trace->endpos, ent->s.pos.trBase);
 		G_SetOrigin(ent, trace->endpos);
-		ent->s.pos.trType = TR_STATIONARY;
-		VectorClear(ent->s.pos.trDelta);
 
+		ent->s.pos.trType = TR_STATIONARY;
+
+		VectorClear(ent->s.pos.trDelta);
 		G_AddEvent(ent, EV_PROXIMITY_MINE_STICK, trace->surfaceFlags);
 
 		ent->think = ProximityMine_Activate;
@@ -446,7 +449,6 @@ void G_MissileImpact(gentity_t *ent, trace_t *trace) {
 		nent->freeAfterEvent = qtrue;
 		// change over to a normal entity right at the point of impact
 		nent->s.eType = ET_GENERAL;
-
 		ent->s.eType = ET_GRAPPLE;
 
 		G_SetOrigin(ent, v);
@@ -477,7 +479,6 @@ void G_MissileImpact(gentity_t *ent, trace_t *trace) {
 	ent->s.eType = ET_GENERAL;
 
 	SnapVectorTowards(trace->endpos, ent->s.pos.trBase); // save net bandwidth
-
 	G_SetOrigin(ent, trace->endpos);
 	// splash damage (doesn't apply to person directly hit)
 	if (ent->splashDamage) {

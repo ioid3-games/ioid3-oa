@@ -79,7 +79,7 @@ static void CG_ParseScores(void) {
 	cg.teamScores[1] = atoi(CG_Argv(3));
 
 	cgs.roundStartTime = atoi(CG_Argv(4));
-	// Update thing in lower - right corner
+	// update thing in lower - right corner
 	if (cgs.gametype == GT_ELIMINATION || cgs.gametype == GT_CTF_ELIMINATION) {
 		cgs.scores1 = cg.teamScores[0];
 		cgs.scores2 = cg.teamScores[1];
@@ -360,11 +360,10 @@ void CG_ParseServerinfo(void) {
 	char *mapname;
 
 	info = CG_ConfigString(CS_SERVERINFO);
-
 	cgs.gametype = atoi(Info_ValueForKey(info, "g_gametype"));
-	// By default do as normal:
+	// by default do as normal:
 	cgs.ffa_gt = 0;
-	// See if ffa gametype
+	// see if ffa gametype
 	if (cgs.gametype == GT_LMS || cgs.gametype == GT_POSSESSION) {
 		cgs.ffa_gt = 1;
 	}
@@ -383,7 +382,9 @@ void CG_ParseServerinfo(void) {
 	cgs.nopickup = atoi(Info_ValueForKey(info, "g_rockets")) + atoi(Info_ValueForKey(info, "g_instantgib")) + atoi(Info_ValueForKey(info, "g_elimination"));
 	cgs.lms_mode = atoi(Info_ValueForKey(info, "g_lms_mode"));
 	cgs.altExcellent = atoi(Info_ValueForKey(info, "g_altExcellent"));
+
 	mapname = Info_ValueForKey(info, "mapname");
+
 	Com_sprintf(cgs.mapname, sizeof(cgs.mapname), "maps/%s.bsp", mapname);
 
 	Q_strncpyz(cgs.redTeam, Info_ValueForKey(info, "g_redTeam"), sizeof(cgs.redTeam));
@@ -393,6 +394,7 @@ void CG_ParseServerinfo(void) {
 // unlagged - server options
 	// we'll need this for deciding whether or not to predict weapon effects
 	cgs.delagHitscan = atoi(Info_ValueForKey(info, "g_delagHitscan"));
+
 	trap_Cvar_Set("g_delagHitscan", va("%i", cgs.delagHitscan));
 // unlagged - server options
 	// Copy allowed votes directly to the client:
@@ -409,7 +411,6 @@ static void CG_ParseWarmup(void) {
 	int warmup;
 
 	info = CG_ConfigString(CS_WARMUP);
-
 	warmup = atoi(info);
 	cg.warmupCount = -1;
 
@@ -674,9 +675,7 @@ static void CG_MapRestart(void) {
 	cg.fraglimitWarnings = 0;
 	cg.timelimitWarnings = 0;
 	cg.intermissionStarted = qfalse;
-
 	cgs.voteTime = 0;
-
 	cg.mapRestart = qtrue;
 
 	CG_StartMusic();
@@ -764,13 +763,16 @@ int CG_ParseVoiceChats(const char *filename, voiceChatList_t *voiceChatList, int
 	}
 
 	trap_FS_Read(buf, len, f);
+
 	buf[len] = 0;
+
 	trap_FS_FCloseFile(f);
 
 	ptr = buf;
 	p = &ptr;
 
 	Com_sprintf(voiceChatList->name, sizeof(voiceChatList->name), "%s", filename);
+
 	voiceChats = voiceChatList->voiceChats;
 
 	for (i = 0; i < maxVoiceChats; i++) {
@@ -804,6 +806,7 @@ int CG_ParseVoiceChats(const char *filename, voiceChatList_t *voiceChatList, int
 		}
 
 		Com_sprintf(voiceChats[voiceChatList->numVoiceChats].id, sizeof(voiceChats[voiceChatList->numVoiceChats].id), "%s", token);
+
 		token = COM_ParseExt(p, qtrue);
 
 		if (!Q_strequal(token, "{")) {
@@ -901,7 +904,9 @@ int CG_HeadModelVoiceChats(char *filename) {
 	}
 
 	trap_FS_Read(buf, len, f);
+
 	buf[len] = 0;
+
 	trap_FS_FCloseFile(f);
 
 	ptr = buf;
@@ -985,6 +990,7 @@ voiceChatList_t *CG_VoiceChatListForClient(int clientNum) {
 		for (i = 0; i < MAX_HEADMODELS; i++) {
 			if (!strlen(headModelVoiceChat[i].headmodel)) {
 				Com_sprintf(filename, sizeof(filename), "scripts/%s.vc", headModelName);
+
 				voiceChatNum = CG_HeadModelVoiceChats(filename);
 
 				if (voiceChatNum == -1) {
@@ -992,7 +998,9 @@ voiceChatList_t *CG_VoiceChatListForClient(int clientNum) {
 				}
 
 				Com_sprintf(headModelVoiceChat[i].headmodel, sizeof(headModelVoiceChat[i].headmodel), "%s", headModelName);
+
 				headModelVoiceChat[i].voiceChatNum = voiceChatNum;
+
 				return &voiceChatLists[headModelVoiceChat[i].voiceChatNum];
 			}
 		}

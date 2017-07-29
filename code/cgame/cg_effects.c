@@ -242,7 +242,6 @@ void CG_SpawnEffect(vec3_t org) {
 	re->hModel = cgs.media.teleportEffectModel;
 
 	AxisClear(re->axis);
-
 	VectorCopy(org, re->origin);
 #ifdef MISSIONPACK
 	re->origin[2] += 16;

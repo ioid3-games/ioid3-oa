@@ -42,6 +42,7 @@ void CG_PositionEntityOnTag(refEntity_t *entity, const refEntity_t *parent, qhan
 	}
 	// had to cast away the const to avoid compiler problems...
 	MatrixMultiply(lerped.axis, ((refEntity_t *)parent)->axis, entity->axis);
+
 	entity->backlerp = parent->backlerp;
 }
 
@@ -92,6 +93,7 @@ void CG_SetEntitySoundPosition(centity_t *cent) {
 		float *v;
 
 		v = cgs.inlineModelMidpoints[cent->currentState.modelindex];
+
 		VectorAdd(cent->lerpOrigin, v, origin);
 		trap_S_UpdateEntityPosition(cent->currentState.number, origin);
 	} else {
@@ -219,14 +221,18 @@ static void CG_Item(centity_t *cent) {
 
 	if (cg_simpleItems.integer && item->giType != IT_TEAM) {
 		memset(&ent, 0, sizeof(ent));
+
 		ent.reType = RT_SPRITE;
+
 		VectorCopy(cent->lerpOrigin, ent.origin);
+
 		ent.radius = 14;
 		ent.customShader = cg_items[es->modelindex].icon;
 		ent.shaderRGBA[0] = 255;
 		ent.shaderRGBA[1] = 255;
 		ent.shaderRGBA[2] = 255;
 		ent.shaderRGBA[3] = 255;
+
 		trap_R_AddRefEntityToScene(&ent);
 		return;
 	}
@@ -302,6 +308,7 @@ static void CG_Item(centity_t *cent) {
 		barrel.hModel = wi->barrelModel;
 
 		VectorCopy(ent.lightingOrigin, barrel.lightingOrigin);
+
 		barrel.shadowPlane = ent.shadowPlane;
 		barrel.renderfx = ent.renderfx;
 
@@ -312,7 +319,7 @@ static void CG_Item(centity_t *cent) {
 
 		trap_R_AddRefEntityToScene(&barrel);
 	}
-	// accompanying rings / spheres for powerups
+	// accompanying rings/spheres for powerups
 	if (!cg_simpleItems.integer) {
 		vec3_t spinAngles;
 
@@ -349,7 +356,7 @@ static void CG_Missile(centity_t *cent) {
 	refEntity_t ent;
 	entityState_t *s1;
 	const weaponInfo_t *weapon;
-//	int col;
+	//int col;
 
 	s1 = &cent->currentState;
 
@@ -386,7 +393,6 @@ static void CG_Missile(centity_t *cent) {
 		vec3_t velocity;
 
 		BG_EvaluateTrajectoryDelta(&cent->currentState.pos, cg.time, velocity);
-
 		trap_S_AddLoopingSound(cent->currentState.number, cent->lerpOrigin, velocity, weapon->missileSound);
 	}
 	// create the render entity
@@ -559,7 +565,8 @@ static void CG_Portal(centity_t *cent) {
 
 	ByteToDir(s1->eventParm, ent.axis[0]);
 	PerpendicularVector(ent.axis[1], ent.axis[0]);
-	// negating this tends to get the directions like they want we really should have a camera roll value
+	// negating this tends to get the directions like they want
+	// we really should have a camera roll value
 	VectorSubtract(vec3_origin, ent.axis[1], ent.axis[1]);
 	CrossProduct(ent.axis[0], ent.axis[1], ent.axis[2]);
 
@@ -744,8 +751,10 @@ static void CG_TeamBase(centity_t *cent) {
 		memset(&model, 0, sizeof(model));
 
 		model.reType = RT_MODEL;
+
 		VectorCopy(cent->lerpOrigin, model.lightingOrigin);
 		VectorCopy(cent->lerpOrigin, model.origin);
+
 		AnglesToAxis(cent->currentState.angles, model.axis);
 
 		if (cent->currentState.modelindex == TEAM_RED) {
@@ -764,11 +773,14 @@ static void CG_TeamBase(centity_t *cent) {
 		memset(&model, 0, sizeof(model));
 
 		model.reType = RT_MODEL;
+
 		VectorCopy(cent->lerpOrigin, model.lightingOrigin);
 		VectorCopy(cent->lerpOrigin, model.origin);
+
 		AnglesToAxis(cent->currentState.angles, model.axis);
 
 		model.hModel = cgs.media.overloadBaseModel;
+
 		trap_R_AddRefEntityToScene(&model);
 		// if hit
 		if (cent->currentState.frame == 1) {
@@ -780,6 +792,7 @@ static void CG_TeamBase(centity_t *cent) {
 			model.shaderRGBA[2] = c;
 			model.shaderRGBA[3] = 0xff;
 			model.hModel = cgs.media.overloadEnergyModel;
+
 			trap_R_AddRefEntityToScene(&model);
 		}
 		// if respawning
@@ -808,6 +821,7 @@ static void CG_TeamBase(centity_t *cent) {
 			model.shaderRGBA[2] = c * 0xff;
 			model.shaderRGBA[3] = c * 0xff;
 			model.hModel = cgs.media.overloadLightsModel;
+
 			trap_R_AddRefEntityToScene(&model);
 			// show the target
 			if (t > h) {
@@ -817,7 +831,9 @@ static void CG_TeamBase(centity_t *cent) {
 				}
 
 				VectorCopy(cent->currentState.angles, angles);
+
 				angles[YAW] += (float)16 * acos(1 - c) * 180 / M_PI;
+
 				AnglesToAxis(angles, model.axis);
 
 				VectorScale(model.axis[0], c, model.axis[0]);
@@ -830,6 +846,7 @@ static void CG_TeamBase(centity_t *cent) {
 				model.shaderRGBA[3] = 0xff;
 				model.origin[2] += 56;
 				model.hModel = cgs.media.overloadTargetModel;
+
 				trap_R_AddRefEntityToScene(&model);
 			} else {
 				// FIXME: show animated smoke
@@ -839,16 +856,19 @@ static void CG_TeamBase(centity_t *cent) {
 			cent->muzzleFlashTime = 0;
 			// modelindex2 is the health value of the obelisk
 			c = cent->currentState.modelindex2;
+
 			model.shaderRGBA[0] = 0xff;
 			model.shaderRGBA[1] = c;
 			model.shaderRGBA[2] = c;
 			model.shaderRGBA[3] = 0xff;
 			// show the lights
 			model.hModel = cgs.media.overloadLightsModel;
+
 			trap_R_AddRefEntityToScene(&model);
 			// show the target
 			model.origin[2] += 56;
 			model.hModel = cgs.media.overloadTargetModel;
+
 			trap_R_AddRefEntityToScene(&model);
 		}
 	} else if (cgs.gametype == GT_HARVESTER) {
@@ -856,8 +876,10 @@ static void CG_TeamBase(centity_t *cent) {
 		memset(&model, 0, sizeof(model));
 
 		model.reType = RT_MODEL;
+
 		VectorCopy(cent->lerpOrigin, model.lightingOrigin);
 		VectorCopy(cent->lerpOrigin, model.origin);
+
 		AnglesToAxis(cent->currentState.angles, model.axis);
 
 		if (cent->currentState.modelindex == TEAM_RED) {

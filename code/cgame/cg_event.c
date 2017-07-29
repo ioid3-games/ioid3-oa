@@ -113,8 +113,8 @@ static void CG_Obituary(entityState_t *ent) {
 	}
 
 	Q_strncpyz(targetName, Info_ValueForKey(targetInfo, "n"), sizeof(targetName) - 2);
-
 	strcat(targetName, S_COLOR_WHITE);
+
 	message2 = "";
 	// check for single client messages
 	if (attacker != ENTITYNUM_WORLD) {
@@ -671,7 +671,7 @@ void CG_PainEvent(centity_t *cent, int health) {
 =======================================================================================================================================
 CG_EntityEvent
 
-An entity has an event value, also called by CG_CheckPlayerstateEvents.
+An entity has an event value. Also called by CG_CheckPlayerstateEvents.
 =======================================================================================================================================
 */
 #define DEBUGNAME(x) if (cg_debugEvents.integer){CG_Printf(x"\n");}
@@ -771,6 +771,7 @@ void CG_EntityEvent(centity_t *cent, vec3_t position) {
 		case EV_FALL_FAR:
 			DEBUGNAME("EV_FALL_FAR");
 			trap_S_StartSound(NULL, es->number, CHAN_AUTO, CG_CustomSound(es->number, "*fall1.wav"));
+
 			cent->pe.painTime = cg.time; // don't play a pain sound right after this
 
 			if (clientNum == cg.predictedPlayerState.clientNum) {
@@ -948,7 +949,9 @@ void CG_EntityEvent(centity_t *cent, vec3_t position) {
 		// weapon events
 		case EV_NOAMMO:
 			DEBUGNAME("EV_NOAMMO");
+
 //			trap_S_StartSound(NULL, es->number, CHAN_AUTO, cgs.media.noAmmoSound);
+
 			if (es->number == cg.snap->ps.clientNum) {
 				CG_OutOfAmmoChange();
 			}
@@ -1143,6 +1146,7 @@ void CG_EntityEvent(centity_t *cent, vec3_t position) {
 			break;
 		case EV_RAILTRAIL:
 			DEBUGNAME("EV_RAILTRAIL");
+
 			cent->currentState.weapon = WP_RAILGUN;
 			// unlagged - attack prediction #2
 			// if the client is us, unlagged is on server - side, and we've got it client - side

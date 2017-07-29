@@ -443,7 +443,6 @@ void QDECL G_Error(const char *fmt, ...) {
 G_FindTeams
 
 Chain together all entities with a matching team field. Entity teams are used for item groups and multi-entity mover groups.
-
 All but the first will have the FL_TEAMSLAVE flag set and teammaster field set.
 All but the last will have the teamchain field set to the next one.
 =======================================================================================================================================
@@ -979,7 +978,7 @@ void QDECL Com_Printf(const char *msg, ...) {
 /*
 =======================================================================================================================================
 
-	PLAYER COUNTING / SCORE SORTING
+	PLAYER COUNTING/SCORE SORTING
 
 =======================================================================================================================================
 */
@@ -1198,8 +1197,7 @@ int QDECL SortRanks(const void *a, const void *b) {
 =======================================================================================================================================
 CalculateRanks
 
-Recalculates the score ranks of all players.
-This will be called on every client connect, begin, disconnect, death, and team change.
+Recalculates the score ranks of all players. This will be called on every client connect, begin, disconnect, death, and team change.
 =======================================================================================================================================
 */
 void CalculateRanks(void) {
@@ -1860,8 +1858,7 @@ void LogExit(const char *string) {
 =======================================================================================================================================
 CheckIntermissionExit
 
-The level will stay at the intermission for a minimum of 5 seconds.
-If all players wish to continue, the level will then exit.
+The level will stay at the intermission for a minimum of 5 seconds. If all players wish to continue, the level will then exit.
 If one or more players have not acknowledged the continue, the game will wait 10 seconds before going on.
 =======================================================================================================================================
 */
@@ -2449,6 +2446,7 @@ void CheckTeamVote(int team) {
 	}
 
 	level.teamVoteTime[cs_offset] = 0;
+
 	trap_SetConfigstring(CS_TEAMVOTE_TIME + cs_offset, "");
 }
 

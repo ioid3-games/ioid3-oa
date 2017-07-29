@@ -83,6 +83,7 @@ int Pickup_Powerup(gentity_t *ent, gentity_t *other) {
 		}
 		// if too far away, no sound
 		VectorSubtract(ent->s.pos.trBase, client->ps.origin, delta);
+
 		len = VectorNormalize(delta);
 
 		if (len > 192) {
@@ -380,6 +381,7 @@ void RespawnItem(gentity_t *ent) {
 	ent->r.contents = CONTENTS_TRIGGER;
 	ent->s.eFlags &= ~EF_NODRAW;
 	ent->r.svFlags &= ~SVF_NOCLIENT;
+
 	trap_LinkEntity(ent);
 
 	if (ent->item->giType == IT_POWERUP) {
@@ -592,10 +594,9 @@ gentity_t *LaunchItem(gitem_t *item, vec3_t origin, vec3_t velocity) {
 	gentity_t *dropped;
 
 	dropped = G_Spawn();
-
 	dropped->s.eType = ET_ITEM;
 	dropped->s.modelindex = item - bg_itemlist; // store item number in modelindex
-	dropped->s.modelindex2 = 1; // This is non-zero is it's a dropped item
+	dropped->s.modelindex2 = 1; // this is non-zero is it's a dropped item
 	dropped->classname = item->classname;
 	dropped->item = item;
 
@@ -614,7 +615,7 @@ gentity_t *LaunchItem(gitem_t *item, vec3_t origin, vec3_t velocity) {
 
 	dropped->s.eFlags |= EF_BOUNCE_HALF;
 
-	if ((g_gametype.integer == GT_CTF || g_gametype.integer == GT_1FCTF || g_gametype.integer == GT_CTF_ELIMINATION || g_gametype.integer == GT_DOUBLE_D || g_gametype.integer == GT_POSSESSION) && item->giType == IT_TEAM) { // Special case for CTF flags
+	if ((g_gametype.integer == GT_CTF || g_gametype.integer == GT_1FCTF || g_gametype.integer == GT_CTF_ELIMINATION || g_gametype.integer == GT_DOUBLE_D || g_gametype.integer == GT_POSSESSION) && item->giType == IT_TEAM) { // special case for CTF flags
 		dropped->think = Team_DroppedFlagThink;
 		dropped->nextthink = level.time + 30000;
 		Team_CheckDroppedItem(dropped);
@@ -712,12 +713,13 @@ void FinishSpawningItem(gentity_t *ent) {
 	// powerups don't spawn in for a while (but not in elimination)
 	if (g_gametype.integer != GT_ELIMINATION && g_gametype.integer != GT_CTF_ELIMINATION && g_gametype.integer != GT_LMS && !g_instantgib.integer && !g_elimination_allgametypes.integer && !g_rockets.integer)
 		if (ent->item->giType == IT_POWERUP) {
-			float respawn;
+		float respawn;
 
-			respawn = 45 + crandom() * 15;
-			ent->s.eFlags |= EF_NODRAW;
-			ent->r.contents = 0;
-			ent->nextthink = level.time + respawn * 1000;
+		respawn = 45 + crandom() * 15;
+
+		ent->s.eFlags |= EF_NODRAW;
+		ent->r.contents = 0;
+		ent->nextthink = level.time + respawn * 1000;
 			ent->think = RespawnItem;
 			return;
 	}
@@ -734,7 +736,7 @@ G_CheckTeamItems
 */
 void G_CheckTeamItems(void) {
 
-	// Set up team stuff
+	// set up team stuff
 	Team_InitGame();
 
 	if (g_gametype.integer == GT_CTF || g_gametype.integer == GT_CTF_ELIMINATION || g_gametype.integer == GT_DOUBLE_D) {
@@ -949,7 +951,6 @@ int G_ItemDisabled(gitem_t *item) {
 G_SpawnItem
 
 Sets the clipping size and plants the object on the floor.
-
 Items can't be immediately dropped to floor, because they might be on an entity that hasn't spawned yet.
 =======================================================================================================================================
 */
@@ -1030,6 +1031,7 @@ void G_BounceItem(gentity_t *ent, trace_t *trace) {
 	BG_EvaluateTrajectoryDelta(&ent->s.pos, hitTime, velocity);
 
 	dot = DotProduct(velocity, trace->plane.normal);
+
 	VectorMA(velocity, -2 * dot, trace->plane.normal, ent->s.pos.trDelta);
 	// cut the velocity to keep from bouncing forever
 	VectorScale(ent->s.pos.trDelta, ent->physicsBounce, ent->s.pos.trDelta);
@@ -1044,6 +1046,7 @@ void G_BounceItem(gentity_t *ent, trace_t *trace) {
 
 	VectorAdd(ent->r.currentOrigin, trace->plane.normal, ent->r.currentOrigin);
 	VectorCopy(ent->r.currentOrigin, ent->s.pos.trBase);
+
 	ent->s.pos.trTime = level.time;
 }
 
@@ -1081,7 +1084,6 @@ void G_RunItem(gentity_t *ent) {
 	}
 
 	trap_Trace(&tr, ent->r.currentOrigin, ent->r.mins, ent->r.maxs, origin, ent->r.ownerNum, mask);
-
 	VectorCopy(tr.endpos, ent->r.currentOrigin);
 
 	if (tr.startsolid) {

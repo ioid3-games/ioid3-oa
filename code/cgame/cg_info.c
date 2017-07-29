@@ -156,7 +156,6 @@ void CG_DrawInformation(void) {
 
 	info = CG_ConfigString(CS_SERVERINFO);
 	sysInfo = CG_ConfigString(CS_SYSTEMINFO);
-
 	s = Info_ValueForKey(info, "mapname");
 	levelshot = trap_R_RegisterShaderNoMip(va("levelshots/%s.tga", s));
 
@@ -269,7 +268,6 @@ void CG_DrawInformation(void) {
 	}
 
 	UI_DrawProportionalString(320, y, s, UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, colorWhite);
-
 	y += PROP_HEIGHT;
 	value = atoi(Info_ValueForKey(info, "timelimit"));
 

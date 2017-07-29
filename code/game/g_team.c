@@ -312,7 +312,7 @@ void Team_SetFlagStatus(int team, flagStatus_t status) {
 			st[0] = oneFlagStatusRemap[teamgame.redStatus];
 			st[1] = oneFlagStatusRemap[teamgame.blueStatus];
 			st[2] = 0;
-		} else {		// GT_1FCTF
+		} else { // GT_1FCTF
 			st[0] = oneFlagStatusRemap[teamgame.flagStatus];
 			st[1] = 0;
 		}
@@ -391,7 +391,7 @@ void Team_DD_bonusAtPoints(int team) {
 		if (player->client->sess.sessionTeam != team) {
 			return; // player was not on scoring team
 		}
-		// See if the player is close to any of the points:
+		// see if the player is close to any of the points:
 		VectorSubtract(player->r.currentOrigin, ddA->r.currentOrigin, v1);
 		VectorSubtract(player->r.currentOrigin, ddB->r.currentOrigin, v2);
 
@@ -491,7 +491,9 @@ void Team_FragBonuses(gentity_t *targ, gentity_t *inflictor, gentity_t *attacker
 		attacker->client->pers.teamState.lastfraggedcarrier = level.time;
 
 		AddScore(attacker, targ->r.currentOrigin, CTF_FRAG_CARRIER_BONUS * tokens * tokens);
+
 		attacker->client->pers.teamState.fragcarrier++;
+
 		PrintMsg(NULL, "%s" S_COLOR_WHITE " fragged %s's skull carrier!\n", attacker->client->pers.netname, TeamName(team));
 		G_LogPrintf("HARVESTER: %i %i %i %i %i: %s fragged %s(%s) who had %i skulls.\n", attacker->client->ps.clientNum, team, 1, targ->client->ps.clientNum, tokens, attacker->client->pers.netname, targ->client->pers.netname, TeamName(team), tokens);
 		// the target had the flag, clear the hurt carrier field on the other team
@@ -513,6 +515,7 @@ void Team_FragBonuses(gentity_t *targ, gentity_t *inflictor, gentity_t *attacker
 		attacker->client->pers.teamState.carrierdefense++;
 		targ->client->pers.teamState.lasthurtcarrier = 0;
 		attacker->client->ps.persistant[PERS_DEFEND_COUNT]++;
+
 		G_LogPrintf("Award: %i %i: %s gained the %s award!\n", attacker->client->ps.clientNum, 3, attacker->client->pers.netname, "DEFENCE");
 
 		if (!level.hadBots)
@@ -540,6 +543,7 @@ void Team_FragBonuses(gentity_t *targ, gentity_t *inflictor, gentity_t *attacker
 		}
 
 		G_LogPrintf("Award: %i %i: %s gained the %s award!\n", attacker->client->ps.clientNum, 3, attacker->client->pers.netname, "DEFENCE");
+
 		team = attacker->client->sess.sessionTeam;
 		// add the sprite over the player's head
 		attacker->client->ps.eFlags &= ~(EF_AWARD_IMPRESSIVE|EF_AWARD_EXCELLENT|EF_AWARD_GAUNTLET|EF_AWARD_ASSIST|EF_AWARD_DEFEND|EF_AWARD_CAP);
@@ -547,16 +551,16 @@ void Team_FragBonuses(gentity_t *targ, gentity_t *inflictor, gentity_t *attacker
 		attacker->client->rewardTime = level.time + REWARD_SPRITE_TIME;
 		return;
 	}
-	// We place the Double Domination bonus test here!This appears to be the best place to place them.
+	// we place the Double Domination bonus test here!This appears to be the best place to place them.
 	if (g_gametype.integer == GT_DOUBLE_D) {
 		if (attacker->client->sess.sessionTeam == level.pointStatusA) { // Attack must defend point A
-			// See how close attacker and target was to Point A:
+			// see how close attacker and target was to Point A:
 			VectorSubtract(targ->r.currentOrigin, ddA->r.currentOrigin, v1);
 			VectorSubtract(attacker->r.currentOrigin, ddA->r.currentOrigin, v2);
 
 			if (((VectorLength(v1) < CTF_TARGET_PROTECT_RADIUS && trap_InPVS(ddA->r.currentOrigin, targ->r.currentOrigin)) || (VectorLength(v2) < CTF_TARGET_PROTECT_RADIUS && trap_InPVS(ddA->r.currentOrigin, attacker->r.currentOrigin))) && attacker->client->sess.sessionTeam != targ->client->sess.sessionTeam) {
-				// We defended point A
-				// Was we dominating and maybe close to score?
+				// we defended point A
+				// was we dominating and maybe close to score?
 				if (attacker->client->sess.sessionTeam == level.pointStatusB && level.time - level.timeTaken > (10 - DD_CLOSE) * 1000) {
 					AddScore(attacker, targ->r.currentOrigin, DD_POINT_DEFENCE_CLOSE_BONUS);
 				} else {
@@ -575,16 +579,16 @@ void Team_FragBonuses(gentity_t *targ, gentity_t *inflictor, gentity_t *attacker
 				attacker->client->ps.eFlags|= EF_AWARD_DEFEND;
 				attacker->client->rewardTime = level.time + REWARD_SPRITE_TIME;
 				return; // Return so we don't recieve credits for point B also
-			} // We denfended point A
-		} // Defend point A
+			} // we denfended point A
+		} // defend point A
 		if (attacker->client->sess.sessionTeam == level.pointStatusB) { // Attack must defend point B
 			// See how close attacker and target was to Point B:
 			VectorSubtract(targ->r.currentOrigin, ddB->r.currentOrigin, v1);
 			VectorSubtract(attacker->r.currentOrigin, ddB->r.currentOrigin, v2);
 
 			if (((VectorLength(v1) < CTF_TARGET_PROTECT_RADIUS && trap_InPVS(ddB->r.currentOrigin, targ->r.currentOrigin)) || (VectorLength(v2) < CTF_TARGET_PROTECT_RADIUS && trap_InPVS(ddB->r.currentOrigin, attacker->r.currentOrigin))) && attacker->client->sess.sessionTeam != targ->client->sess.sessionTeam) {
-				// We defended point B
-				// Was we dominating and maybe close to score?
+				// we defended point B
+				// was we dominating and maybe close to score?
 				if (attacker->client->sess.sessionTeam == level.pointStatusA && level.time - level.timeTaken > (10 - DD_CLOSE) * 1000) {
 					AddScore(attacker, targ->r.currentOrigin, DD_POINT_DEFENCE_CLOSE_BONUS);
 				} else {
@@ -673,8 +677,8 @@ void Team_FragBonuses(gentity_t *targ, gentity_t *inflictor, gentity_t *attacker
 		((level.eliminationSides + level.roundNumber)%2 == 0 && attacker->client->sess.sessionTeam == TEAM_BLUE) || ((level.eliminationSides + level.roundNumber)%2 == 1 && attacker->client->sess.sessionTeam == TEAM_RED))) {
 		// we defended the base flag
 		AddScore(attacker, targ->r.currentOrigin, CTF_FLAG_DEFENSE_BONUS);
-		attacker->client->pers.teamState.basedefense++;
 
+		attacker->client->pers.teamState.basedefense++;
 		attacker->client->ps.persistant[PERS_DEFEND_COUNT]++;
 
 		if (!level.hadBots) {
@@ -695,8 +699,8 @@ void Team_FragBonuses(gentity_t *targ, gentity_t *inflictor, gentity_t *attacker
 
 		if (((VectorLength(v1) < CTF_ATTACKER_PROTECT_RADIUS && trap_InPVS(carrier->r.currentOrigin, targ->r.currentOrigin)) || (VectorLength(v2) < CTF_ATTACKER_PROTECT_RADIUS && trap_InPVS(carrier->r.currentOrigin, attacker->r.currentOrigin))) && attacker->client->sess.sessionTeam != targ->client->sess.sessionTeam) {
 			AddScore(attacker, targ->r.currentOrigin, CTF_CARRIER_PROTECT_BONUS);
-			attacker->client->pers.teamState.carrierdefense++;
 
+			attacker->client->pers.teamState.carrierdefense++;
 			attacker->client->ps.persistant[PERS_DEFEND_COUNT]++;
 
 			if (!level.hadBots)
@@ -829,8 +833,11 @@ void Team_Dom_SpawnPoints(void) {
 		}
 
 		dom_points[i] = G_Spawn();
+
 		VectorCopy(flag->r.currentOrigin, dom_points[i]->s.origin);
+
 		dom_points[i]->classname = it->classname;
+
 		G_SpawnItem(dom_points[i], it);
 		FinishSpawningItem(dom_points[i]);
 
@@ -901,11 +908,15 @@ void Team_Dom_TakePoint(gentity_t *point, int team, int clientnumber) {
 	point = G_Spawn();
 
 	VectorCopy(origin, point->s.origin);
+
 	point->classname = it->classname;
 	dom_points[i] = point;
+
 	G_SpawnItem(point, it);
 	FinishSpawningItem(point);
+
 	level.pointStatusDom[i] = team;
+
 	G_LogPrintf("DOM: %i %i %i %i: %s takes point %s!\n", clientnumber, i, 0, team, TeamName(team), level.domination_points_names[i]);
 	SendDominationPointsStatusMessageToAllClients();
 }
@@ -947,6 +958,7 @@ void Team_DD_makeA2team(gentity_t *target, int team) {
 	gitem_t *it;
 
 	Team_DD_RemovePointAgfx();
+
 	it = NULL;
 
 	if (team == TEAM_NONE) {
@@ -967,7 +979,9 @@ void Team_DD_makeA2team(gentity_t *target, int team) {
 	ddA = G_Spawn();
 
 	VectorCopy(target->r.currentOrigin, ddA->s.origin);
+
 	ddA->classname = it->classname;
+
 	G_SpawnItem(ddA, it);
 	FinishSpawningItem(ddA);
 }
@@ -982,6 +996,7 @@ static void Team_DD_makeB2team(gentity_t *target, int team) {
 	// gentity_t *it_ent;
 
 	Team_DD_RemovePointBgfx();
+
 	it = NULL;
 
 	if (team == TEAM_NONE) {
@@ -1008,7 +1023,9 @@ static void Team_DD_makeB2team(gentity_t *target, int team) {
 	ddB = G_Spawn();
 
 	VectorCopy(target->r.currentOrigin, ddB->s.origin);
+
 	ddB->classname = it->classname;
+
 	G_SpawnItem(ddB, it);
 	FinishSpawningItem(ddB);
 }
@@ -1187,7 +1204,7 @@ void Team_DroppedFlagThink(gentity_t *ent) {
 	}
 
 	Team_ReturnFlagSound(Team_ResetFlag(team), team);
-	// Reset Flag will delete this entity
+	// reset Flag will delete this entity
 }
 
 /*
@@ -1209,6 +1226,7 @@ Team_SpawnDoubleDominationPoints
 */
 int Team_SpawnDoubleDominationPoints(void) {
 	gentity_t *ent;
+
 	level.pointStatusA = TEAM_FREE;
 	level.pointStatusB = TEAM_FREE;
 	updateDDpoints();
@@ -1272,21 +1290,25 @@ int Team_TouchDoubleDominationPoint(gentity_t *ent, gentity_t *other, int team) 
 		}
 	}
 
-	if (team == TEAM_RED) { // We have touched point A
+	if (team == TEAM_RED) { // we have touched point A
 		if (TEAM_NONE == level.pointStatusA) {
-			return 0; // Haven't spawned yet
+			return 0; // haven't spawned yet
 		}
 
 		if (clientTeam == level.pointStatusA) {
-			return 0; // If we already have the flag
+			return 0; // if we already have the flag
 		}
 		// if we didn't have the point, then we have now!
 		level.pointStatusA = clientTeam;
+
 		PrintMsg(NULL, "%s" S_COLOR_WHITE "(%s) took control of A!\n", cl->pers.netname, TeamName(clientTeam));
+
 		Team_DD_makeA2team(ent, clientTeam);
+
 		G_LogPrintf("DD: %i %i %i: %s took point A for %s!\n", cl->ps.clientNum, clientTeam, 0, cl->pers.netname, TeamName(clientTeam));
-		// Give personal score
-		score = DD_POINT_CAPTURE; // Base score for capture
+		// give personal score
+		score = DD_POINT_CAPTURE; // base score for capture
+
 		if (otherDominating) {
 			score += DD_POINT_CAPTURE_BREAK;
 
@@ -1296,18 +1318,19 @@ int Team_TouchDoubleDominationPoint(gentity_t *ent, gentity_t *other, int team) 
 		}
 
 		AddScore(other, ent->r.currentOrigin, score);
-		// Do we also have point B?
+		// do we also have point B?
 		if (clientTeam == level.pointStatusB) {
-			// We are dominating!
-			level.timeTaken = level.time; // At this time
+			// we are dominating!
+			level.timeTaken = level.time; // at this time
+
 			PrintMsg(NULL, "%s" S_COLOR_WHITE " is dominating!\n", TeamName(clientTeam));
 			SendDDtimetakenMessageToAllClients();
 		}
 	}
 
-	if (team == TEAM_BLUE) { // We have touched point B
+	if (team == TEAM_BLUE) { // we have touched point B
 		if (TEAM_NONE == level.pointStatusB) {
-			return 0; // Haven't spawned yet
+			return 0; // haven't spawned yet
 		}
 
 		if (clientTeam == level.pointStatusB) {
@@ -1315,11 +1338,15 @@ int Team_TouchDoubleDominationPoint(gentity_t *ent, gentity_t *other, int team) 
 		}
 		// if we didn't have the point, then we have now!
 		level.pointStatusB = clientTeam;
+
 		PrintMsg(NULL, "%s" S_COLOR_WHITE "(%s) took control of B!\n", cl->pers.netname, TeamName(clientTeam));
+
 		Team_DD_makeB2team(ent, clientTeam);
+
 		G_LogPrintf("DD: %i %i %i: %s took point B for %s!\n", cl->ps.clientNum, clientTeam, 1, cl->pers.netname, TeamName(clientTeam));
-		// Give personal score
-		score = DD_POINT_CAPTURE; // Base score for capture
+		// give personal score
+		score = DD_POINT_CAPTURE; // base score for capture
+
 		if (otherDominating) {
 			score += DD_POINT_CAPTURE_BREAK;
 
@@ -1329,10 +1356,11 @@ int Team_TouchDoubleDominationPoint(gentity_t *ent, gentity_t *other, int team) 
 		}
 
 		AddScore(other, ent->r.currentOrigin, score);
-		// Do we also have point A?
+		// do we also have point A?
 		if (clientTeam == level.pointStatusA) {
-			// We are dominating!
-			level.timeTaken = level.time; // At this time
+			// we are dominating!
+			level.timeTaken = level.time; // at this time
+
 			PrintMsg(NULL, "%s" S_COLOR_WHITE " is dominating!\n", TeamName(clientTeam));
 			SendDDtimetakenMessageToAllClients();
 		}
@@ -1478,10 +1506,9 @@ int Team_TouchOurFlag(gentity_t *ent, gentity_t *other, int team) {
 	}
 
 	Team_ResetFlags();
-
 	CalculateRanks();
 
-	return 0; // Do not respawn this automatically
+	return 0; // do not respawn this automatically
 }
 
 /*
@@ -1525,7 +1552,7 @@ int Team_TouchEnemyFlag(gentity_t *ent, gentity_t *other, int team) {
 	cl->pers.teamState.flagsince = level.time;
 	Team_TakeFlagSound(ent, team);
 
-	return -1; // Do not respawn this automatically, but do delete it if it was FL_DROPPED
+	return -1; // do not respawn this automatically, but do delete it if it was FL_DROPPED
 }
 
 /*
@@ -2019,7 +2046,7 @@ void TeamplayInfoMessage(gentity_t *ent) {
 			clients[cnt++] = level.sortedClients[i];
 		}
 	}
-	// We have the top eight players, sort them by clientNum
+	// we have the top eight players, sort them by clientNum
 	qsort(clients, cnt, sizeof(clients[0]), SortClients);
 	// send the latest information on all clients
 	string[0] = 0;
@@ -2250,7 +2277,6 @@ static void ObeliskDie(gentity_t *self, gentity_t *inflictor, gentity_t *attacke
 	self->activator->s.frame = 2;
 
 	G_AddEvent(self->activator, EV_OBELISKEXPLODE, 0);
-
 	AddScore(attacker, self->r.currentOrigin, CTF_CAPTURE_BONUS);
 	// add the sprite over the player's head
 	attacker->client->ps.eFlags &= ~(EF_AWARD_IMPRESSIVE|EF_AWARD_EXCELLENT|EF_AWARD_GAUNTLET|EF_AWARD_ASSIST|EF_AWARD_DEFEND|EF_AWARD_CAP);
@@ -2316,7 +2342,6 @@ static void ObeliskTouch(gentity_t *self, gentity_t *other, trace_t *trace) {
 	other->client->ps.generic1 = 0;
 
 	CalculateRanks();
-
 	Team_CaptureFlagSound(self, self->spawnflags);
 }
 
@@ -2396,6 +2421,7 @@ static gentity_t *SpawnObelisk(vec3_t origin, int team, int spawnflags) {
 			G_Printf("SpawnObelisk: %s startsolid at %s\n", ent->classname, vtos(ent->s.origin));
 
 			ent->s.groundEntityNum = ENTITYNUM_NONE;
+
 			G_SetOrigin(ent, ent->s.origin);
 		} else {
 			// allow to ride movers

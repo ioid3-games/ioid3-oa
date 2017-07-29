@@ -204,8 +204,8 @@ static void CG_InterpolatePlayerState(qboolean grabAngles) {
 		int cmdNum;
 
 		cmdNum = trap_GetCurrentCmdNumber();
-		trap_GetUserCmd(cmdNum, &cmd);
 
+		trap_GetUserCmd(cmdNum, &cmd);
 		PM_UpdateViewAngles(out, &cmd);
 	}
 	// if the next frame is a teleport, we can't lerp to it
@@ -539,8 +539,7 @@ static int IsUnacceptableError(playerState_t *ps, playerState_t *pps) {
 =======================================================================================================================================
 CG_PredictPlayerState
 
-Generates cg.predictedPlayerState for the current cg.time
-cg.predictedPlayerState is guaranteed to be valid after exiting.
+Generates cg.predictedPlayerState for the current cg.time, cg.predictedPlayerState is guaranteed to be valid after exiting.
 
 For demo playback, this will be an interpolation between two valid playerState_t.
 For normal gameplay, it will be the result of predicted usercmd_t on top of the most recent playerState_t received from the server.
@@ -631,7 +630,7 @@ void CG_PredictPlayerState(void) {
 		trap_Cvar_Set("pmove_msec", "33");
 	}
 
-	cg_pmove.pmove_fixed = pmove_fixed.integer; // |cg_pmove_fixed.integer;
+	cg_pmove.pmove_fixed = pmove_fixed.integer; //|cg_pmove_fixed.integer;
 	cg_pmove.pmove_msec = pmove_msec.integer;
 	cg_pmove.pmove_float = pmove_float.integer;
 	cg_pmove.pmove_flags = cgs.dmflags;
@@ -755,6 +754,7 @@ void CG_PredictPlayerState(void) {
 				}
 
 				VectorSubtract(oldPlayerState.origin, adjusted, delta);
+
 				len = VectorLength(delta);
 
 				if (len > 0.1) {

@@ -122,6 +122,7 @@ gentity_t *SelectNearestDeathmatchSpawnPoint(vec3_t from) {
 
 	while ((spot = G_Find(spot, FOFS(classname), "info_player_deathmatch")) != NULL) {
 		VectorSubtract(spot->s.origin, from, delta);
+
 		dist = VectorLength(delta);
 
 		if (dist < nearestDist) {
@@ -1016,8 +1017,7 @@ static void ClientCleanName(const char *in, char *out, int outSize, int clientNu
 				colorlessLen--;
 
 				if (ColorIndex(*in) == 0) {
-					// Disallow color black in names to prevent players
-					// from getting advantage playing in front of black backgrounds
+					// disallow color black in names to prevent players from getting advantage playing in front of black backgrounds
 					// outpos--;
 					// continue;
 					black = qtrue;
@@ -1112,31 +1112,31 @@ void ClientUserinfoChanged(int clientNum) {
 	// see if the player is nudging his shots
 	s = Info_ValueForKey(userinfo, "cg_cmdTimeNudge");
 	client->pers.cmdTimeNudge = atoi(s);
-
 	// see if the player wants to debug the backward reconciliation
-	/*s = Info_ValueForKey(userinfo, "cg_debugDelag");
+	/*
+	s = Info_ValueForKey(userinfo, "cg_debugDelag");
 
 	if (!atoi(s)) {
 		client->pers.debugDelag = qfalse;
 	} else {
 		client->pers.debugDelag = qtrue;
-	}*/
-
+	}
+	*/
 	// see if the player is simulating incoming latency
 	// s = Info_ValueForKey(userinfo, "cg_latentSnaps");
 	// client->pers.latentSnaps = atoi(s);
-
 	// see if the player is simulating outgoing latency
 	// s = Info_ValueForKey(userinfo, "cg_latentCmds");
 	// client->pers.latentCmds = atoi(s);
-
 	// see if the player is simulating outgoing packet loss
 	// s = Info_ValueForKey(userinfo, "cg_plOut");
 	// client->pers.plOut = atoi(s);
 // unlagged - client options
 	// set name
 	Q_strncpyz(oldname, client->pers.netname, sizeof(oldname));
+
 	s = Info_ValueForKey(userinfo, "name");
+
 	ClientCleanName(s, client->pers.netname, sizeof(client->pers.netname), clientNum);
 	// KK - OAPub Added From Tremulous - Control Name Changes
 	if (!strequals(oldname, client->pers.netname)) {
@@ -1155,8 +1155,9 @@ void ClientUserinfoChanged(int clientNum) {
 			revertName = qtrue;
 		}
 		// Never revert a bots name... just to bad if it hapens... but the bot will always be expendeble : - )
-		if (ent->r.svFlags & SVF_BOT)
+		if (ent->r.svFlags & SVF_BOT) {
 			revertName = qfalse;
+		}
 
 		if (revertName) {
 			Q_strncpyz(client->pers.netname, *oldname ? oldname : "UnnamedPlayer", sizeof(client->pers.netname));
@@ -1232,9 +1233,9 @@ void ClientUserinfoChanged(int clientNum) {
 			client->pers.teamInfo = qfalse;
 		}
 	}
-	// team task(0 = none, 1 = offence, 2 = defence)
+	// team task (0 = none, 1 = offence, 2 = defence)
 	teamTask = atoi(Info_ValueForKey(userinfo, "teamtask"));
-	// team Leader(1 = leader, 0 is normal player)
+	// team leader (1 = leader, 0 is normal player)
 	teamLeader = client->sess.teamLeader;
 	// colors
 	if (g_gametype.integer >= GT_TEAM && g_ffa_gt == 0 && g_instantgib.integer) {
@@ -1279,15 +1280,10 @@ void ClientUserinfoChanged(int clientNum) {
 =======================================================================================================================================
 ClientConnect
 
-Called when a player begins connecting to the server.
-Called again for every map change or tournament restart.
-
+Called when a player begins connecting to the server. Called again for every map change or tournament restart.
 The session information will be valid after exit.
-
 Return NULL if the client should be allowed, otherwise return a string with the reason for denial.
-
 Otherwise, the client will be sent the current gamestate and will eventually get to ClientBegin.
-
 'firstTime' will be qtrue the very first time a client connects to the server machine, but qfalse on map changes and tournament
 restarts.
 =======================================================================================================================================
@@ -1310,12 +1306,12 @@ char *ClientConnect(int clientNum, qboolean firstTime, qboolean isBot) {
 
 	trap_GetUserinfo(clientNum, userinfo, sizeof(userinfo));
 
- 	value = Info_ValueForKey(userinfo, "cl_guid");
- 	Q_strncpyz(client->pers.guid, value, sizeof(client->pers.guid));
- 	// IP filtering// KK - OAX Has this been obsoleted?
- 	// https:// zerowing.idsoftware.com / bugzilla / show_bug.cgi?id = 500
- 	// recommanding PB based IP / GUID banning, the builtin system is pretty limited
- 	// check to see if they are on the banned IP list
+	value = Info_ValueForKey(userinfo, "cl_guid");
+	Q_strncpyz(client->pers.guid, value, sizeof(client->pers.guid));
+	// IP filtering// KK - OAX Has this been obsoleted?
+	// https:// zerowing.idsoftware.com / bugzilla / show_bug.cgi?id = 500
+	// recommanding PB based IP / GUID banning, the builtin system is pretty limited
+	// check to see if they are on the banned IP list
 	value = Info_ValueForKey(userinfo, "ip");
 	Q_strncpyz(client->pers.ip, value, sizeof(client->pers.ip));
 	
@@ -1326,8 +1322,7 @@ char *ClientConnect(int clientNum, qboolean firstTime, qboolean isBot) {
 	
 	if (G_admin_ban_check(userinfo, reason, sizeof(reason))) {
 		return va("%s", reason);
- 	}
- 	 
+	}
 // KK - OAX
 // we don't check GUID or password for bots and local client
 // NOTE: local client < -> "ip" "localhost"
@@ -1362,7 +1357,7 @@ char *ClientConnect(int clientNum, qboolean firstTime, qboolean isBot) {
 			}
 		}
 	}
-	// Check for local client
+	// check for local client
 	if (strequals(client->pers.ip, "localhost")) {
 		client->pers.localClient = qtrue;
 	}
@@ -1412,7 +1407,6 @@ char *ClientConnect(int clientNum, qboolean firstTime, qboolean isBot) {
 	} else {
 		trap_SendServerCommand(clientNum, "print \"Full lag compensation is OFF!\n\"");
 	}
-
 // unlagged - backward reconciliation #5
 	G_admin_namelog_update(client, qfalse);
 	return NULL;
@@ -1447,7 +1441,7 @@ void motd(gentity_t *ent) {
 		trap_FS_FCloseFile(motdFile);
 
 		while ((p = strchr(motd, '\r'))) {
-			// Remove carrier return. 0x0D
+			// remove carrier return. 0x0D
 			memmove(p, p + 1, motdLen + fileLen - (p - motd));
 		}
 	}
@@ -1569,8 +1563,7 @@ void ClientBegin(int clientNum) {
 =======================================================================================================================================
 ClientSpawn
 
-Called every time a client is placed fresh in the world: After the first ClientBegin, and after each respawn.
-
+Called every time a client is placed fresh in the world: after the first ClientBegin, and after each respawn.
 Initializes all non-persistant parts of playerState.
 =======================================================================================================================================
 */
@@ -1773,72 +1766,72 @@ void ClientSpawn(gentity_t *ent) {
 			client->ps.ammo[WP_MACHINEGUN] = 100;
 		}
 
-		client->ps.stats[STAT_WEAPONS]|= (1 << WP_GAUNTLET);
+		client->ps.stats[STAT_WEAPONS] |= (1 << WP_GAUNTLET);
 		client->ps.ammo[WP_GAUNTLET] = -1;
 		client->ps.ammo[WP_GRAPPLING_HOOK] = -1;
 		// health will count down towards max_health
 		ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH] + 25;
 	} else {
-		client->ps.stats[STAT_WEAPONS]|= (1 << WP_GAUNTLET);
+		client->ps.stats[STAT_WEAPONS] |= (1 << WP_GAUNTLET);
 		client->ps.ammo[WP_GAUNTLET] = -1;
 		client->ps.ammo[WP_GRAPPLING_HOOK] = -1;
 
 		if (g_elimination_machinegun.integer > 0) {
-			client->ps.stats[STAT_WEAPONS]|= (1 << WP_MACHINEGUN);
+			client->ps.stats[STAT_WEAPONS] |= (1 << WP_MACHINEGUN);
 			client->ps.ammo[WP_MACHINEGUN] = g_elimination_machinegun.integer;
 		}
 
 		if (g_elimination_shotgun.integer > 0) {
-			client->ps.stats[STAT_WEAPONS]|= (1 << WP_SHOTGUN);
+			client->ps.stats[STAT_WEAPONS] |= (1 << WP_SHOTGUN);
 			client->ps.ammo[WP_SHOTGUN] = g_elimination_shotgun.integer;
 		}
 
 		if (g_elimination_grenade.integer > 0) {
-			client->ps.stats[STAT_WEAPONS]|= (1 << WP_GRENADE_LAUNCHER);
+			client->ps.stats[STAT_WEAPONS] |= (1 << WP_GRENADE_LAUNCHER);
 			client->ps.ammo[WP_GRENADE_LAUNCHER] = g_elimination_grenade.integer;
 		}
 
 		if (g_elimination_rocket.integer > 0) {
-			client->ps.stats[STAT_WEAPONS]|= (1 << WP_ROCKET_LAUNCHER);
+			client->ps.stats[STAT_WEAPONS] |= (1 << WP_ROCKET_LAUNCHER);
 			client->ps.ammo[WP_ROCKET_LAUNCHER] = g_elimination_rocket.integer;
 		}
 
 		if (g_elimination_lightning.integer > 0) {
-			client->ps.stats[STAT_WEAPONS]|= (1 << WP_LIGHTNING);
+			client->ps.stats[STAT_WEAPONS] |= (1 << WP_LIGHTNING);
 			client->ps.ammo[WP_LIGHTNING] = g_elimination_lightning.integer;
 		}
 
 		if (g_elimination_railgun.integer > 0) {
-			client->ps.stats[STAT_WEAPONS]|= (1 << WP_RAILGUN);
+			client->ps.stats[STAT_WEAPONS] |= (1 << WP_RAILGUN);
 			client->ps.ammo[WP_RAILGUN] = g_elimination_railgun.integer;
 		}
 
 		if (g_elimination_plasmagun.integer > 0) {
-			client->ps.stats[STAT_WEAPONS]|= (1 << WP_PLASMAGUN);
+			client->ps.stats[STAT_WEAPONS] |= (1 << WP_PLASMAGUN);
 			client->ps.ammo[WP_PLASMAGUN] = g_elimination_plasmagun.integer;
 		}
 
 		if (g_elimination_bfg.integer > 0) {
-			client->ps.stats[STAT_WEAPONS]|= (1 << WP_BFG);
+			client->ps.stats[STAT_WEAPONS] |= (1 << WP_BFG);
 			client->ps.ammo[WP_BFG] = g_elimination_bfg.integer;
 		}
 
 			if (g_elimination_grapple.integer) {
-			client->ps.stats[STAT_WEAPONS]|= (1 << WP_GRAPPLING_HOOK);
+			client->ps.stats[STAT_WEAPONS] |= (1 << WP_GRAPPLING_HOOK);
 		}
 
 		if (g_elimination_nail.integer > 0) {
-			client->ps.stats[STAT_WEAPONS]|= (1 << WP_NAILGUN);
+			client->ps.stats[STAT_WEAPONS] |= (1 << WP_NAILGUN);
 			client->ps.ammo[WP_NAILGUN] = g_elimination_nail.integer;
 		}
 
 		if (g_elimination_mine.integer > 0) {
-			client->ps.stats[STAT_WEAPONS]|= (1 << WP_PROX_LAUNCHER);
+			client->ps.stats[STAT_WEAPONS] |= (1 << WP_PROX_LAUNCHER);
 			client->ps.ammo[WP_PROX_LAUNCHER] = g_elimination_mine.integer;
 		}
 
 		if (g_elimination_chain.integer > 0) {
-			client->ps.stats[STAT_WEAPONS]|= (1 << WP_CHAINGUN);
+			client->ps.stats[STAT_WEAPONS] |= (1 << WP_CHAINGUN);
 			client->ps.ammo[WP_CHAINGUN] = g_elimination_chain.integer;
 		}
 
@@ -1851,7 +1844,7 @@ void ClientSpawn(gentity_t *ent) {
 		client->ps.ammo[WP_RAILGUN] = 999; // Don't display any ammo
 
 		if (g_instantgib.integer > 1) {
-			client->ps.stats[STAT_WEAPONS]|= (1 << WP_GAUNTLET);
+			client->ps.stats[STAT_WEAPONS] |= (1 << WP_GAUNTLET);
 			client->ps.ammo[WP_GAUNTLET] = -1;
 		}
 	}
@@ -1863,7 +1856,6 @@ void ClientSpawn(gentity_t *ent) {
 
 	G_SetOrigin(ent, spawn_origin);
 	VectorCopy(spawn_origin, client->ps.origin);
-
 	// the respawned flag will be cleared after the attack and jump keys come up
 	client->ps.pm_flags|= PMF_RESPAWNED;
 
@@ -1965,17 +1957,17 @@ void ClientDisconnect(int clientNum) {
 			StopFollowing(&g_entities[i]);
 		}
 	}
-	// Is the player alive?
+	// is the player alive?
 	i = (ent->client->ps.stats[STAT_HEALTH] > 0);
-	// Commit suicide!
+	// commit suicide!
 	if (ent->client->pers.connected == CON_CONNECTED && ent->client->sess.sessionTeam != TEAM_SPECTATOR && i) {
-		// Prevent a team from loosing point because of player leaving
+		// prevent a team from loosing point because of player leaving
 		int teamscore = 0;
 
 		if (g_gametype.integer == GT_TEAM) {
 			teamscore = level.teamScores[ent->client->sess.sessionTeam];
 		}
-		// Kill him(makes sure he loses flags, etc)
+		// kill him (makes sure he loses flags, etc.)
 		ent->flags & = ~FL_GODMODE;
 		ent->client->ps.stats[STAT_HEALTH] = ent->health = 0;
 		player_die(ent, ent, g_entities + ENTITYNUM_WORLD, 100000, MOD_SUICIDE);
@@ -2013,7 +2005,6 @@ void ClientDisconnect(int clientNum) {
 	ent->client->sess.sessionTeam = TEAM_FREE;
 
 	trap_SetConfigstring(CS_PLAYERS + clientNum, "");
-
 	CalculateRanks();
 	CountVotes();
 
