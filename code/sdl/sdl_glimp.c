@@ -711,7 +711,7 @@ void GLimp_Init(void) {
 	// Nothing worked, give up
 	ri.Error(ERR_FATAL, "GLimp_Init() - could not load OpenGL subsystem");
 success:
-	// These values force the UI to disable driver selection
+	// these values force the UI to disable driver selection
 	glConfig.driverType = GLDRV_ICD;
 	glConfig.hardwareType = GLHW_GENERIC;
 	glConfig.deviceSupportsGamma = SDL_SetGamma(1.0f, 1.0f, 1.0f) >= 0;

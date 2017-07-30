@@ -2850,7 +2850,8 @@ void FS_AddGameDirectory(const char *path, const char *dir) {
 
 	// find all pak files in this directory
 	Q_strncpyz(curpath, FS_BuildOSPath(path, dir, ""), sizeof(curpath));
-	curpath[strlen(curpath) - 1] = '\0';	// strip the trailing slash
+
+	curpath[strlen(curpath) - 1] = '\0'; // strip the trailing slash
 
 	// Get .pk3 files
 	pakfiles = Sys_ListFiles(curpath, ".pk3", NULL, &numfiles, qfalse);

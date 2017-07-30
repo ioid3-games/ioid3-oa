@@ -1917,8 +1917,9 @@ void BotMatch_LeadTheWay(bot_state_t *bs, bot_match_t *match) {
 	}
 
 	bs->lead_teamgoal.entitynum = -1;
+
 	BotEntityInfo(client, &entinfo);
-	// if info is valid(in PVS)
+	// if info is valid (in PVS)
 	if (entinfo.valid) {
 		areanum = BotPointAreaNum(entinfo.origin);
 

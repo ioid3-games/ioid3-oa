@@ -217,7 +217,6 @@ float FloatSwap(const float *f) {
 
 	out.f = *f;
 	out.ui = LongSwap(out.ui);
-
 	return out.f;
 }
 
@@ -256,7 +255,6 @@ void Swap_Init(void) {
 	}
 }
 */
-
 /*
 =======================================================================================================================================
 
@@ -271,8 +269,10 @@ static int com_lines;
 static int com_tokenline;
 
 void COM_BeginParseSession(const char *name) {
+
 	com_lines = 1;
 	com_tokenline = 0;
+
 	Com_sprintf(com_parsename, sizeof(com_parsename), "%s", name);
 }
 

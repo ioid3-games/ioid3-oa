@@ -266,7 +266,7 @@ void UI_DrawConnectScreen(qboolean overlay) {
 	}
 
 	UI_DrawProportionalString(320, 128, s, UI_CENTER|UI_SMALLFONT|UI_DROPSHADOW, color_white);
-	// password required / connection rejected information goes here
+	// password required/connection rejected information goes here
 }
 
 /*

@@ -285,6 +285,7 @@ static void StartServer_Update(void) {
 		}
 		// set the map name
 		info = UI_GetArenaInfoByNumber(s_startserver.maplist[s_startserver.currentmap]);
+
 		Q_strncpyz(s_startserver.mapname.string, Info_ValueForKey(info, "map"), MAX_NAMELENGTH);
 	}
 
@@ -738,6 +739,7 @@ void StartServer_Cache(void) {
 	if (precache) {
 		for (i = 0; i < UI_GetNumArenas(); i++) {
 			info = UI_GetArenaInfoByNumber(i);
+
 			Q_strncpyz(mapname, Info_ValueForKey(info, "map"), MAX_NAMELENGTH);
 			Q_strupr(mapname);
 
@@ -1037,6 +1039,7 @@ static void ServerOptions_Start(void) {
 	trap_Cvar_Set("sv_hostname", s_serveroptions.hostname.field.buffer);
 	// the wait commands will allow the dedicated to take effect
 	info = UI_GetArenaInfoByNumber(s_startserver.maplist[s_startserver.currentmap]);
+
 	trap_Cmd_ExecuteText(EXEC_APPEND, va("wait; wait; map %s\n", Info_ValueForKey(info, "map")));
 	// add bots
 	trap_Cmd_ExecuteText(EXEC_APPEND, "wait 3\n");
@@ -1391,6 +1394,7 @@ static void ServerOptions_InitBotNames(void) {
 	arenaInfo = UI_GetArenaInfoByMap(s_serveroptions.mapnamebuffer);
 	// get the bot info - we'll seed with them if any are listed
 	Q_strncpyz(bots, Info_ValueForKey(arenaInfo, "bots"), sizeof(bots));
+
 	p = &bots[0];
 
 	while (*p && count < PLAYER_SLOTS) {

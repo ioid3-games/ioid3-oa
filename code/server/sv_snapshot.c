@@ -450,6 +450,7 @@ static void SV_BuildClientSnapshot(client_t *client) {
 	svEnt->snapshotCounter = sv.snapshotCounter;
 	// find the client's viewpoint
 	VectorCopy(ps->origin, org);
+
 	org[2] += ps->viewheight;
 	// add all the entities directly visible to the eye, which may include portal entities that merge other viewpoints
 	SV_AddEntitiesVisibleFromPoint(org, frame, &entityNumbers, qfalse);

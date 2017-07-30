@@ -96,6 +96,7 @@ static void UI_CinematicsMenu_Event(void *ptr, int event) {
 	}
 
 	n = ((menucommon_s *)ptr)->id - ID_CIN_IDLOGO;
+
 	trap_Cvar_Set("nextmap", va("ui_cinematics %i", n));
 
 	if (uis.demoversion && ((menucommon_s *)ptr)->id == ID_CIN_END) {

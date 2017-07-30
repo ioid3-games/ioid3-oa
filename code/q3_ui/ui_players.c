@@ -282,6 +282,7 @@ static void UI_PositionEntityOnTag(refEntity_t *entity, const refEntity_t *paren
 	}
 	// cast away const because of compiler problems
 	MatrixMultiply(lerped.axis, ((refEntity_t *)parent)->axis, entity->axis);
+
 	entity->backlerp = parent->backlerp;
 }
 
@@ -839,6 +840,7 @@ void UI_DrawPlayer(float x, float y, float w, float h, playerInfo_t *pi, int tim
 	origin[1] -= 100;
 	origin[2] -= 100;
 	trap_R_AddLightToScene(origin, 500, 1.0, 0.0, 0.0);
+
 	trap_R_RenderScene(&refdef);
 }
 

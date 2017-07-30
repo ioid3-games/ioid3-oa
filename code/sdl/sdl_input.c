@@ -51,7 +51,6 @@ static cvar_t *in_disablemacosxmouseaccel = NULL;
 static double originalMouseSpeed = -1.0;
 #endif
 static cvar_t *in_nograb;
-
 static cvar_t *in_joystick = NULL;
 static cvar_t *in_joystickDebug = NULL;
 static cvar_t *in_joystickThreshold = NULL;
@@ -611,7 +610,7 @@ static void IN_DeactivateMouse(void) {
 	if (!SDL_WasInit(SDL_INIT_VIDEO)) {
 		return;
 	}
-	// Always show the cursor when the mouse is disabled, but not when fullscreen
+	// always show the cursor when the mouse is disabled, but not when fullscreen
 	if (!Cvar_VariableIntegerValue("r_fullscreen")) {
 		SDL_ShowCursor(1);
 	}
@@ -649,7 +648,7 @@ static void IN_DeactivateMouse(void) {
 	}
 }
 
-// We translate axes movement into keypresses
+// we translate axes movement into keypresses
 static int joy_keys[16] = {
 	K_LEFTARROW, K_RIGHTARROW,
 	K_UPARROW, K_DOWNARROW,
@@ -661,8 +660,7 @@ static int joy_keys[16] = {
 	K_JOY27, K_JOY28
 };
 
-// translate hat events into keypresses
-// the 4 highest buttons are used for the first hat ...
+// translate hat events into keypresses, the 4 highest buttons are used for the first hat ...
 static int hat_keys[16] = {
 	K_JOY29, K_JOY30,
 	K_JOY31, K_JOY32,
@@ -1068,10 +1066,9 @@ static void IN_ProcessEvents(void) {
 					Com_sprintf(height, sizeof(height), "%d", e.resize.h);
 					Cvar_Set("r_customwidth", width);
 					Cvar_Set("r_customheight", height);
-					Cvar_Set("r_mode", "-1");
-					// Wait until user stops dragging for 1 second, so we aren't constantly recreating the GL context while
-					// he tries to drag...
-					vidRestartTime = Sys_Milliseconds() + 1000;
+							Cvar_Set("r_mode", "-1");
+							// wait until user stops dragging for 1 second, so we aren't constantly recreating the GL context while he tries to drag...
+							vidRestartTime = Sys_Milliseconds() + 1000;
 				}
 
 				break;

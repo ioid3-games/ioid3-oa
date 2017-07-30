@@ -421,6 +421,7 @@ void AnglesToAxis(const vec3_t angles, vec3_t axis[3]) {
 }
 
 void AxisClear(vec3_t axis[3]) {
+
 	axis[0][0] = 1;
 	axis[0][1] = 0;
 	axis[0][2] = 0;
@@ -433,6 +434,7 @@ void AxisClear(vec3_t axis[3]) {
 }
 
 void AxisCopy(vec3_t in[3], vec3_t out[3]) {
+
 	VectorCopy(in[0], out[0]);
 	VectorCopy(in[1], out[1]);
 	VectorCopy(in[2], out[2]);
@@ -485,6 +487,7 @@ void MakeNormalVectors(const vec3_t forward, vec3_t right, vec3_t up) {
 
 
 void VectorRotate(vec3_t in, vec3_t matrix[3], vec3_t out) {
+
 	out[0] = DotProduct(in, matrix[0]);
 	out[1] = DotProduct(in, matrix[1]);
 	out[2] = DotProduct(in, matrix[2]);
@@ -568,6 +571,7 @@ float AngleSubtract(float a1, float a2) {
 
 
 void AnglesSubtract(vec3_t v1, vec3_t v2, vec3_t v3) {
+
 	v3[0] = AngleSubtract(v1[0], v2[0]);
 	v3[1] = AngleSubtract(v1[1], v2[1]);
 	v3[2] = AngleSubtract(v1[2], v2[2]);
@@ -851,6 +855,7 @@ void _VectorScale(const vec3_t in, vec_t scale, vec3_t out) {
 }
 
 void Vector4Scale(const vec4_t in, vec_t scale, vec4_t out) {
+
 	out[0] = in[0] * scale;
 	out[1] = in[1] * scale;
 	out[2] = in[2] * scale;
@@ -1049,8 +1054,8 @@ void MatrixMultiply(float in1[3][3], float in2[3][3], float out[3][3]) {
 void AngleVectors(const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up) {
 	float angle;
 	static float sr, sp, sy, cr, cp, cy;
-	// static to help MS compiler fp bugs
 
+	// static to help MS compiler fp bugs
 	angle = angles[YAW] * (M_PI * 2 / 360);
 	sy = sin(angle);
 	cy = cos(angle);
