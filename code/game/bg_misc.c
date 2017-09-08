@@ -1137,8 +1137,9 @@ gitem_t *BG_FindItem(const char *pickupName) {
 	gitem_t *it;
 
 	for (it = bg_itemlist + 1; it->classname; it++) {
-		if (Q_strequal(it->pickup_name, pickupName))
+		if (Q_strequal(it->pickup_name, pickupName)) {
 			return it;
+		}
 	}
 
 	return NULL;
@@ -1148,15 +1149,13 @@ gitem_t *BG_FindItem(const char *pickupName) {
 =======================================================================================================================================
 BG_PlayerTouchesItem
 
-Items can be picked up without actually touching their physical bounds to make
-grabbing them easier
+Items can be picked up without actually touching their physical bounds to make grabbing them easier
 =======================================================================================================================================
 */
 qboolean BG_PlayerTouchesItem(playerState_t *ps, entityState_t *item, int atTime) {
 	vec3_t origin;
 
 	BG_EvaluateTrajectory(&item->pos, atTime, origin);
-
 	// we are ignoring ducked differences here
 	if (ps->origin[0] - origin[0] > 44 || ps->origin[0] - origin[0] < -50 || ps->origin[1] - origin[1] > 36 || ps->origin[1] - origin[1] < -36 || ps->origin[2] - origin[2] > 36 || ps->origin[2] - origin[2] < -36) {
 		return qfalse;
@@ -1169,8 +1168,7 @@ qboolean BG_PlayerTouchesItem(playerState_t *ps, entityState_t *item, int atTime
 =======================================================================================================================================
 BG_CanItemBeGrabbed
 
-Returns false if the item should not be picked up.
-This needs to be the same for client side prediction and server use.
+Returns false if the item should not be picked up. This needs to be the same for client side prediction and server use.
 =======================================================================================================================================
 */
 qboolean BG_CanItemBeGrabbed(int gametype, const entityState_t *ent, const playerState_t *ps) {
@@ -1186,7 +1184,6 @@ qboolean BG_CanItemBeGrabbed(int gametype, const entityState_t *ent, const playe
 	switch (item->giType) {
 		case IT_WEAPON:
 			return qtrue; // weapons are always picked up
-
 		case IT_AMMO:
 			if (ps->ammo[item->giTag] >= 200) {
 				return qfalse; // can't hold any more
@@ -1210,12 +1207,10 @@ qboolean BG_CanItemBeGrabbed(int gametype, const entityState_t *ent, const playe
 
 			return qtrue;
 		case IT_HEALTH:
-			// small and mega healths will go over the max, otherwise
-			// don't pick up if already at max
+			// small and mega healths will go over the max, otherwise don't pick up if already at max
 			if (bg_itemlist[ps->stats[STAT_PERSISTANT_POWERUP]].giTag == PW_GUARD) {
 				upperBound = ps->stats[STAT_MAX_HEALTH];
-			} else
-				if (item->quantity == 5 || item->quantity == 100) {
+			} else if (item->quantity == 5 || item->quantity == 100) {
 				if (ps->stats[STAT_HEALTH] >= ps->stats[STAT_MAX_HEALTH] * 2) {
 					return qfalse;
 				}
@@ -1230,12 +1225,11 @@ qboolean BG_CanItemBeGrabbed(int gametype, const entityState_t *ent, const playe
 			return qtrue;
 		case IT_POWERUP:
 			return qtrue; // powerups are always picked up
-
 		case IT_PERSISTANT_POWERUP:
-
 			// In Double D we don't want persistant Powerups(or maybe, can be discussed)
-			if (gametype == GT_DOUBLE_D)
+			if (gametype == GT_DOUBLE_D) {
 				return qfalse;
+			}
 			// can only hold one item at a time
 			if (ps->stats[STAT_PERSISTANT_POWERUP]) {
 				return qfalse;
@@ -1279,34 +1273,36 @@ qboolean BG_CanItemBeGrabbed(int gametype, const entityState_t *ent, const playe
 				// we need to know this because we can pick up our dropped flag(and return it)
 				// but we can't pick up our flag at base
 				if (ps->persistant[PERS_TEAM] == TEAM_RED) {
-					if (item->giTag == PW_BLUEFLAG ||
-							(item->giTag == PW_REDFLAG && ent->modelindex2) ||
-							(item->giTag == PW_REDFLAG && ps->powerups[PW_BLUEFLAG]))
+					if (item->giTag == PW_BLUEFLAG || (item->giTag == PW_REDFLAG && ent->modelindex2) || (item->giTag == PW_REDFLAG && ps->powerups[PW_BLUEFLAG])) {
 						return qtrue;
+					}
 				} else if (ps->persistant[PERS_TEAM] == TEAM_BLUE) {
-					if (item->giTag == PW_REDFLAG ||
-							(item->giTag == PW_BLUEFLAG && ent->modelindex2) ||
-							(item->giTag == PW_BLUEFLAG && ps->powerups[PW_REDFLAG]))
+					if (item->giTag == PW_REDFLAG || (item->giTag == PW_BLUEFLAG && ent->modelindex2) || (item->giTag == PW_BLUEFLAG && ps->powerups[PW_REDFLAG])) {
 						return qtrue;
+					}
 				}
 			}
 
 			if (gametype == GT_DOUBLE_D) {
 				// We can touch both flags
-				if (item->giTag == PW_BLUEFLAG || item->giTag == PW_REDFLAG)
+				if (item->giTag == PW_BLUEFLAG || item->giTag == PW_REDFLAG) {
 					return qtrue;
+				}
 			}
 
 			if (gametype == GT_DOMINATION) {
-				if (item->giTag == DOM_POINTWHITE)
+				if (item->giTag == DOM_POINTWHITE) {
 					return qtrue;
+				}
 
 				if (ps->persistant[PERS_TEAM] == TEAM_RED) {
-					if (item->giTag == DOM_POINTBLUE)
+					if (item->giTag == DOM_POINTBLUE) {
 						return qtrue;
+					}
 				} else if (ps->persistant[PERS_TEAM] == TEAM_BLUE) {
-					if (item->giTag == DOM_POINTRED)
+					if (item->giTag == DOM_POINTRED) {
 						return qtrue;
+					}
 				}
 			}
 
@@ -1366,6 +1362,7 @@ void BG_EvaluateTrajectory(const trajectory_t *tr, int atTime, vec3_t result) {
 			}
 
 			deltaTime = (atTime - tr->trTime) * 0.001; // milliseconds to seconds
+
 			if (deltaTime < 0) {
 				deltaTime = 0;
 			}
@@ -1442,16 +1439,13 @@ char *eventnames[] = {
 	"EV_FALL_MEDIUM",
 	"EV_FALL_FAR",
 	"EV_JUMP_PAD",// boing sound at origin", jump sound on player
-
 	"EV_JUMP",
 	"EV_WATER_TOUCH",// foot touches
 	"EV_WATER_LEAVE",// foot leaves
 	"EV_WATER_UNDER",// head touches
 	"EV_WATER_CLEAR",// head leaves
-
 	"EV_ITEM_PICKUP",// normal item pickups are predictable
 	"EV_GLOBAL_ITEM_PICKUP",// powerup / team sounds are broadcast to everyone
-
 	"EV_NOAMMO",
 	"EV_CHANGE_WEAPON",
 	"EV_FIRE_WEAPON",
@@ -1476,7 +1470,6 @@ char *eventnames[] = {
 	"EV_PLAYER_TELEPORT_IN",
 	"EV_PLAYER_TELEPORT_OUT",
 	"EV_GRENADE_BOUNCE",// eventParm will be the soundindex
-
 	"EV_GENERAL_SOUND",
 	"EV_GLOBAL_SOUND",// no attenuation
 	"EV_GLOBAL_TEAM_SOUND",
@@ -1488,7 +1481,6 @@ char *eventnames[] = {
 	"EV_RAILTRAIL",
 	"EV_SHOTGUN",
 	"EV_BULLET",// otherEntity is the shooter
-
 	"EV_PAIN",
 	"EV_DEATH1",
 	"EV_DEATH2",
@@ -1499,7 +1491,6 @@ char *eventnames[] = {
 	"EV_POWERUP_REGEN",
 	"EV_GIB_PLAYER",// gib a previously living player
 	"EV_SCOREPLUM",// score plum
-
 	// Not all of these are used in baseoa but we keep them to gurantie event numbers between version
 	"EV_PROXIMITY_MINE_STICK",
 	"EV_PROXIMITY_MINE_TRIGGER",
@@ -1508,8 +1499,6 @@ char *eventnames[] = {
 	"EV_INVUL_IMPACT",// invulnerability sphere impact
 	"EV_JUICED",// invulnerability juiced effect
 	"EV_LIGHTNINGBOLT",// lightning bolt bounced of invulnerability sphere
-
-
 	"EV_DEBUG_LINE",
 	"EV_STOPLOOPINGSOUND",
 	"EV_TAUNT"
@@ -1568,7 +1557,6 @@ void BG_TouchJumpPad(playerState_t *ps, entityState_t *jumppad) {
 	// if we didn't hit this same jumppad the previous frame
 	// then don't play the event sound again if we are in a fat trigger
 	if (ps->jumppad_ent != jumppad->number) {
-
 		vectoangles(jumppad->origin2, angles);
 		p = fabs(AngleNormalize180(angles[PITCH]));
 
@@ -1606,8 +1594,8 @@ void BG_PlayerStateToEntityState(playerState_t *ps, entityState_t *s, qboolean s
 	}
 
 	s->number = ps->clientNum;
-
 	s->pos.trType = TR_INTERPOLATE;
+
 	VectorCopy(ps->origin, s->pos.trBase);
 
 	if (snap) {
@@ -1654,7 +1642,6 @@ void BG_PlayerStateToEntityState(playerState_t *ps, entityState_t *s, qboolean s
 
 	s->weapon = ps->weapon;
 	s->groundEntityNum = ps->groundEntityNum;
-
 	s->powerups = 0;
 
 	for (i = 0; i < MAX_POWERUPS; i++) {
@@ -1754,21 +1741,28 @@ void BG_PlayerStateToEntityStateExtraPolate(playerState_t *ps, entityState_t *s,
 /*
 =======================================================================================================================================
 BG_TeamName
-KK - OAX Copied from Tremulous
+
+Copied from Tremulous.
 =======================================================================================================================================
 */
 const char *BG_TeamName(team_t team) {
-	if (team == TEAM_NONE)
+
+	if (team == TEAM_NONE) {
 		return "spectator";
+	}
 
-	if (team == TEAM_RED)
+	if (team == TEAM_RED) {
 		return "Red";
+	}
 
-	if (team == TEAM_BLUE)
+	if (team == TEAM_BLUE) {
 		return "Blue";
+	}
 
-	if (team == TEAM_FREE)
+	if (team == TEAM_FREE) {
 		return "Free For All";
+	}
+
 	return "<team>";
 }
 
@@ -1776,54 +1770,103 @@ int trap_FS_FOpenFile(const char *qpath, fileHandle_t *f, fsMode_t mode);
 void trap_FS_Read(void *buffer, int len, fileHandle_t f);
 void trap_FS_FCloseFile(fileHandle_t f);
 
+/*
+=======================================================================================================================================
+MatchesGametype
+=======================================================================================================================================
+*/
 qboolean MatchesGametype(int gametype, const char *gametypeName) {
 	qboolean mayRead = qfalse;
 
 	switch (gametype) {
 		case GT_FFA:
-			if (Q_strequal(gametypeName, "dm")) mayRead = qtrue;
+			if (Q_strequal(gametypeName, "dm")) {
+				mayRead = qtrue;
+			}
+
 			break;
 		case GT_TEAM:
-			if (Q_strequal(gametypeName, "team")) mayRead = qtrue;
+			if (Q_strequal(gametypeName, "team")) {
+				mayRead = qtrue;
+			}
+
 			break;
 		case GT_TOURNAMENT:
-			if (Q_strequal(gametypeName, "tourney")) mayRead = qtrue;
+			if (Q_strequal(gametypeName, "tourney")) {
+				mayRead = qtrue;
+			}
+
 			break;
 		case GT_CTF:
-			if (Q_strequal(gametypeName, "ctf")) mayRead = qtrue;
+			if (Q_strequal(gametypeName, "ctf")) {
+				mayRead = qtrue;
+			}
+
 			break;
 		case GT_1FCTF:
-			if (Q_strequal(gametypeName, "1fctf")) mayRead = qtrue;
+			if (Q_strequal(gametypeName, "1fctf")) {
+				mayRead = qtrue;
+			}
+
 			break;
 		case GT_OBELISK:
-			if (Q_strequal(gametypeName, "obelisk")) mayRead = qtrue;
+			if (Q_strequal(gametypeName, "obelisk")) {
+				mayRead = qtrue;
+			}
+
 			break;
 		case GT_HARVESTER:
-			if (Q_strequal(gametypeName, "harvester")) mayRead = qtrue;
+			if (Q_strequal(gametypeName, "harvester")) {
+				mayRead = qtrue;
+			}
+
 			break;
 		case GT_ELIMINATION:
-			if (Q_strequal(gametypeName, "elimination")) mayRead = qtrue;
+			if (Q_strequal(gametypeName, "elimination")) {
+				mayRead = qtrue;
+			}
+
 			break;
 		case GT_CTF_ELIMINATION:
-			if (Q_strequal(gametypeName, "ctfelim")) mayRead = qtrue;
+			if (Q_strequal(gametypeName, "ctfelim")) {
+				mayRead = qtrue;
+			}
+
 			break;
 		case GT_LMS:
-			if (Q_strequal(gametypeName, "lms")) mayRead = qtrue;
+			if (Q_strequal(gametypeName, "lms")) {
+				mayRead = qtrue;
+			}
+
 			break;
 		case GT_DOUBLE_D:
-			if (Q_strequal(gametypeName, "dd")) mayRead = qtrue;
+			if (Q_strequal(gametypeName, "dd")) {
+				mayRead = qtrue;
+			}
+
 			break;
 		case GT_DOMINATION:
-			if (Q_strequal(gametypeName, "dom")) mayRead = qtrue;
+			if (Q_strequal(gametypeName, "dom")) {
+				mayRead = qtrue;
+			}
+
 			break;
 		case GT_POSSESSION:
-			if (Q_strequal(gametypeName, "pos")) mayRead = qtrue;
+			if (Q_strequal(gametypeName, "pos")) {
+				mayRead = qtrue;
+			}
+
 			break;
 	};
 
 	return mayRead;
 }
 
+/*
+=======================================================================================================================================
+MapInfoGet
+=======================================================================================================================================
+*/
 void MapInfoGet(const char *mapname, int gametype, mapinfo_result_t *result) {
 	fileHandle_t file;
 	char buffer[4 * 1024];
@@ -1834,9 +1877,9 @@ void MapInfoGet(const char *mapname, int gametype, mapinfo_result_t *result) {
 	int i;
 
 	memset(result, 0, sizeof(*result));
-	Com_sprintf(buffer, sizeof(buffer), "maps / %s.info", mapname);
-	Q_strlwr(buffer);
 
+	Com_sprintf(buffer, sizeof(buffer), "maps/%s.info", mapname);
+	Q_strlwr(buffer);
 	trap_FS_FOpenFile(buffer, &file, FS_READ);
 
 	if (!file) {
@@ -1878,47 +1921,69 @@ void MapInfoGet(const char *mapname, int gametype, mapinfo_result_t *result) {
 		}
 
 		if (Q_strequal(keyBuffer, "author")) {
-			if (mayRead) Q_strncpyz(result->author, token, sizeof(result->author));
+			if (mayRead) {
+				Q_strncpyz(result->author, token, sizeof(result->author));
+			}
 		}
 
 		if (Q_strequal(keyBuffer, "description")) {
-			if (mayRead) Q_strncpyz(result->description, token, sizeof(result->description));
+			if (mayRead) {
+				Q_strncpyz(result->description, token, sizeof(result->description));
+			}
 		}
 
 		if (Q_strequal(keyBuffer, "mpBots")) {
-			if (mayRead) Q_strncpyz(result->mpBots, token, sizeof(result->mpBots));
+			if (mayRead) {
+				Q_strncpyz(result->mpBots, token, sizeof(result->mpBots));
+			}
 		}
 
 		if (Q_strequal(keyBuffer, "captureLimit")) {
-			if (mayRead) result->captureLimit = atoi(token);
+			if (mayRead) {
+				result->captureLimit = atoi(token);
+			}
 		}
 
 		if (Q_strequal(keyBuffer, "fragLimit")) {
-			if (mayRead) result->fragLimit = atoi(token);
+			if (mayRead) {
+				result->fragLimit = atoi(token);
+			}
 		}
 
 		if (Q_strequal(keyBuffer, "maxPlayers")) {
-			if (mayRead) result->maxPlayers = atoi(token);
+			if (mayRead) {
+				result->maxPlayers = atoi(token);
+			}
 		}
 
 		if (Q_strequal(keyBuffer, "maxTeamSize")) {
-			if (mayRead) result->maxTeamSize = atoi(token);
+			if (mayRead) {
+				result->maxTeamSize = atoi(token);
+			}
 		}
 
 		if (Q_strequal(keyBuffer, "minPlayers")) {
-			if (mayRead) result->minPlayers = atoi(token);
+			if (mayRead) {
+				result->minPlayers = atoi(token);
+			}
 		}
 
 		if (Q_strequal(keyBuffer, "minTeamSize")) {
-			if (mayRead) result->minTeamSize = atoi(token);
+			if (mayRead) {
+				result->minTeamSize = atoi(token);
+			}
 		}
 
 		if (Q_strequal(keyBuffer, "recommendedPlayers")) {
-			if (mayRead) result->recommendedPlayers = atoi(token);
+			if (mayRead) {
+				result->recommendedPlayers = atoi(token);
+			}
 		}
 
 		if (Q_strequal(keyBuffer, "timeLimit")) {
-			if (mayRead) result->timeLimit = atoi(token);
+			if (mayRead) {
+				result->timeLimit = atoi(token);
+			}
 		}
 #define SUPPORT_GAMETYPE_PREFIX "support_"
 		if (Q_strequaln(keyBuffer, SUPPORT_GAMETYPE_PREFIX, sizeof(SUPPORT_GAMETYPE_PREFIX) - 1)) {

@@ -14,16 +14,20 @@ You should have received a copy of the GNU General Public License along with Qua
 Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 =======================================================================================================================================
 */
-//
-/**********************************************************************
-	UI_ATOMS.C
 
-	User interface building blocks and support functions.
- **********************************************************************/
+/**************************************************************************************************************************************
+ User interface building blocks and support functions.
+**************************************************************************************************************************************/
+
 #include "ui_local.h"
 
-qboolean m_entersound;		// after a frame, so caching won't disrupt the sound
+qboolean m_entersound; // after a frame, so caching won't disrupt the sound
 
+/*
+=======================================================================================================================================
+Com_Error
+=======================================================================================================================================
+*/
 void QDECL Com_Error(int level, const char *error, ...) {
 	va_list argptr;
 	char text[1024];
@@ -35,6 +39,11 @@ void QDECL Com_Error(int level, const char *error, ...) {
 	trap_Error(va("%s", text));
 }
 
+/*
+=======================================================================================================================================
+Com_Printf
+=======================================================================================================================================
+*/
 void QDECL Com_Printf(const char *msg, ...) {
 	va_list argptr;
 	char text[1024];
@@ -48,16 +57,21 @@ void QDECL Com_Printf(const char *msg, ...) {
 
 qboolean newUI = qfalse;
 
-
 /*
 =======================================================================================================================================
 UI_ClampCvar
 =======================================================================================================================================
 */
 float UI_ClampCvar(float min, float max, float value) {
-	if (value < min) return min;
 
-	if (value > max) return max;
+	if (value < min) {
+		return min;
+	}
+
+	if (value > max) {
+		return max;
+	}
+
 	return value;
 }
 
@@ -69,88 +83,114 @@ UI_StartDemoLoop
 void UI_StartDemoLoop(void) {
 	trap_Cmd_ExecuteText(EXEC_APPEND, "d1\n");
 }
-
-
-#ifndef MISSIONPACK// bk001206
+#ifndef MISSIONPACK
+/*
+=======================================================================================================================================
+NeedCDAction
+=======================================================================================================================================
+*/
 static void NeedCDAction(qboolean result) {
+
 	if (!result) {
 		trap_Cmd_ExecuteText(EXEC_APPEND, "quit\n");
 	}
 }
-#endif// MISSIONPACK
 
-#ifndef MISSIONPACK// bk001206
+/*
+=======================================================================================================================================
+NeedCDKeyAction
+=======================================================================================================================================
+*/
 static void NeedCDKeyAction(qboolean result) {
+
 	if (!result) {
 		trap_Cmd_ExecuteText(EXEC_APPEND, "quit\n");
 	}
 }
-#endif// MISSIONPACK
-
+#endif
+/*
+=======================================================================================================================================
+UI_Argv
+=======================================================================================================================================
+*/
 char *UI_Argv(int arg) {
 	static char buffer[MAX_STRING_CHARS];
 
 	trap_Argv(arg, buffer, sizeof(buffer));
-
 	return buffer;
 }
 
-
+/*
+=======================================================================================================================================
+UI_Cvar_VariableString
+=======================================================================================================================================
+*/
 char *UI_Cvar_VariableString(const char *var_name) {
 	static char buffer[MAX_STRING_CHARS];
 
 	trap_Cvar_VariableStringBuffer(var_name, buffer, sizeof(buffer));
-
 	return buffer;
 }
 
-
-
+/*
+=======================================================================================================================================
+UI_SetBestScores
+=======================================================================================================================================
+*/
 void UI_SetBestScores(postGameInfo_t *newInfo, qboolean postGame) {
+
 	trap_Cvar_Set("ui_scoreAccuracy", va("%i%%", newInfo->accuracy));
 	trap_Cvar_Set("ui_scoreImpressives", va("%i", newInfo->impressives));
 	trap_Cvar_Set("ui_scoreExcellents", va("%i", newInfo->excellents));
-	trap_Cvar_Set("ui_scoreDefends", 		va("%i", newInfo->defends));
-	trap_Cvar_Set("ui_scoreAssists", 		va("%i", newInfo->assists));
-	trap_Cvar_Set("ui_scoreGauntlets", 	va("%i", newInfo->gauntlets));
-	trap_Cvar_Set("ui_scoreScore", 			va("%i", newInfo->score));
-	trap_Cvar_Set("ui_scorePerfect",  		va("%i", newInfo->perfects));
-	trap_Cvar_Set("ui_scoreTeam", 				va("%i to %i", newInfo->redScore, newInfo->blueScore));
-	trap_Cvar_Set("ui_scoreBase", 				va("%i", newInfo->baseScore));
-	trap_Cvar_Set("ui_scoreTimeBonus", 	va("%i", newInfo->timeBonus));
-	trap_Cvar_Set("ui_scoreSkillBonus", 	va("%i", newInfo->skillBonus));
+	trap_Cvar_Set("ui_scoreDefends", va("%i", newInfo->defends));
+	trap_Cvar_Set("ui_scoreAssists", va("%i", newInfo->assists));
+	trap_Cvar_Set("ui_scoreGauntlets", va("%i", newInfo->gauntlets));
+	trap_Cvar_Set("ui_scoreScore", va("%i", newInfo->score));
+	trap_Cvar_Set("ui_scorePerfect", va("%i", newInfo->perfects));
+	trap_Cvar_Set("ui_scoreTeam", va("%i to %i", newInfo->redScore, newInfo->blueScore));
+	trap_Cvar_Set("ui_scoreBase", va("%i", newInfo->baseScore));
+	trap_Cvar_Set("ui_scoreTimeBonus", va("%i", newInfo->timeBonus));
+	trap_Cvar_Set("ui_scoreSkillBonus", va("%i", newInfo->skillBonus));
 	trap_Cvar_Set("ui_scoreShutoutBonus", va("%i", newInfo->shutoutBonus));
-	trap_Cvar_Set("ui_scoreTime", 				va("%02i:%02i", newInfo->time / 60, newInfo->time % 60));
-	trap_Cvar_Set("ui_scoreCaptures", 	va("%i", newInfo->captures));
+	trap_Cvar_Set("ui_scoreTime", va("%02i:%02i", newInfo->time / 60, newInfo->time % 60));
+	trap_Cvar_Set("ui_scoreCaptures", va("%i", newInfo->captures));
 
 	if (postGame) {
 		trap_Cvar_Set("ui_scoreAccuracy2", va("%i%%", newInfo->accuracy));
 		trap_Cvar_Set("ui_scoreImpressives2", va("%i", newInfo->impressives));
 		trap_Cvar_Set("ui_scoreExcellents2", va("%i", newInfo->excellents));
-		trap_Cvar_Set("ui_scoreDefends2", 		va("%i", newInfo->defends));
-		trap_Cvar_Set("ui_scoreAssists2", 		va("%i", newInfo->assists));
-		trap_Cvar_Set("ui_scoreGauntlets2", 	va("%i", newInfo->gauntlets));
-		trap_Cvar_Set("ui_scoreScore2", 			va("%i", newInfo->score));
-		trap_Cvar_Set("ui_scorePerfect2",  		va("%i", newInfo->perfects));
-		trap_Cvar_Set("ui_scoreTeam2", 				va("%i to %i", newInfo->redScore, newInfo->blueScore));
-		trap_Cvar_Set("ui_scoreBase2", 				va("%i", newInfo->baseScore));
-		trap_Cvar_Set("ui_scoreTimeBonus2", 	va("%i", newInfo->timeBonus));
-		trap_Cvar_Set("ui_scoreSkillBonus2", 	va("%i", newInfo->skillBonus));
+		trap_Cvar_Set("ui_scoreDefends2", va("%i", newInfo->defends));
+		trap_Cvar_Set("ui_scoreAssists2", va("%i", newInfo->assists));
+		trap_Cvar_Set("ui_scoreGauntlets2", va("%i", newInfo->gauntlets));
+		trap_Cvar_Set("ui_scoreScore2", va("%i", newInfo->score));
+		trap_Cvar_Set("ui_scorePerfect2", va("%i", newInfo->perfects));
+		trap_Cvar_Set("ui_scoreTeam2", va("%i to %i", newInfo->redScore, newInfo->blueScore));
+		trap_Cvar_Set("ui_scoreBase2", va("%i", newInfo->baseScore));
+		trap_Cvar_Set("ui_scoreTimeBonus2", va("%i", newInfo->timeBonus));
+		trap_Cvar_Set("ui_scoreSkillBonus2", va("%i", newInfo->skillBonus));
 		trap_Cvar_Set("ui_scoreShutoutBonus2", va("%i", newInfo->shutoutBonus));
-		trap_Cvar_Set("ui_scoreTime2", 				va("%02i:%02i", newInfo->time / 60, newInfo->time % 60));
-		trap_Cvar_Set("ui_scoreCaptures2", 	va("%i", newInfo->captures));
+		trap_Cvar_Set("ui_scoreTime2", va("%02i:%02i", newInfo->time / 60, newInfo->time % 60));
+		trap_Cvar_Set("ui_scoreCaptures2", va("%i", newInfo->captures));
 	}
 }
 
+/*
+=======================================================================================================================================
+UI_LoadBestScores
+=======================================================================================================================================
+*/
 void UI_LoadBestScores(const char *map, int game) {
 	char fileName[MAX_QPATH];
 	fileHandle_t f;
 	postGameInfo_t newInfo;
+
 	memset(&newInfo, 0, sizeof(postGameInfo_t));
-	Com_sprintf(fileName, MAX_QPATH, "games / %s_%i.game", map, game);
+
+	Com_sprintf(fileName, MAX_QPATH, "games/%s_%i.game", map, game);
 
 	if (trap_FS_FOpenFile(fileName, &f, FS_READ) >= 0) {
 		int size = 0;
+
 		trap_FS_Read(&size, sizeof(int), f);
 
 		if (size == sizeof(postGameInfo_t)) {
@@ -163,12 +203,13 @@ void UI_LoadBestScores(const char *map, int game) {
 	UI_SetBestScores(&newInfo, qfalse);
 
 	Com_sprintf(fileName, MAX_QPATH, "demos / %s_%d.dm_%d", map, game, (int)trap_Cvar_VariableValue("protocol"));
+
 	uiInfo.demoAvailable = qfalse;
 
 	if (trap_FS_FOpenFile(fileName, &f, FS_READ) >= 0) {
 		uiInfo.demoAvailable = qtrue;
 		trap_FS_FCloseFile(f);
-	} 
+	}
 }
 
 /*
@@ -184,8 +225,8 @@ void UI_ClearScores(void) {
 	postGameInfo_t newInfo;
 
 	count = trap_FS_GetFileList("games", "game", gameList, sizeof(gameList));
-
 	size = sizeof(postGameInfo_t);
+
 	memset(&newInfo, 0, size);
 
 	if (count > 0) {
@@ -194,7 +235,7 @@ void UI_ClearScores(void) {
 		for (i = 0; i < count; i++) {
 			len = strlen(gameFile);
 
-			if (trap_FS_FOpenFile(va("games / %s", gameFile), &f, FS_WRITE) >= 0) {
+			if (trap_FS_FOpenFile(va("games/%s", gameFile), &f, FS_WRITE) >= 0) {
 				trap_FS_Write(&size, sizeof(int), f);
 				trap_FS_Write(&newInfo, size, f);
 				trap_FS_FCloseFile(f);
@@ -203,12 +244,15 @@ void UI_ClearScores(void) {
 			gameFile += len + 1;
 		}
 	}
-	
+
 	UI_SetBestScores(&newInfo, qfalse);
 }
 
-
-
+/*
+=======================================================================================================================================
+UI_Cache_f
+=======================================================================================================================================
+*/
 static void UI_Cache_f(void) {
 	Display_CacheAll();
 }
@@ -230,16 +274,17 @@ static void UI_CalcPostGameStats(void) {
 
 	trap_GetConfigString(CS_SERVERINFO, info, sizeof(info));
 	Q_strncpyz(map, Info_ValueForKey(info, "mapname"), sizeof(map));
-	game = atoi(Info_ValueForKey(info, "g_gametype"));
 
+	game = atoi(Info_ValueForKey(info, "g_gametype"));
 	// compose file name
-	Com_sprintf(fileName, MAX_QPATH, "games / %s_%i.game", map, game);
+	Com_sprintf(fileName, MAX_QPATH, "games/%s_%i.game", map, game);
 	// see if we have one already
 	memset(&oldInfo, 0, sizeof(postGameInfo_t));
 
 	if (trap_FS_FOpenFile(fileName, &f, FS_READ) >= 0) {
-	// if so load it
+		// if so load it
 		size = 0;
+
 		trap_FS_Read(&size, sizeof(int), f);
 
 		if (size == sizeof(postGameInfo_t)) {
@@ -247,7 +292,7 @@ static void UI_CalcPostGameStats(void) {
 		}
 
 		trap_FS_FCloseFile(f);
-	}					 
+	}
 
 	newInfo.accuracy = atoi(UI_Argv(3));
 	newInfo.impressives = atoi(UI_Argv(4));
@@ -285,7 +330,6 @@ static void UI_CalcPostGameStats(void) {
 
 	newInfo.score = newInfo.baseScore + newInfo.shutoutBonus + newInfo.timeBonus;
 	newInfo.score *= newInfo.skillBonus;
-
 	// see if the score is higher for this one
 	newHigh = (newInfo.redScore > newInfo.blueScore && newInfo.score > oldInfo.score);
 
@@ -304,7 +348,6 @@ static void UI_CalcPostGameStats(void) {
 	if (newInfo.time < oldInfo.time) {
 		uiInfo.newBestTime = uiInfo.uiDC.realTime + 20000;
 	}
- 
 	// put back all the ui overrides
 	trap_Cvar_Set("capturelimit", UI_Cvar_VariableString("ui_saveCaptureLimit"));
 	trap_Cvar_Set("fraglimit", UI_Cvar_VariableString("ui_saveFragLimit"));
@@ -316,8 +359,6 @@ static void UI_CalcPostGameStats(void) {
 
 	UI_SetBestScores(&newInfo, qtrue);
 	UI_ShowPostGame(newHigh);
-
-
 }
 
 /*
@@ -332,7 +373,6 @@ qboolean UI_ConsoleCommand(int realTime) {
 	uiInfo.uiDC.realTime = realTime;
 
 	cmd = UI_Argv(0);
-
 	// ensure minimum menu data is available
 	// Menu_Cache();
 
@@ -344,7 +384,7 @@ qboolean UI_ConsoleCommand(int realTime) {
 		UI_Report();
 		return qtrue;
 	}
-	
+
 	if (Q_strequal(cmd, "ui_load")) {
 		UI_Load();
 		return qtrue;
@@ -355,11 +395,11 @@ qboolean UI_ConsoleCommand(int realTime) {
 			char shader1[MAX_QPATH];
 			char shader2[MAX_QPATH];
 			char shader3[MAX_QPATH];
-			
+
 			Q_strncpyz(shader1, UI_Argv(1), sizeof(shader1));
 			Q_strncpyz(shader2, UI_Argv(2), sizeof(shader2));
 			Q_strncpyz(shader3, UI_Argv(3), sizeof(shader3));
-			
+
 			trap_R_RemapShader(shader1, shader2, shader3);
 			return qtrue;
 		}
@@ -394,13 +434,14 @@ UI_Shutdown
 =======================================================================================================================================
 */
 void UI_Shutdown(void) {
+
 }
 
 /*
 =======================================================================================================================================
 UI_AdjustFrom640
 
-Adjusted for resolution and screen aspect ratio
+Adjusted for resolution and screen aspect ratio.
 =======================================================================================================================================
 */
 void UI_AdjustFrom640(float *x, float *y, float *w, float *h) {
@@ -411,29 +452,39 @@ void UI_AdjustFrom640(float *x, float *y, float *w, float *h) {
 	*w *= uiInfo.uiDC.scale;
 	*h *= uiInfo.uiDC.scale;
 #endif
-
-// 	*x *= uiInfo.uiDC.xscale;
-	*x = *x * uiInfo.uiDC.xscale + uiInfo.uiDC.bias;		// leilei - widescreen adjust
+//	*x *= uiInfo.uiDC.xscale;
+	*x = *x * uiInfo.uiDC.xscale + uiInfo.uiDC.bias; // leilei - widescreen adjust
 	*y *= uiInfo.uiDC.yscale;
 	*w *= uiInfo.uiDC.xscale;
 	*h *= uiInfo.uiDC.yscale;
 }
 
+/*
+=======================================================================================================================================
+UI_DrawNamedPic
+=======================================================================================================================================
+*/
 void UI_DrawNamedPic(float x, float y, float width, float height, const char *picname) {
 	qhandle_t hShader;
 
 	hShader = trap_R_RegisterShaderNoMip(picname);
+
 	UI_AdjustFrom640(&x, &y, &width, &height);
 	trap_R_DrawStretchPic(x, y, width, height, 0, 0, 1, 1, hShader);
 }
 
+/*
+=======================================================================================================================================
+UI_DrawHandlePic
+=======================================================================================================================================
+*/
 void UI_DrawHandlePic(float x, float y, float w, float h, qhandle_t hShader) {
 	float s0;
 	float s1;
 	float t0;
 	float t1;
 
-	if (w < 0) {	// flip about vertical
+	if (w < 0) { // flip about vertical
 		w = -w;
 		s0 = 1;
 		s1 = 0;
@@ -442,7 +493,7 @@ void UI_DrawHandlePic(float x, float y, float w, float h, qhandle_t hShader) {
 		s1 = 1;
 	}
 
-	if (h < 0) {	// flip about horizontal
+	if (h < 0) { // flip about horizontal
 		h = -h;
 		t0 = 1;
 		t1 = 0;
@@ -450,7 +501,7 @@ void UI_DrawHandlePic(float x, float y, float w, float h, qhandle_t hShader) {
 		t0 = 0;
 		t1 = 1;
 	}
-	
+
 	UI_AdjustFrom640(&x, &y, &w, &h);
 	trap_R_DrawStretchPic(x, y, w, h, s0, t0, s1, t1, hShader);
 }
@@ -459,66 +510,95 @@ void UI_DrawHandlePic(float x, float y, float w, float h, qhandle_t hShader) {
 =======================================================================================================================================
 UI_FillRect
 
-Coordinates are 640 * 480 virtual values
+Coordinates are 640 * 480 virtual values.
 =======================================================================================================================================
 */
 void UI_FillRect(float x, float y, float width, float height, const float *color) {
-	trap_R_SetColor(color);
 
+	trap_R_SetColor(color);
 	UI_AdjustFrom640(&x, &y, &width, &height);
 	trap_R_DrawStretchPic(x, y, width, height, 0, 0, 0, 0, uiInfo.uiDC.whiteShader);
-
 	trap_R_SetColor(NULL);
 }
 
+/*
+=======================================================================================================================================
+UI_DrawSides
+=======================================================================================================================================
+*/
 void UI_DrawSides(float x, float y, float w, float h) {
+
 	UI_AdjustFrom640(&x, &y, &w, &h);
 	trap_R_DrawStretchPic(x, y, 1, h, 0, 0, 0, 0, uiInfo.uiDC.whiteShader);
 	trap_R_DrawStretchPic(x + w - 1, y, 1, h, 0, 0, 0, 0, uiInfo.uiDC.whiteShader);
 }
 
+/*
+=======================================================================================================================================
+UI_DrawTopBottom
+=======================================================================================================================================
+*/
 void UI_DrawTopBottom(float x, float y, float w, float h) {
+
 	UI_AdjustFrom640(&x, &y, &w, &h);
 	trap_R_DrawStretchPic(x, y, w, 1, 0, 0, 0, 0, uiInfo.uiDC.whiteShader);
 	trap_R_DrawStretchPic(x, y + h - 1, w, 1, 0, 0, 0, 0, uiInfo.uiDC.whiteShader);
 }
+
 /*
 =======================================================================================================================================
 UI_DrawRect
 
-Coordinates are 640 * 480 virtual values
+Coordinates are 640 * 480 virtual values.
 =======================================================================================================================================
 */
 void UI_DrawRect(float x, float y, float width, float height, const float *color) {
-	trap_R_SetColor(color);
 
+	trap_R_SetColor(color);
 	UI_DrawTopBottom(x, y, width, height);
 	UI_DrawSides(x, y, width, height);
-
 	trap_R_SetColor(NULL);
 }
 
+/*
+=======================================================================================================================================
+UI_SetColor
+=======================================================================================================================================
+*/
 void UI_SetColor(const float *rgba) {
 	trap_R_SetColor(rgba);
 }
 
+/*
+=======================================================================================================================================
+UI_UpdateScreen
+=======================================================================================================================================
+*/
 void UI_UpdateScreen(void) {
 	trap_UpdateScreen();
 }
 
-
+/*
+=======================================================================================================================================
+UI_DrawTextBox
+=======================================================================================================================================
+*/
 void UI_DrawTextBox(int x, int y, int width, int lines) {
 
 	UI_FillRect(x + BIGCHAR_WIDTH / 2, y + BIGCHAR_HEIGHT / 2, (width + 1) * BIGCHAR_WIDTH, (lines + 1) * BIGCHAR_HEIGHT, colorBlack);
 	UI_DrawRect(x + BIGCHAR_WIDTH / 2, y + BIGCHAR_HEIGHT / 2, (width + 1) * BIGCHAR_WIDTH, (lines + 1) * BIGCHAR_HEIGHT, colorWhite);
 }
 
+/*
+=======================================================================================================================================
+UI_CursorInRect
+=======================================================================================================================================
+*/
 qboolean UI_CursorInRect(int x, int y, int width, int height) {
-	if (uiInfo.uiDC.cursorx < x ||
-		uiInfo.uiDC.cursory < y ||
-		uiInfo.uiDC.cursorx > x + width ||
-		uiInfo.uiDC.cursory > y + height)
+
+	if (uiInfo.uiDC.cursorx < x || uiInfo.uiDC.cursory < y || uiInfo.uiDC.cursorx > x + width || uiInfo.uiDC.cursory > y + height) {
 		return qfalse;
+	}
 
 	return qtrue;
 }

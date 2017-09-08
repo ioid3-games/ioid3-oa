@@ -46,11 +46,10 @@ float pm_spectatorfriction = 5.0f;
 int c_pmove = 0;
 
 extern int enableQ;
-extern vmCvar_t cg_enableQ;		// leilei - map changes player / weapons scale(for q1 adaptations)
+extern vmCvar_t cg_enableQ; // leilei - map changes player / weapons scale(for q1 adaptations)
 /*
 =======================================================================================================================================
 PM_AddEvent
-
 =======================================================================================================================================
 */
 void PM_AddEvent(int newEvent) {
@@ -89,49 +88,75 @@ PM_StartTorsoAnim
 =======================================================================================================================================
 */
 static void PM_StartTorsoAnim(int anim) {
+
 	if (pm->ps->pm_type >= PM_DEAD) {
 		return;
 	}
 
 	pm->ps->torsoAnim = ((pm->ps->torsoAnim & ANIM_TOGGLEBIT) ^ ANIM_TOGGLEBIT)|anim;
 }
+
+/*
+=======================================================================================================================================
+PM_StartLegsAnim
+=======================================================================================================================================
+*/
 static void PM_StartLegsAnim(int anim) {
+
 	if (pm->ps->pm_type >= PM_DEAD) {
 		return;
 	}
 
 	if (pm->ps->legsTimer > 0) {
-		return;		// a high priority animation is running
+		return; // a high priority animation is running
 	}
 
 	pm->ps->legsAnim = ((pm->ps->legsAnim & ANIM_TOGGLEBIT) ^ ANIM_TOGGLEBIT)|anim;
 }
 
+/*
+=======================================================================================================================================
+PM_ContinueLegsAnim
+=======================================================================================================================================
+*/
 static void PM_ContinueLegsAnim(int anim) {
+
 	if ((pm->ps->legsAnim & ~ANIM_TOGGLEBIT) == anim) {
 		return;
 	}
 
 	if (pm->ps->legsTimer > 0) {
-		return;		// a high priority animation is running
+		return; // a high priority animation is running
 	}
 
 	PM_StartLegsAnim(anim);
 }
 
+/*
+=======================================================================================================================================
+PM_ContinueTorsoAnim
+=======================================================================================================================================
+*/
 static void PM_ContinueTorsoAnim(int anim) {
+
 	if ((pm->ps->torsoAnim & ~ANIM_TOGGLEBIT) == anim) {
 		return;
 	}
 
 	if (pm->ps->torsoTimer > 0) {
-		return;		// a high priority animation is running
+		return; // a high priority animation is running
 	}
 
 	PM_StartTorsoAnim(anim);
 }
 
+/*
+=======================================================================================================================================
+PM_ForceLegsAnim
+=======================================================================================================================================
+*/
 static void PM_ForceLegsAnim(int anim) {
+
 	pm->ps->legsTimer = 0;
 	PM_StartLegsAnim(anim);
 }
@@ -180,20 +205,19 @@ static void PM_Friction(void) {
 	VectorCopy(vel, vec);
 
 	if (pml.walking) {
-		vec[2] = 0;	// ignore slope movement
+		vec[2] = 0; // ignore slope movement
 	}
 
 	speed = VectorLength(vec);
 
 	if (speed < 1) {
 		vel[0] = 0;
-		vel[1] = 0;		// allow sinking underwater
+		vel[1] = 0; // allow sinking underwater
 		// FIXME: still have z friction underwater?
 		return;
 	}
 
 	drop = 0;
-
 	// apply ground friction
 	if (pm->waterlevel <= 1) {
 		if (pml.walking && !(pml.groundTrace.surfaceFlags & SURF_SLICK)) {
@@ -236,10 +260,11 @@ PM_Accelerate
 
 TODO: bunny hoping
 
-Handles user intended acceleration
+Handles user intended acceleration.
 =======================================================================================================================================
 */
 static void PM_Accelerate(vec3_t wishdir, float wishspeed, float accel) {
+
 	if (!(pm->pmove_flags & DF_NO_BUNNY)) {
 		// q2 style
 		int i;
@@ -270,8 +295,8 @@ static void PM_Accelerate(vec3_t wishdir, float wishspeed, float accel) {
 
 		VectorScale(wishdir, wishspeed, wishVelocity);
 		VectorSubtract(wishVelocity, pm->ps->velocity, pushDir);
-		pushLen = VectorNormalize(pushDir);
 
+		pushLen = VectorNormalize(pushDir);
 		canPush = accel * pml.frametime * wishspeed;
 
 		if (canPush > pushLen) {
@@ -286,9 +311,8 @@ static void PM_Accelerate(vec3_t wishdir, float wishspeed, float accel) {
 =======================================================================================================================================
 PM_CmdScale
 
-Returns the scale factor to apply to cmd movements
-This allows the clients to use axial - 127 to 127 values for all directions
-without getting a sqrt(2) distortion in speed.
+Returns the scale factor to apply to cmd movements.
+This allows the clients to use axial - 127 to 127 values for all directions without getting a sqrt(2) distortion in speed.
 =======================================================================================================================================
 */
 static float PM_CmdScale(usercmd_t *cmd) {
@@ -325,6 +349,7 @@ to the facing dir
 =======================================================================================================================================
 */
 static void PM_SetMovementDir(void) {
+
 	if (pm->cmd.forwardmove || pm->cmd.rightmove) {
 		if (pm->cmd.rightmove == 0 && pm->cmd.forwardmove > 0) {
 			pm->ps->movementDir = 0;
@@ -344,9 +369,7 @@ static void PM_SetMovementDir(void) {
 			pm->ps->movementDir = 7;
 		}
 	} else {
-		// if they aren't actively going directly sideways,
-		// change the animation to the diagonal so they
-		// don't stop too crooked
+		// if they aren't actively going directly sideways, change the animation to the diagonal so they don't stop too crooked
 		if (pm->ps->movementDir == 2) {
 			pm->ps->movementDir = 1;
 		} else if (pm->ps->movementDir == 6) {
@@ -364,7 +387,7 @@ static qboolean PM_CheckJump(void) {
 
 
 	if (pm->ps->pm_flags & PMF_RESPAWNED) {
-		return qfalse;		// don't allow jump until all buttons are up
+		return qfalse; // don't allow jump until all buttons are up
 	}
 
 	if (pm->cmd.upmove < 10) {
@@ -378,7 +401,7 @@ static qboolean PM_CheckJump(void) {
 		return qfalse;
 	}
 
-	pml.groundPlane = qfalse;		// jumping away
+	pml.groundPlane = qfalse; // jumping away
 	pml.walking = qfalse;
 	pm->ps->pm_flags|= PMF_JUMP_HELD;
 	pm->ps->groundEntityNum = ENTITYNUM_NONE;
@@ -421,6 +444,7 @@ static qboolean PM_CheckWaterJump(void) {
 	VectorNormalize(flatforward);
 
 	VectorMA(pm->ps->origin, 30, flatforward, spot);
+
 	spot[2] += 4;
 	cont = pm->pointcontents(spot, pm->ps->clientNum);
 
@@ -436,27 +460,24 @@ static qboolean PM_CheckWaterJump(void) {
 	}
 	// jump out of water
 	VectorScale(pml.forward, 200, pm->ps->velocity);
-	pm->ps->velocity[2] = 350;
 
+	pm->ps->velocity[2] = 350;
 	pm->ps->pm_flags|= PMF_TIME_WATERJUMP;
 	pm->ps->pm_time = 2000;
 
 	return qtrue;
 }
 
-// ============================================================================
-
-
 /*
 =======================================================================================================================================
 PM_WaterJumpMove
 
-Flying out of the water
+Flying out of the water.
 =======================================================================================================================================
 */
 static void PM_WaterJumpMove(void) {
-	// waterjump has no control, but falls
 
+	// waterjump has no control, but falls
 	PM_StepSlideMove(qtrue);
 
 	pm->ps->velocity[2] -= pm->ps->gravity * pml.frametime;
@@ -491,23 +512,22 @@ static void PM_WaterMove(void) {
 	PM_Friction();
 
 	scale = PM_CmdScale(&pm->cmd);
-
 	// user intentions
-
 	if (!scale) {
 		wishvel[0] = 0;
 		wishvel[1] = 0;
-		wishvel[2] = -60;		// sink towards bottom
+		wishvel[2] = -60; // sink towards bottom
 	} else {
-		for (i = 0; i < 3; i++)
+		for (i = 0; i < 3; i++) {
 			wishvel[i] = scale * pml.forward[i] * pm->cmd.forwardmove + scale * pml.right[i] * pm->cmd.rightmove;
+		}
 
 		wishvel[2] += scale * pm->cmd.upmove;
 	}
 
 	VectorCopy(wishvel, wishdir);
-	wishspeed = VectorNormalize(wishdir);
 
+	wishspeed = VectorNormalize(wishdir);
 	swimScale = pm_swimScale;
 
 	if (pm->pmove_flags & DF_FAST_WATER_MOVE) {
@@ -519,7 +539,6 @@ static void PM_WaterMove(void) {
 	}
 
 	PM_Accelerate(wishdir, wishspeed, pm_wateraccelerate);
-
 	// make sure we can go up slopes easily under water
 	if (pml.groundPlane && DotProduct(pm->ps->velocity, pml.groundTrace.plane.normal) < 0) {
 		vel = VectorLength(pm->ps->velocity);
@@ -537,10 +556,11 @@ static void PM_WaterMove(void) {
 =======================================================================================================================================
 PM_InvulnerabilityMove
 
-Only with the invulnerability powerup
+Only with the invulnerability powerup.
 =======================================================================================================================================
 */
 static void PM_InvulnerabilityMove(void) {
+
 	pm->cmd.forwardmove = 0;
 	pm->cmd.rightmove = 0;
 	pm->cmd.upmove = 0;
@@ -565,9 +585,7 @@ static void PM_FlyMove(void) {
 	PM_Friction();
 
 	scale = PM_CmdScale(&pm->cmd);
-
 	// user intentions
-
 	if (!scale) {
 		wishvel[0] = 0;
 		wishvel[1] = 0;
@@ -581,17 +599,16 @@ static void PM_FlyMove(void) {
 	}
 
 	VectorCopy(wishvel, wishdir);
+
 	wishspeed = VectorNormalize(wishdir);
 
 	PM_Accelerate(wishdir, wishspeed, pm_flyaccelerate);
-
 	PM_StepSlideMove(qfalse);
 }
 
 /*
 =======================================================================================================================================
 PM_AirMove
-
 =======================================================================================================================================
 */
 static void PM_AirMove(void) {
@@ -607,16 +624,14 @@ static void PM_AirMove(void) {
 
 	fmove = pm->cmd.forwardmove;
 	smove = pm->cmd.rightmove;
-
 	cmd = pm->cmd;
 	scale = PM_CmdScale(&cmd);
-
 	// set the movementDir so clients can rotate the legs for strafing
 	PM_SetMovementDir();
-
 	// project moves down to flat plane
 	pml.forward[2] = 0;
 	pml.right[2] = 0;
+
 	VectorNormalize(pml.forward);
 	VectorNormalize(pml.right);
 
@@ -627,14 +642,12 @@ static void PM_AirMove(void) {
 	wishvel[2] = 0;
 
 	VectorCopy(wishvel, wishdir);
+
 	wishspeed = VectorNormalize(wishdir);
 	wishspeed *= scale;
-
 	// not on ground, so little effect on velocity
 	PM_Accelerate(wishdir, wishspeed, pm_airaccelerate);
-
-	// we may have a ground plane that is very steep, even
-	// though we don't have a groundentity
+	// we may have a ground plane that is very steep, even though we don't have a groundentity
 	// slide along the steep plane
 	if (pml.groundPlane) {
 		PM_ClipVelocity(pm->ps->velocity, pml.groundTrace.plane.normal, pm->ps->velocity, OVERCLIP);
@@ -644,12 +657,12 @@ static void PM_AirMove(void) {
 	// ZOID:  If we are on the grapple, try stair - stepping
 	// this allows a player to use the grapple to pull himself
 	// over a ledge
-	if (pm->ps->pm_flags & PMF_GRAPPLE_PULL)
+	if (pm->ps->pm_flags & PMF_GRAPPLE_PULL) {
 		PM_StepSlideMove(qtrue);
-	else
+	} else {
 		PM_SlideMove(qtrue);
+	}
 #endif
-
 	PM_StepSlideMove(qtrue);
 }
 
@@ -669,10 +682,11 @@ static void PM_GrappleMove(void) {
 	vlen = VectorLength(vel);
 	VectorNormalize(vel);
 
-	if (vlen <= 100)
+	if (vlen <= 100) {
 		VectorScale(vel, 10 * vlen, vel);
-	else
+	} else {
 		VectorScale(vel, 800, vel);
+	}
 
 	VectorCopy(vel, pm->ps->velocity);
 
@@ -717,17 +731,13 @@ static void PM_WalkMove(void) {
 
 	fmove = pm->cmd.forwardmove;
 	smove = pm->cmd.rightmove;
-
 	cmd = pm->cmd;
 	scale = PM_CmdScale(&cmd);
-
 	// set the movementDir so clients can rotate the legs for strafing
 	PM_SetMovementDir();
-
 	// project moves down to flat plane
 	pml.forward[2] = 0;
 	pml.right[2] = 0;
-
 	// project the forward and right directions onto the ground plane
 	PM_ClipVelocity(pml.forward, pml.groundTrace.plane.normal, pml.forward, OVERCLIP);
 	PM_ClipVelocity(pml.right, pml.groundTrace.plane.normal, pml.right, OVERCLIP);
@@ -740,9 +750,9 @@ static void PM_WalkMove(void) {
 	}
 
 	VectorCopy(wishvel, wishdir);
+
 	wishspeed = VectorNormalize(wishdir);
 	wishspeed *= scale;
-
 	// clamp the speed lower if ducking
 	if (pm->ps->pm_flags & PMF_DUCKED) {
 		if (wishspeed > pm->ps->speed * pm_duckScale) {
@@ -760,8 +770,7 @@ static void PM_WalkMove(void) {
 			wishspeed = pm->ps->speed * waterScale;
 		}
 	}
-	// when a player gets hit, they temporarily lose
-	// full control, which allows them to be moved a bit
+	// when a player gets hit, they temporarily lose full control, which allows them to be moved a bit
 	if ((pml.groundTrace.surfaceFlags & SURF_SLICK) || pm->ps->pm_flags & PMF_TIME_KNOCKBACK) {
 		accelerate = pm_airaccelerate;
 	} else {
@@ -775,14 +784,11 @@ static void PM_WalkMove(void) {
 	}
 
 	vel = VectorLength(pm->ps->velocity);
-
 	// slide along the ground plane
 	PM_ClipVelocity(pm->ps->velocity, pml.groundTrace.plane.normal, pm->ps->velocity, OVERCLIP);
-
 	// don't decrease velocity when going up or down a slope
 	VectorNormalize(pm->ps->velocity);
 	VectorScale(pm->ps->velocity, vel, pm->ps->velocity);
-
 	// don't do anything if standing still
 	if (!pm->ps->velocity[0] && !pm->ps->velocity[1]) {
 		return;
@@ -803,9 +809,7 @@ static void PM_DeadMove(void) {
 		return;
 	}
 	// extra friction
-
 	forward = VectorLength(pm->ps->velocity);
-
 	forward -= 20;
 
 	if (forward <= 0) {
@@ -830,28 +834,28 @@ static void PM_NoclipMove(void) {
 	float wishspeed;
 	float scale;
 
-	if (cg_enableQ.value)
+	if (cg_enableQ.value) {
 		pm->ps->viewheight = QUACK_VIEWHEIGHT;
-	else
+	} else {
 		pm->ps->viewheight = DEFAULT_VIEWHEIGHT;
-
+	}
 	// friction
-
 	speed = VectorLength(pm->ps->velocity);
 
 	if (speed < 1) {
 		VectorCopy(vec3_origin, pm->ps->velocity);
 	} else {
 		drop = 0;
-
-		friction = pm_friction * 1.5;	// extra friction
+		friction = pm_friction * 1.5; // extra friction
 		control = speed < pm_stopspeed ? pm_stopspeed : speed;
 		drop += control * friction * pml.frametime;
 		// scale the velocity
 		newspeed = speed - drop;
 
-		if (newspeed < 0)
+		if (newspeed < 0) {
 			newspeed = 0;
+		}
+
 		newspeed /= speed;
 
 		VectorScale(pm->ps->velocity, newspeed, pm->ps->velocity);
@@ -862,30 +866,31 @@ static void PM_NoclipMove(void) {
 	fmove = pm->cmd.forwardmove;
 	smove = pm->cmd.rightmove;
 
-	for (i = 0; i < 3; i++)
+	for (i = 0; i < 3; i++) {
 		wishvel[i] = pml.forward[i] * fmove + pml.right[i] * smove;
+	}
+
 	wishvel[2] += pm->cmd.upmove;
 
 	VectorCopy(wishvel, wishdir);
+
 	wishspeed = VectorNormalize(wishdir);
 	wishspeed *= scale;
 
 	PM_Accelerate(wishdir, wishspeed, pm_accelerate);
-
 	// move
 	VectorMA(pm->ps->origin, pml.frametime, pm->ps->velocity, pm->ps->origin);
 }
-
-// ============================================================================
 
 /*
 =======================================================================================================================================
 PM_FootstepForSurface
 
-Returns an event number apropriate for the groundsurface
+Returns an event number apropriate for the groundsurface.
 =======================================================================================================================================
 */
 static int PM_FootstepForSurface(void) {
+
 	if (pml.groundTrace.surfaceFlags & SURF_NOSTEPS) {
 		return 0;
 	}
@@ -901,7 +906,7 @@ static int PM_FootstepForSurface(void) {
 =======================================================================================================================================
 PM_CrashLand
 
-Check for hard landings that generate sound events
+Check for hard landings that generate sound events.
 =======================================================================================================================================
 */
 static void PM_CrashLand(void) {
@@ -919,16 +924,13 @@ static void PM_CrashLand(void) {
 	}
 
 	pm->ps->legsTimer = TIMER_LAND;
-
 	// calculate the exact velocity on landing
 	dist = pm->ps->origin[2] - pml.previous_origin[2];
 	vel = pml.previous_velocity[2];
 	acc = -pm->ps->gravity;
-
 	a = acc / 2;
 	b = vel;
 	c = -dist;
-
 	den = b * b - 4 * a * c;
 
 	if (den < 0) {
@@ -939,7 +941,6 @@ static void PM_CrashLand(void) {
 
 	delta = vel + t * acc;
 	delta = delta * delta * 0.0001;
-
 	// ducking while falling doubles damage
 	if (pm->ps->pm_flags & PMF_DUCKED) {
 		delta *= 2;
@@ -1028,7 +1029,7 @@ static int PM_CorrectAllSolid(trace_t *trace) {
 =======================================================================================================================================
 PM_GroundTraceMissed
 
-The ground trace didn't hit a surface, so we are in freefall
+The ground trace didn't hit a surface, so we are in freefall.
 =======================================================================================================================================
 */
 static void PM_GroundTraceMissed(void) {
@@ -1081,8 +1082,9 @@ static void PM_GroundTrace(void) {
 
 	// do something corrective if the trace starts in a solid...
 	if (trace.allsolid) {
-		if (!PM_CorrectAllSolid(&trace))
+		if (!PM_CorrectAllSolid(&trace)) {
 			return;
+		}
 	}
 	// if the trace didn't hit anything, we are in free fall
 	if (trace.fraction == 1.0) {
@@ -1125,7 +1127,6 @@ static void PM_GroundTrace(void) {
 
 	pml.groundPlane = qtrue;
 	pml.walking = qtrue;
-
 	// hitting solid ground will end a waterjump
 	if (pm->ps->pm_flags & PMF_TIME_WATERJUMP) {
 		pm->ps->pm_flags & = ~(PMF_TIME_WATERJUMP|PMF_TIME_LAND);
@@ -1154,7 +1155,9 @@ static void PM_GroundTrace(void) {
 
 /*
 =======================================================================================================================================
-PM_SetWaterLevel	FIXME: avoid this twice?  certainly if not moving
+PM_SetWaterLevel
+
+FIXME: avoid this twice?  certainly if not moving.
 =======================================================================================================================================
 */
 static void PM_SetWaterLevel(void) {
@@ -1163,9 +1166,7 @@ static void PM_SetWaterLevel(void) {
 	int sample1;
 	int sample2;
 
-
 	// get waterlevel, accounting for ducking
-
 	pm->waterlevel = 0;
 	pm->watertype = 0;
 
@@ -1246,8 +1247,9 @@ static void PM_CheckDuck(void) {
 			pm->maxs[2] = 32;
 			pm->trace(&trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->clientNum, pm->tracemask);
 
-			if (!trace.allsolid)
+			if (!trace.allsolid) {
 				pm->ps->pm_flags & = ~PMF_DUCKED;
+			}
 		}
 	}
 
@@ -1257,16 +1259,13 @@ static void PM_CheckDuck(void) {
 	} else {
 		pm->maxs[2] = 32;
 
-		if (cg_enableQ.value)
+		if (cg_enableQ.value) {
 			pm->ps->viewheight = QUACK_VIEWHEIGHT;
 		} else {
 			pm->ps->viewheight = DEFAULT_VIEWHEIGHT;
-
+		}
 	}
 }
-
-// ===================================================================
-
 
 /*
 =======================================================================================================================================
@@ -1278,14 +1277,10 @@ static void PM_Footsteps(void) {
 	int old;
 	qboolean footstep;
 
-
-	// calculate speed and cycle to be used for
-	// all cyclic walking effects
-
+	// calculate speed and cycle to be used for all cyclic walking effects
 	pm->xyspeed = sqrt(pm->ps->velocity[0] * pm->ps->velocity[0] + pm->ps->velocity[1] * pm->ps->velocity[1]);
 
 	if (pm->ps->groundEntityNum == ENTITYNUM_NONE) {
-
 		if (pm->ps->powerups[PW_INVULNERABILITY]) {
 			PM_ContinueLegsAnim(LEGS_IDLECR);
 		}
@@ -1299,7 +1294,8 @@ static void PM_Footsteps(void) {
 	// if not trying to move
 	if (!pm->cmd.forwardmove && !pm->cmd.rightmove) {
 		if (pm->xyspeed < 5) {
-			pm->ps->bobCycle = 0;	// start at beginning of cycle again
+			pm->ps->bobCycle = 0; // start at beginning of cycle again
+
 			if (pm->ps->pm_flags & PMF_DUCKED) {
 				PM_ContinueLegsAnim(LEGS_IDLECR);
 			} else {
@@ -1313,7 +1309,7 @@ static void PM_Footsteps(void) {
 	footstep = qfalse;
 
 	if (pm->ps->pm_flags & PMF_DUCKED) {
-		bobmove = 0.5;	// ducked characters bob much faster
+		bobmove = 0.5; // ducked characters bob much faster
 		if (pm->ps->pm_flags & PMF_BACKWARDS_RUN) {
 			PM_ContinueLegsAnim(LEGS_BACKCR);
 		} else {
@@ -1321,23 +1317,22 @@ static void PM_Footsteps(void) {
 		}
 	} else {
 		if (!(pm->cmd.buttons & BUTTON_WALKING)) {
-			bobmove = 0.4f;	// faster speeds bob faster
+			bobmove = 0.4f; // faster speeds bob faster
 			if (pm->ps->pm_flags & PMF_BACKWARDS_RUN) {
 				PM_ContinueLegsAnim(LEGS_BACK);
-			}
 			// leilei - new strafe animations for OA3
-			else if (pm->cmd.rightmove < 0 && pm->cmd.forwardmove == 0)
+			} else if (pm->cmd.rightmove < 0 && pm->cmd.forwardmove == 0) {
 				PM_ContinueLegsAnim(LEGS_STRAFE_LEFT);
-			else if (pm->cmd.rightmove > 0 && pm->cmd.forwardmove == 0)
+			} else if (pm->cmd.rightmove > 0 && pm->cmd.forwardmove == 0) {
 				PM_ContinueLegsAnim(LEGS_STRAFE_RIGHT);
-
-			else {
+			} else {
 				PM_ContinueLegsAnim(LEGS_RUN);
 			}
 
 			footstep = qtrue;
 		} else {
-			bobmove = 0.3f;	// walking bobs slow
+			bobmove = 0.3f; // walking bobs slow
+
 			if (pm->ps->pm_flags & PMF_BACKWARDS_RUN) {
 				PM_ContinueLegsAnim(LEGS_BACKWALK);
 			} else {
@@ -1348,7 +1343,6 @@ static void PM_Footsteps(void) {
 	// check for footstep / splash sounds
 	old = pm->ps->bobCycle;
 	pm->ps->bobCycle = (int)(old + bobmove * pml.msec) & 255;
-
 	// if we just crossed a cycle boundary, play an apropriate footstep event
 	if (((old + 64) ^(pm->ps->bobCycle + 64)) & 128) {
 		if (pm->waterlevel == 0) {
@@ -1364,7 +1358,6 @@ static void PM_Footsteps(void) {
 			PM_AddEvent(EV_SWIM);
 		} else if (pm->waterlevel == 3) {
 			// no sound when completely underwater
-
 		}
 	}
 }
@@ -1376,26 +1369,21 @@ PM_WaterEvents
 Generate sound events for entering and leaving water
 =======================================================================================================================================
 */
-static void PM_WaterEvents(void)  		// FIXME?
-{
+static void PM_WaterEvents(void) { // FIXME?
 
 	// if just entered a water volume, play a sound
-
 	if (!pml.previous_waterlevel && pm->waterlevel) {
 		PM_AddEvent(EV_WATER_TOUCH);
 	}
 	// if just completely exited a water volume, play a sound
-
 	if (pml.previous_waterlevel && !pm->waterlevel) {
 		PM_AddEvent(EV_WATER_LEAVE);
 	}
 	// check for head just going under water
-
 	if (pml.previous_waterlevel != 3 && pm->waterlevel == 3) {
 		PM_AddEvent(EV_WATER_UNDER);
 	}
 	// check for head just coming out of water
-
 	if (pml.previous_waterlevel == 3 && pm->waterlevel != 3) {
 		PM_AddEvent(EV_WATER_CLEAR);
 	}
@@ -1407,6 +1395,7 @@ PM_BeginWeaponChange
 =======================================================================================================================================
 */
 static void PM_BeginWeaponChange(int weapon) {
+
 	if (weapon <= WP_NONE || weapon >= WP_NUM_WEAPONS) {
 		return;
 	}
@@ -1459,37 +1448,11 @@ static void PM_FinishWeaponChange(void) {
 /*
 =======================================================================================================================================
 PM_TorsoAnimation
-
 =======================================================================================================================================
 */
-
-
-
-
-/*
-
-static void PM_TorsoAnimation(void) {
-	if (pm->ps->weaponstate == WEAPON_READY) {
-		if (pm->ps->weapon == WP_GAUNTLET) {
-			PM_ContinueTorsoAnim(TORSO_STAND2);
-		} else {
-			PM_ContinueTorsoAnim(TORSO_STAND);
-		}
-
-	return;
-	}
-}
-
-
-
-
-
-
-
-*/
-
 // leilei - heavily improved version for OA3 player animations
 static void PM_TorsoAnimation(void) {
+
 	if (pm->ps->weaponstate == WEAPON_READY) {
 		if (pm->ps->velocity[2] < 0 && !pml.groundPlane) {
 			// Falling Downward
@@ -1518,11 +1481,11 @@ static void PM_TorsoAnimation(void) {
 			} else {
 				PM_ContinueTorsoAnim(TORSO_FALL);
 			}
-		} else if (	pm->cmd.forwardmove || (pm->cmd.rightmove && pml.groundPlane && pm->xyspeed > 200 && !(pm->cmd.buttons & BUTTON_WALKING))) {
+		} else if (pm->cmd.forwardmove || (pm->cmd.rightmove && pml.groundPlane && pm->xyspeed > 200 && !(pm->cmd.buttons & BUTTON_WALKING))) {
 			// Running Forward
 			if (pm->ps->weapon == WP_GAUNTLET) {
 				PM_ContinueTorsoAnim(TORSO_RUN2);
-			} else if (pm->ps->powerups[PW_REDFLAG] || pm->ps->powerups[PW_BLUEFLAG] || pm->ps->powerups[PW_NEUTRALFLAG])  {
+			} else if (pm->ps->powerups[PW_REDFLAG] || pm->ps->powerups[PW_BLUEFLAG] || pm->ps->powerups[PW_NEUTRALFLAG]) {
 				PM_ContinueTorsoAnim(TORSO_RUN3);
 			} else if (pm->cmd.rightmove && !pm->cmd.forwardmove && pml.groundPlane && !(pm->cmd.buttons & BUTTON_WALKING)) {
 				PM_ContinueTorsoAnim(TORSO_STRAFE);
@@ -1532,7 +1495,7 @@ static void PM_TorsoAnimation(void) {
 		} else {
 			if (pm->ps->weapon == WP_GAUNTLET) {
 				PM_ContinueTorsoAnim(TORSO_STAND2);
-			} else if (pm->ps->powerups[PW_REDFLAG] || pm->ps->powerups[PW_BLUEFLAG] || pm->ps->powerups[PW_NEUTRALFLAG])  {
+			} else if (pm->ps->powerups[PW_REDFLAG] || pm->ps->powerups[PW_BLUEFLAG] || pm->ps->powerups[PW_NEUTRALFLAG]) {
 				PM_ContinueTorsoAnim(TORSO_STAND3);
 			} else {
 				PM_ContinueTorsoAnim(TORSO_STAND);
@@ -1547,10 +1510,8 @@ static void PM_TorsoAnimation(void) {
 =======================================================================================================================================
 PM_Weapon
 
-Generates weapon events and modifes the weapon counter
-
-Elimination TODO:
-Make this thing stop during warmup(done)
+Generates weapon events and modifes the weapon counter.
+Elimination TODO: Make this thing stop during warmup(done).
 =======================================================================================================================================
 */
 static void PM_Weapon(void) {
@@ -1572,8 +1533,7 @@ static void PM_Weapon(void) {
 	// check for item using
 	if (pm->cmd.buttons & BUTTON_USE_HOLDABLE) {
 		if (!(pm->ps->pm_flags & PMF_USE_ITEM_HELD)) {
-			if (bg_itemlist[pm->ps->stats[STAT_HOLDABLE_ITEM]].giTag == HI_MEDKIT
-			       && pm->ps->stats[STAT_HEALTH] >= (pm->ps->stats[STAT_MAX_HEALTH] + 25)) {
+			if (bg_itemlist[pm->ps->stats[STAT_HOLDABLE_ITEM]].giTag == HI_MEDKIT && pm->ps->stats[STAT_HEALTH] >= (pm->ps->stats[STAT_MAX_HEALTH] + 25)) {
 				// don't use medkit if at max health
 			} else {
 				pm->ps->pm_flags|= PMF_USE_ITEM_HELD;
@@ -1655,46 +1615,46 @@ static void PM_Weapon(void) {
 	PM_AddEvent(EV_FIRE_WEAPON);
 
 	switch (pm->ps->weapon) {
-	default:
-	case WP_GAUNTLET:
-		addTime = 400;
-		break;
-	case WP_LIGHTNING:
-		addTime = 50;
-		break;
-	case WP_SHOTGUN:
-		addTime = 1000;
-		break;
-	case WP_MACHINEGUN:
-		addTime = 100;
-		break;
-	case WP_GRENADE_LAUNCHER:
-		addTime = 800;
-		break;
-	case WP_ROCKET_LAUNCHER:
-		addTime = 800;
-		break;
-	case WP_PLASMAGUN:
-		addTime = 100;
-		break;
-	case WP_RAILGUN:
-		addTime = 1500;
-		break;
-	case WP_BFG:
-		addTime = 200;
-		break;
-	case WP_GRAPPLING_HOOK:
-		addTime = 400;
-		break;
-	case WP_NAILGUN:
-		addTime = 1000;
-		break;
-	case WP_PROX_LAUNCHER:
-		addTime = 800;
-		break;
-	case WP_CHAINGUN:
-		addTime = 30;
-		break;
+		default:
+		case WP_GAUNTLET:
+			addTime = 400;
+			break;
+		case WP_LIGHTNING:
+			addTime = 50;
+			break;
+		case WP_SHOTGUN:
+			addTime = 1000;
+			break;
+		case WP_MACHINEGUN:
+			addTime = 100;
+			break;
+		case WP_GRENADE_LAUNCHER:
+			addTime = 800;
+			break;
+		case WP_ROCKET_LAUNCHER:
+			addTime = 800;
+			break;
+		case WP_PLASMAGUN:
+			addTime = 100;
+			break;
+		case WP_RAILGUN:
+			addTime = 1500;
+			break;
+		case WP_BFG:
+			addTime = 200;
+			break;
+		case WP_GRAPPLING_HOOK:
+			addTime = 400;
+			break;
+		case WP_NAILGUN:
+			addTime = 1000;
+			break;
+		case WP_PROX_LAUNCHER:
+			addTime = 800;
+			break;
+		case WP_CHAINGUN:
+			addTime = 30;
+			break;
 	}
 
 	if (bg_itemlist[pm->ps->stats[STAT_PERSISTANT_POWERUP]].giTag == PW_SCOUT) {
@@ -1713,8 +1673,8 @@ static void PM_Weapon(void) {
 PM_Animate
 =======================================================================================================================================
 */
-
 static void PM_Animate(void) {
+
 	if (pm->cmd.buttons & BUTTON_GESTURE) {
 		if (pm->ps->torsoTimer == 0) {
 			PM_StartTorsoAnim(TORSO_GESTURE);
@@ -1724,32 +1684,32 @@ static void PM_Animate(void) {
 	} else if (pm->cmd.buttons & BUTTON_GETFLAG) {
 		if (pm->ps->torsoTimer == 0) {
 			PM_StartTorsoAnim(TORSO_GETFLAG);
-			pm->ps->torsoTimer = 600;	// TIMER_GESTURE;
+			pm->ps->torsoTimer = 600; // TIMER_GESTURE;
 		}
 	} else if (pm->cmd.buttons & BUTTON_GUARDBASE) {
 		if (pm->ps->torsoTimer == 0) {
 			PM_StartTorsoAnim(TORSO_GUARDBASE);
-			pm->ps->torsoTimer = 600;	// TIMER_GESTURE;
+			pm->ps->torsoTimer = 600; // TIMER_GESTURE;
 		}
 	} else if (pm->cmd.buttons & BUTTON_PATROL) {
 		if (pm->ps->torsoTimer == 0) {
 			PM_StartTorsoAnim(TORSO_PATROL);
-			pm->ps->torsoTimer = 600;	// TIMER_GESTURE;
+			pm->ps->torsoTimer = 600; // TIMER_GESTURE;
 		}
 	} else if (pm->cmd.buttons & BUTTON_FOLLOWME) {
 		if (pm->ps->torsoTimer == 0) {
 			PM_StartTorsoAnim(TORSO_FOLLOWME);
-			pm->ps->torsoTimer = 600;	// TIMER_GESTURE;
+			pm->ps->torsoTimer = 600; // TIMER_GESTURE;
 		}
 	} else if (pm->cmd.buttons & BUTTON_AFFIRMATIVE) {
 		if (pm->ps->torsoTimer == 0) {
 			PM_StartTorsoAnim(TORSO_AFFIRMATIVE);
-			pm->ps->torsoTimer = 600;	// TIMER_GESTURE;
+			pm->ps->torsoTimer = 600; // TIMER_GESTURE;
 		}
 	} else if (pm->cmd.buttons & BUTTON_NEGATIVE) {
 		if (pm->ps->torsoTimer == 0) {
 			PM_StartTorsoAnim(TORSO_NEGATIVE);
-			pm->ps->torsoTimer = 600;	// TIMER_GESTURE;
+			pm->ps->torsoTimer = 600; // TIMER_GESTURE;
 		}
 	}
 }
@@ -1760,6 +1720,7 @@ PM_DropTimers
 =======================================================================================================================================
 */
 static void PM_DropTimers(void) {
+
 	// drop misc timing counter
 	if (pm->ps->pm_time) {
 		if (pml.msec >= pm->ps->pm_time) {
@@ -1791,20 +1752,19 @@ static void PM_DropTimers(void) {
 =======================================================================================================================================
 PM_UpdateViewAngles
 
-This can be used as another entry point when only the viewangles
-are being updated instead of a full move
+This can be used as another entry point when only the viewangles are being updated instead of a full move.
 =======================================================================================================================================
 */
 void PM_UpdateViewAngles(playerState_t *ps, const usercmd_t *cmd) {
-	short		temp;
+	short temp;
 	int i;
 
 	if (ps->pm_type == PM_INTERMISSION || ps->pm_type == PM_SPINTERMISSION) {
-		return;		// no view changes at all
+		return; // no view changes at all
 	}
 
 	if (ps->pm_type != PM_SPECTATOR && ps->stats[STAT_HEALTH] <= 0) {
-		return;		// no view changes at all
+		return; // no view changes at all
 	}
 	// circularly clamp the angles with deltas
 	for (i = 0; i < 3; i++) {
@@ -1825,28 +1785,24 @@ void PM_UpdateViewAngles(playerState_t *ps, const usercmd_t *cmd) {
 	}
 }
 
+void trap_SnapVector(float *v);
 /*
 =======================================================================================================================================
 PmoveSingle
-
 =======================================================================================================================================
 */
-void trap_SnapVector(float *v);
-
 void PmoveSingle(pmove_t *pmove) {
 	pm = pmove;
 
-	// this counter lets us debug movement problems with a journal
-	// by setting a conditional breakpoint fot the previous frame
+	// this counter lets us debug movement problems with a journal by setting a conditional breakpoint fot the previous frame
 	c_pmove++;
-
 	// clear results
 	pm->numtouch = 0;
 	pm->watertype = 0;
 	pm->waterlevel = 0;
 
 	if (pm->ps->stats[STAT_HEALTH] <= 0) {
-		pm->tracemask & = ~CONTENTS_BODY;	// corpses can fly through bodies
+		pm->tracemask & = ~CONTENTS_BODY; // corpses can fly through bodies
 	}
 	// make sure walking button is clear if they are running, to avoid
 	// proxy no - footsteps cheats
@@ -1860,23 +1816,19 @@ void PmoveSingle(pmove_t *pmove) {
 		pm->ps->eFlags & = ~EF_TALK;
 	}
 	// set the firing flag for continuous beam weapons
-	if (!(pm->ps->pm_flags & PMF_RESPAWNED) && pm->ps->pm_type != PM_INTERMISSION && pm->ps->pm_type != PM_NOCLIP
-	       && (pm->cmd.buttons & BUTTON_ATTACK) && pm->ps->ammo[pm->ps->weapon]) {
+	if (!(pm->ps->pm_flags & PMF_RESPAWNED) && pm->ps->pm_type != PM_INTERMISSION && pm->ps->pm_type != PM_NOCLIP && (pm->cmd.buttons & BUTTON_ATTACK) && pm->ps->ammo[pm->ps->weapon]) {
 		pm->ps->eFlags|= EF_FIRING;
 	} else {
 		pm->ps->eFlags & = ~EF_FIRING;
 	}
 	// clear the respawned flag if attack and use are cleared
-	if (pm->ps->stats[STAT_HEALTH] > 0 &&
-	        !(pm->cmd.buttons &(BUTTON_ATTACK|BUTTON_USE_HOLDABLE))) {
+	if (pm->ps->stats[STAT_HEALTH] > 0 && !(pm->cmd.buttons &(BUTTON_ATTACK|BUTTON_USE_HOLDABLE))) {
 		pm->ps->pm_flags & = ~PMF_RESPAWNED;
 	}
 	// if talk button is down, dissallow all other input
-	// this is to prevent any possible intercept proxy from
-	// adding fake talk balloons
+	// this is to prevent any possible intercept proxy from adding fake talk balloons
 	if (pmove->cmd.buttons & BUTTON_TALK) {
-		// keep the talk button set tho for when the cmd.serverTime > 66 msec
-		// and the same cmd is used multiple times in Pmove
+		// keep the talk button set tho for when the cmd.serverTime > 66 msec and the same cmd is used multiple times in Pmove
 		pmove->cmd.buttons = BUTTON_TALK;
 		pmove->cmd.forwardmove = 0;
 		pmove->cmd.rightmove = 0;
@@ -1884,7 +1836,6 @@ void PmoveSingle(pmove_t *pmove) {
 	}
 	// clear all pmove local vars
 	memset(&pml, 0, sizeof(pml));
-
 	// determine the time
 	pml.msec = pmove->cmd.serverTime - pm->ps->commandTime;
 
@@ -1895,18 +1846,14 @@ void PmoveSingle(pmove_t *pmove) {
 	}
 
 	pm->ps->commandTime = pmove->cmd.serverTime;
-
 	// save old org in case we get stuck
 	VectorCopy(pm->ps->origin, pml.previous_origin);
-
 	// save old velocity for crashlanding
 	VectorCopy(pm->ps->velocity, pml.previous_velocity);
 
 	pml.frametime = pml.msec * 0.001;
-
 	// update the viewangles
 	PM_UpdateViewAngles(pm->ps, &pm->cmd);
-
 	AngleVectors(pm->ps->viewangles, pml.forward, pml.right, pml.up);
 
 	if (pm->cmd.upmove < 10) {
@@ -1940,19 +1887,18 @@ void PmoveSingle(pmove_t *pmove) {
 	}
 
 	if (pm->ps->pm_type == PM_FREEZE) {
-		return;		// no movement at all
+		return; // no movement at all
 	}
 
 	if (pm->ps->pm_type == PM_INTERMISSION || pm->ps->pm_type == PM_SPINTERMISSION) {
-		return;		// no movement at all
+		return; // no movement at all
 	}
 	// set watertype, and waterlevel
 	PM_SetWaterLevel();
-	pml.previous_waterlevel = pmove->waterlevel;
 
+	pml.previous_waterlevel = pmove->waterlevel;
 	// set mins, maxs, and viewheight
 	PM_CheckDuck();
-
 	// set groundentity
 	PM_GroundTrace();
 
@@ -1985,42 +1931,33 @@ void PmoveSingle(pmove_t *pmove) {
 	}
 
 	PM_Animate();
-
 	// set groundentity, watertype, and waterlevel
 	PM_GroundTrace();
 	PM_SetWaterLevel();
-
 	// weapons
-	if (!(pm->ps->pm_flags & PMF_ELIMWARMUP))
+	if (!(pm->ps->pm_flags & PMF_ELIMWARMUP)) {
 		PM_Weapon();
-
-
-
+	}
 	// footstep events / legs animations
 	PM_Footsteps();
-
-
 	// torso animation
 	PM_TorsoAnimation();
-
 	// torso animation
 	// PM_TorsoAnimation2();
-
-
-	// entering / leaving water splashes
+	// entering/leaving water splashes
 	PM_WaterEvents();
-
 	// snap some parts of playerstate to save network bandwidth
 	// But only if pmove_float is not enabled
-	if (!(pm->pmove_float))
+	if (!(pm->pmove_float)) {
 		trap_SnapVector(pm->ps->velocity);
+	}
 }
 
 /*
 =======================================================================================================================================
 Pmove
 
-Can be called by either the server or the client
+Can be called by either the server or the client.
 =======================================================================================================================================
 */
 void Pmove(pmove_t *pmove) {
@@ -2029,17 +1966,15 @@ void Pmove(pmove_t *pmove) {
 	finalTime = pmove->cmd.serverTime;
 
 	if (finalTime < pmove->ps->commandTime) {
-		return;	// should not happen
+		return; // should not happen
 	}
 
 	if (finalTime > pmove->ps->commandTime + 1000) {
 		pmove->ps->commandTime = finalTime - 1000;
 	}
 
-	pmove->ps->pmove_framecount = (pmove->ps->pmove_framecount + 1) &((1 << PS_PMOVEFRAMECOUNTBITS) - 1);
-
-	// chop the move up if it is too long, to prevent framerate
-	// dependent behavior
+	pmove->ps->pmove_framecount = (pmove->ps->pmove_framecount + 1) & ((1 << PS_PMOVEFRAMECOUNTBITS) - 1);
+	// chop the move up if it is too long, to prevent framerate dependent behavior
 	while (pmove->ps->commandTime != finalTime) {
 		int msec;
 
@@ -2056,6 +1991,7 @@ void Pmove(pmove_t *pmove) {
 		}
 
 		pmove->cmd.serverTime = pmove->ps->commandTime + msec;
+
 		PmoveSingle(pmove);
 
 		if (pmove->ps->pm_flags & PMF_JUMP_HELD) {
@@ -2063,4 +1999,3 @@ void Pmove(pmove_t *pmove) {
 		}
 	}
 }
-

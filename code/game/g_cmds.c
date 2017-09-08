@@ -319,6 +319,7 @@ CheatsOk
 =======================================================================================================================================
 */
 qboolean CheatsOk(gentity_t *ent) {
+
 	if (!g_cheats.integer) {
 		trap_SendServerCommand(ent - g_entities, va("print \"Cheats are not enabled on this server.\n\""));
 		return qfalse;
@@ -696,10 +697,10 @@ void Cmd_Kill_f(gentity_t *ent) {
 	ent->client->ps.stats[STAT_HEALTH] = ent->health = -999;
 
 	if (ent->client->lastSentFlying > -1) {
-		// If player is in the air because of knockback we give credit to the person who sent it flying
-		player_die(ent, ent, &g_entities[ent->client->lastSentFlying], 100000, MOD_FALLING);
+		// if player is in the air because of knockback we give credit to the person who sent it flying
+		PlayerDie(ent, ent, &g_entities[ent->client->lastSentFlying], 100000, MOD_FALLING);
 	} else {
-		player_die(ent, ent, ent, 100000, MOD_SUICIDE);
+		PlayerDie(ent, ent, ent, 100000, MOD_SUICIDE);
 	}
 }
 
@@ -727,7 +728,7 @@ void BroadcastTeamChange(gclient_t *client, int oldTeam) {
 =======================================================================================================================================
 SetTeam
 
-KK - OAX Modded this to accept a forced admin change.
+Modded this to accept a forced admin change.
 =======================================================================================================================================
 */
 void SetTeam(gentity_t *ent, char *s) {
@@ -781,7 +782,7 @@ void SetTeam(gentity_t *ent, char *s) {
 
 				counts[TEAM_BLUE] = TeamCount(ent->client->ps.clientNum, TEAM_BLUE);
 				counts[TEAM_RED] = TeamCount(ent->client->ps.clientNum, TEAM_RED);
-				// We allow a spread of two
+				// we allow a spread of two
 				if (team == TEAM_RED && counts[TEAM_RED] - counts[TEAM_BLUE] > 1) {
 					trap_SendServerCommand(ent->client->ps.clientNum, "cp \"Red team has too many players.\n\"");
 					return; // ignore the request
@@ -791,7 +792,7 @@ void SetTeam(gentity_t *ent, char *s) {
 					trap_SendServerCommand(ent->client->ps.clientNum, "cp \"Blue team has too many players.\n\"");
 					return; // ignore the request
 				}
-				// It's ok, the team we are switching to has less or same number of players
+				// it's ok, the team we are switching to has less or same number of players
 			}
 		}
 	} else {
@@ -841,14 +842,16 @@ void SetTeam(gentity_t *ent, char *s) {
 
 	if (oldTeam != TEAM_SPECTATOR) {
 		int teamscore = -99;
-		// Prevent a team from loosing point because of player leaving team
+
+		// prevent a team from loosing point because of player leaving team
 		if (g_gametype.integer == GT_TEAM && ent->client->ps.stats[STAT_HEALTH]) {
 			teamscore = level.teamScores[ent->client->sess.sessionTeam];
 		}
-		// Kill him(makes sure he loses flags, etc)
+		// kill him (makes sure he loses flags, etc)
 		ent->flags & = ~FL_GODMODE;
 		ent->client->ps.stats[STAT_HEALTH] = ent->health = 0;
-		player_die(ent, ent, ent, 100000, MOD_SUICIDE);
+
+		PlayerDie(ent, ent, ent, 100000, MOD_SUICIDE);
 
 		if (teamscore != -99) {
 			level.teamScores[ent->client->sess.sessionTeam] = teamscore;
@@ -1015,7 +1018,7 @@ void Cmd_Follow_f(gentity_t *ent) {
 =======================================================================================================================================
 Cmd_FollowCycle_f
 
-KK - OAX Modified to trap arguments.
+Modified to trap arguments.
 =======================================================================================================================================
 */
 void Cmd_FollowCycle_f(gentity_t *ent) {
@@ -1078,8 +1081,8 @@ void Cmd_FollowCycle_f(gentity_t *ent) {
 		}
 
 		if (count > level.maxclients) {
-			// We have looked at all clients at least once and found nothing
-			return; // We might end up in an infinite loop here. Stop it!
+			// we have looked at all clients at least once and found nothing
+			return; // we might end up in an infinite loop here. Stop it!
 		}
 		// can only follow connected clients
 		if (level.clients[clientnum].pers.connected != CON_CONNECTED) {
@@ -1089,9 +1092,8 @@ void Cmd_FollowCycle_f(gentity_t *ent) {
 		if ((level.clients[clientnum].sess.sessionTeam == TEAM_SPECTATOR) || level.clients[clientnum].isEliminated) {
 			continue;
 		}
-		// Stop players from spectating players on the enemy team in elimination modes.
-		if ((g_gametype.integer == GT_ELIMINATION || g_gametype.integer == GT_CTF_ELIMINATION) && g_elimination_lockspectator.integer && ((ent->client->sess.sessionTeam == TEAM_RED && level.clients[clientnum].sess.sessionTeam == TEAM_BLUE) ||
-			(ent->client->sess.sessionTeam == TEAM_BLUE && level.clients[clientnum].sess.sessionTeam == TEAM_RED))) {
+		// stop players from spectating players on the enemy team in elimination modes.
+		if ((g_gametype.integer == GT_ELIMINATION || g_gametype.integer == GT_CTF_ELIMINATION) && g_elimination_lockspectator.integer && ((ent->client->sess.sessionTeam == TEAM_RED && level.clients[clientnum].sess.sessionTeam == TEAM_BLUE) || (ent->client->sess.sessionTeam == TEAM_BLUE && level.clients[clientnum].sess.sessionTeam == TEAM_RED))) {
 			continue;
 		}
 		// this is good, we can use it
@@ -1207,7 +1209,7 @@ void G_Say(gentity_t *ent, gentity_t *target, int mode, const char *chatText) {
 		other = &g_entities[j];
 		G_SayTo(ent, other, mode, color, name, text);
 	}
-	// KK - OAX Admin Command Check from Say / SayTeam line
+	// KK - OAX Admin Command Check from Say/SayTeam line
 	if (g_adminParseSay.integer) {
 		G_admin_cmd_check(ent, qtrue);
 	}
@@ -1217,7 +1219,7 @@ void G_Say(gentity_t *ent, gentity_t *target, int mode, const char *chatText) {
 =======================================================================================================================================
 Cmd_Say_f
 
-KK - OAX Modified this to trap the additional arguments from console.
+Modified this to trap the additional arguments from console.
 =======================================================================================================================================
 */
 static void Cmd_Say_f(gentity_t *ent){
@@ -1352,8 +1354,8 @@ void G_Voice(gentity_t *ent, gentity_t *target, int mode, const char *id, qboole
 /*
 =======================================================================================================================================
 Cmd_Voice_f
-KK - OAX Modified this to trap args.
 
+Modified this to trap args.
 In the original, every call to this function would always set "arg0" to false, and it was never passed along to other functions, so I
 removed/commented it out.
 =======================================================================================================================================
@@ -1373,11 +1375,11 @@ static void Cmd_Voice_f(gentity_t *ent) {
 	if ((Q_strequal(arg, "vosay")) || Q_strequal(arg, "vosay_team")) {
 		voiceonly = qtrue;
 	}
-	// KK - OAX Removed "arg0" since it will always be set to qfalse.
+	// removed "arg0" since it will always be set to qfalse.
 	if (trap_Argc() < 2) {
 		return;
 	}
-	// KK - OAX This was tricky to figure out, but since none of the original command handlings
+	// this was tricky to figure out, but since none of the original command handlings
 	// set it to "qtrue"...
 	/*if (arg0) {
 		p = ConcatArgs(0);
@@ -1392,7 +1394,7 @@ static void Cmd_Voice_f(gentity_t *ent) {
 =======================================================================================================================================
 Cmd_VoiceTell_f
 
-KK - OAX Modified this to trap args.
+Modified this to trap args.
 =======================================================================================================================================
 */
 static void Cmd_VoiceTell_f(gentity_t *ent) {
@@ -2242,6 +2244,7 @@ void Cmd_SetViewpos_f(gentity_t *ent) {
 	}
 
 	trap_Argv(4, buffer, sizeof(buffer));
+
 	angles[YAW] = atof(buffer);
 
 	TeleportPlayer(ent, origin, angles);
@@ -2315,7 +2318,7 @@ static int numCmds = sizeof(cmds) / sizeof(cmds[0]);
 =======================================================================================================================================
 ClientCommand
 
-KK - OAX, Takes the client command and runs it through a loop which matches it against the table.
+Takes the client command and runs it through a loop which matches it against the table.
 =======================================================================================================================================
 */
 void ClientCommand(int clientNum) {

@@ -14,22 +14,12 @@ You should have received a copy of the GNU General Public License along with Qua
 Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 =======================================================================================================================================
 */
-//
-
-/*****************************************************************************
- * name:		ai_dmq3.h
- *
- * desc:		Quake3 bot AI
- *
- * $Archive: / source / code / botai / ai_chat.c $
- *
- *****************************************************************************/
 
 // setup the deathmatch AI
 void BotSetupDeathmatchAI(void);
 // shutdown the deathmatch AI
 void BotShutdownDeathmatchAI(void);
-// let the bot live within it's deathmatch AI net
+// let the bot live within its deathmatch AI net
 void BotDeathmatchAI(bot_state_t *bs, float thinktime);
 // free waypoints
 void BotFreeWaypoints(bot_waypoint_t *wp);
@@ -59,13 +49,13 @@ qboolean EntityIsInvisible(aas_entityinfo_t *entinfo);
 qboolean EntityIsShooting(aas_entityinfo_t *entinfo);
 // returns true if this entity has the kamikaze
 qboolean EntityHasKamikaze(aas_entityinfo_t *entinfo);
-// set a user info key / value pair
+// set a user info key/value pair
 void BotSetUserInfo(bot_state_t *bs, char *key, char *value);
-// set the team status(offense, defense etc.)
+// set the team status (offense, defense etc.)
 void BotSetTeamStatus(bot_state_t *bs);
 // returns the name of the client
 char *ClientName(int client, char *name, int size);
-// returns an simplyfied client name
+// returns a simplified client name
 char *EasyClientName(int client, char *name, int size);
 // returns the skin used by the client
 char *ClientSkin(int client, char *skin, int size);
@@ -97,7 +87,7 @@ bot_moveresult_t BotAttackMove(bot_state_t *bs, int tfl);
 int BotSameTeam(bot_state_t *bs, int entnum);
 // returns true if teamplay is on
 int TeamPlayIsOn(void);
-// returns the client number of the team mate flag carrier( - 1 if none)
+// returns the client number of the team mate flag carrier (-1 if none)
 int BotTeamFlagCarrier(bot_state_t *bs);
 // returns visible team mate flag carrier if available
 int BotTeamFlagCarrierVisible(bot_state_t *bs);
@@ -131,15 +121,14 @@ void BotClearActivateGoalStack(bot_state_t *bs);
 int BotTeam(bot_state_t *bs);
 // retuns the opposite team of the bot
 int BotOppositeTeam(bot_state_t *bs);
-// returns the flag the bot is carrying(CTFFLAG_?)
+// returns the flag the bot is carrying (CTFFLAG_?)
 int BotCTFCarryingFlag(bot_state_t *bs);
 // remember the last ordered task
 void BotRememberLastOrderedTask(bot_state_t *bs);
-// set ctf goals(defend base, get enemy flag) during seek
+// set ctf goals (defend base, get enemy flag) during seek
 void BotCTFSeekGoals(bot_state_t *bs);
-// set ctf goals(defend base, get enemy flag) during retreat
+// set ctf goals (defend base, get enemy flag) during retreat
 void BotCTFRetreatGoals(bot_state_t *bs);
-
 int Bot1FCTFCarryingFlag(bot_state_t *bs);
 int BotHarvesterCarryingCubes(bot_state_t *bs);
 void Bot1FCTFSeekGoals(bot_state_t *bs);
@@ -164,21 +153,18 @@ char *stristr(char *str, char *charset);
 // returns the number of the client with the given name
 int ClientFromName(char *name);
 int ClientOnSameTeamFromName(bot_state_t *bs, char *name);
-
 int BotPointAreaNum(vec3_t origin);
-
 void BotMapScripts(bot_state_t *bs);
-
-// ctf flags
-#define CTF_FLAG_NONE		0
-#define CTF_FLAG_RED		1
-#define CTF_FLAG_BLUE		2
+// CTF flags
+#define CTF_FLAG_NONE	0
+#define CTF_FLAG_RED	1
+#define CTF_FLAG_BLUE	2
 // CTF skins
-#define CTF_SKIN_REDTEAM	"red"
-#define CTF_SKIN_BLUETEAM	"blue"
+#define CTF_SKIN_REDTEAM "red"
+#define CTF_SKIN_BLUETEAM "blue"
 
-extern int gametype;		// game type
-extern int maxclients;		// maximum number of clients
+extern int gametype;	// game type
+extern int maxclients;	// maximum number of clients
 
 extern vmCvar_t bot_grapple;
 extern vmCvar_t bot_rocketjump;

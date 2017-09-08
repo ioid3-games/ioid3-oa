@@ -413,7 +413,7 @@ void CopyToBodyQue(gentity_t *ent) {
 	body->r.ownerNum = ent->s.number;
 	body->nextthink = level.time + 5000;
 	body->think = BodySink;
-	body->die = body_die;
+	body->die = BodyDie;
 	// don't take more damage if already gibbed
 	if (ent->health <= GIB_HEALTH) {
 		body->takedamage = qfalse;
@@ -422,6 +422,7 @@ void CopyToBodyQue(gentity_t *ent) {
 	}
 
 	VectorCopy(body->s.pos.trBase, body->r.currentOrigin);
+
 	trap_LinkEntity(body);
 }
 
@@ -1041,7 +1042,7 @@ static void ClientCleanName(const char *in, char *out, int outSize, int clientNu
 	}
 
 	out[outpos] = '\0';
-	// There was none not - black alphanum chars. Remove all colors
+	// There was none not-black alphanum chars. Remove all colors
 	if (notblack < 1) {
 		Q_CleanStr(out);
 	}
@@ -1395,6 +1396,7 @@ char *ClientConnect(int clientNum, qboolean firstTime, qboolean isBot) {
 	CalculateRanks();
 	// for statistics
 //	client->areabits = areabits;
+
 //	if (!client->areabits) {
 //		client->areabits = G_Alloc((trap_AAS_PointReachabilityAreaIndex(NULL) + 7) / 8);
 //	}
@@ -1745,7 +1747,7 @@ void ClientSpawn(gentity_t *ent) {
 	ent->classname = "player";
 	ent->r.contents = CONTENTS_BODY;
 	ent->clipmask = MASK_PLAYERSOLID;
-	ent->die = player_die;
+	ent->die = PlayerDie;
 	ent->waterlevel = 0;
 	ent->watertype = 0;
 	ent->flags = 0;
@@ -2005,6 +2007,7 @@ void ClientDisconnect(int clientNum) {
 	ent->client->sess.sessionTeam = TEAM_FREE;
 
 	trap_SetConfigstring(CS_PLAYERS + clientNum, "");
+
 	CalculateRanks();
 	CountVotes();
 

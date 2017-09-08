@@ -14,30 +14,18 @@ You should have received a copy of the GNU General Public License along with Qua
 Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 =======================================================================================================================================
 */
-//
-//
-// gameinfo.c
-//
 
 #include "ui_local.h"
 
-
-//
 // arena and bot info
-//
-
-
 int ui_numBots;
 static char *ui_botInfos[MAX_BOTS];
-
 static int ui_numArenas;
 static char *ui_arenaInfos[MAX_ARENAS];
-
-#ifndef MISSIONPACK// bk001206
+#ifndef MISSIONPACK
 static int ui_numSinglePlayerArenas;
 static int ui_numSpecialSinglePlayerArenas;
 #endif
-
 /*
 =======================================================================================================================================
 UI_ParseInfos
@@ -59,7 +47,7 @@ int UI_ParseInfos(char *buf, int max, char *infos[]) {
 		}
 
 		if (strcmp(token, "{")) {
-			Com_Printf("Missing {in info file\n");
+			Com_Printf("Missing { in info file\n");
 			break;
 		}
 
@@ -128,7 +116,9 @@ static void UI_LoadArenasFromFile(char *filename) {
 	}
 
 	trap_FS_Read(buf, len, f);
+
 	buf[len] = 0;
+
 	trap_FS_FCloseFile(f);
 
 	ui_numArenas += UI_ParseInfos(buf, MAX_ARENAS - ui_numArenas, &ui_arenaInfos[ui_numArenas]);
@@ -144,7 +134,7 @@ void UI_LoadArenas(void) {
 	vmCvar_t arenasFile;
 	char filename[128];
 	char dirlist[1024];
-	char *      dirptr;
+	char *dirptr;
 	int i;
 	int n;
 	int dirlen;
@@ -178,12 +168,11 @@ void UI_LoadArenas(void) {
 	trap_Print(va("%i arenas parsed\n", ui_numArenas));
 
 	if (UI_OutOfMemory()) {
-		trap_Print(S_COLOR_YELLOW"WARNING: not anough memory in pool to load all arenas\n");
+		trap_Print(S_COLOR_YELLOW "WARNING: not enough memory in pool to load all arenas\n");
 	}
 
 	for (n = 0; n < ui_numArenas; n++) {
 		// determine type
-
 		uiInfo.mapList[uiInfo.mapCount].cinematic = -1;
 		uiInfo.mapList[uiInfo.mapCount].mapLoadName = String_Alloc(Info_ValueForKey(ui_arenaInfos[n], "map"));
 		uiInfo.mapList[uiInfo.mapCount].mapName = String_Alloc(Info_ValueForKey(ui_arenaInfos[n], "longname"));
@@ -194,7 +183,7 @@ void UI_LoadArenas(void) {
 		uiInfo.mapList[uiInfo.mapCount].fraglimit = atoi(Info_ValueForKey(ui_arenaInfos[n], "fraglimit"));
 		// end changed RD
 		uiInfo.mapList[uiInfo.mapCount].levelShot = -1;
-		uiInfo.mapList[uiInfo.mapCount].imageName = String_Alloc(va("levelshots / %s", uiInfo.mapList[uiInfo.mapCount].mapLoadName));
+		uiInfo.mapList[uiInfo.mapCount].imageName = String_Alloc(va("levelshots/%s", uiInfo.mapList[uiInfo.mapCount].mapLoadName));
 		uiInfo.mapList[uiInfo.mapCount].typeBits = 0;
 
 		type = Info_ValueForKey(ui_arenaInfos[n], "type");
@@ -202,49 +191,48 @@ void UI_LoadArenas(void) {
 		if (*type) {
 			// Changed RD
 			trap_Cvar_VariableStringBuffer("ui_SpecialGame", specialgame, sizeof(specialgame));
-// 			if (!specialgame[0])
-// 			{
-				if (strstr(type, "ffa")) {
-					uiInfo.mapList[uiInfo.mapCount].typeBits|= (1 << GT_FFA);
-				}
 
-				if (strstr(type, "tourney")) {
-					uiInfo.mapList[uiInfo.mapCount].typeBits|= (1 << GT_TOURNAMENT);
-				}
+			if (strstr(type, "ffa")) {
+				uiInfo.mapList[uiInfo.mapCount].typeBits |= (1 << GT_FFA);
+			}
 
-				if (strstr(type, "ctf")) {
-					uiInfo.mapList[uiInfo.mapCount].typeBits|= (1 << GT_CTF);
-				}
+			if (strstr(type, "tourney")) {
+				uiInfo.mapList[uiInfo.mapCount].typeBits |= (1 << GT_TOURNAMENT);
+			}
 
-				if (strstr(type, "oneflag")) {
-					uiInfo.mapList[uiInfo.mapCount].typeBits|= (1 << GT_1FCTF);
-				}
+			if (strstr(type, "ctf")) {
+				uiInfo.mapList[uiInfo.mapCount].typeBits |= (1 << GT_CTF);
+			}
 
-				if (strstr(type, "overload")) {
-					uiInfo.mapList[uiInfo.mapCount].typeBits|= (1 << GT_OBELISK);
-				}
+			if (strstr(type, "oneflag")) {
+				uiInfo.mapList[uiInfo.mapCount].typeBits |= (1 << GT_1FCTF);
+			}
 
-				if (strstr(type, "harvester")) {
-					uiInfo.mapList[uiInfo.mapCount].typeBits|= (1 << GT_HARVESTER);
-				}
+			if (strstr(type, "overload")) {
+				uiInfo.mapList[uiInfo.mapCount].typeBits |= (1 << GT_OBELISK);
+			}
 
-				if (strstr(type, "elimination")) {
-					uiInfo.mapList[uiInfo.mapCount].typeBits|= (1 << GT_ELIMINATION);
-				}
+			if (strstr(type, "harvester")) {
+				uiInfo.mapList[uiInfo.mapCount].typeBits |= (1 << GT_HARVESTER);
+			}
 
-				if (strstr(type, "ctfelimination")) {
-					uiInfo.mapList[uiInfo.mapCount].typeBits|= (1 << GT_CTF_ELIMINATION);
-				}
+			if (strstr(type, "elimination")) {
+				uiInfo.mapList[uiInfo.mapCount].typeBits |= (1 << GT_ELIMINATION);
+			}
 
-				if (strstr(type, "lms")) {
-					uiInfo.mapList[uiInfo.mapCount].typeBits|= (1 << GT_LMS);
-				}
+			if (strstr(type, "ctfelimination")) {
+				uiInfo.mapList[uiInfo.mapCount].typeBits |= (1 << GT_CTF_ELIMINATION);
+			}
 
-				if (strstr(type, "dd")) {
-					uiInfo.mapList[uiInfo.mapCount].typeBits|= (1 << GT_DOUBLE_D);
-				}
+			if (strstr(type, "lms")) {
+				uiInfo.mapList[uiInfo.mapCount].typeBits |= (1 << GT_LMS);
+			}
+
+			if (strstr(type, "dd")) {
+				uiInfo.mapList[uiInfo.mapCount].typeBits |= (1 << GT_DOUBLE_D);
+			}
 		} else {
-			uiInfo.mapList[uiInfo.mapCount].typeBits|= (1 << GT_FFA);
+			uiInfo.mapList[uiInfo.mapCount].typeBits |= (1 << GT_FFA);
 		}
 
 		uiInfo.mapCount++;
@@ -279,9 +267,10 @@ static void UI_LoadBotsFromFile(char *filename) {
 	}
 
 	trap_FS_Read(buf, len, f);
-	buf[len] = 0;
-	trap_FS_FCloseFile(f);
 
+	buf[len] = 0;
+
+	trap_FS_FCloseFile(f);
 	COM_Compress(buf);
 
 	ui_numBots += UI_ParseInfos(buf, MAX_BOTS - ui_numBots, &ui_botInfos[ui_numBots]);
@@ -330,6 +319,7 @@ UI_GetBotInfoByNumber
 =======================================================================================================================================
 */
 char *UI_GetBotInfoByNumber(int num) {
+
 	if (num < 0 || num >= ui_numBots) {
 		trap_Print(va(S_COLOR_RED "Invalid bot number: %i\n", num));
 		return NULL;
@@ -358,11 +348,20 @@ char *UI_GetBotInfoByName(const char *name) {
 	return NULL;
 }
 
+/*
+=======================================================================================================================================
+UI_GetNumBots
+=======================================================================================================================================
+*/
 int UI_GetNumBots(void) {
 	return ui_numBots;
 }
 
-
+/*
+=======================================================================================================================================
+UI_GetBotNameByNumber
+=======================================================================================================================================
+*/
 char *UI_GetBotNameByNumber(int num) {
 	char *info = UI_GetBotInfoByNumber(num);
 

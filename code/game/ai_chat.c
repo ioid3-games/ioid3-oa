@@ -35,7 +35,7 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 US
 #include "syn.h" // synonyms
 #include "match.h" // string matching types and vars
 // for the voice chats
-#ifdef MISSIONPACK // bk001205
+#ifdef MISSIONPACK
 #include "../../ui/menudef.h"
 #endif
 #define TIME_BETWEENCHATTING 25

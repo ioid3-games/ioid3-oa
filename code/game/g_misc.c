@@ -133,6 +133,7 @@ void SP_misc_model(gentity_t *ent) {
 
 	VectorSet(ent->mins, -16, -16, -16);
 	VectorSet(ent->maxs, 16, 16, 16);
+
 	trap_LinkEntity(ent);
 	G_SetOrigin(ent, ent->s.origin);
 	VectorCopy(ent->s.angles, ent->s.apos.trBase);
@@ -146,7 +147,7 @@ void SP_misc_model(gentity_t *ent) {
 LocateCamera
 =======================================================================================================================================
 */
-void locateCamera(gentity_t *ent) {
+void LocateCamera(gentity_t *ent) {
 	vec3_t dir;
 	gentity_t *target;
 	gentity_t *owner;
@@ -154,7 +155,7 @@ void locateCamera(gentity_t *ent) {
 	owner = G_PickTarget(ent->target);
 
 	if (!owner) {
-		G_Printf("Couldn't find target for misc_partal_surface\n");
+		G_Printf("Couldn't find target for misc_portal_surface\n");
 		G_FreeEntity(ent);
 		return;
 	}
@@ -206,7 +207,7 @@ void SP_misc_portal_surface(gentity_t *ent) {
 	if (!ent->target) {
 		VectorCopy(ent->s.origin, ent->s.origin2);
 	} else {
-		ent->think = locateCamera;
+		ent->think = LocateCamera;
 		ent->nextthink = level.time + 100;
 	}
 }

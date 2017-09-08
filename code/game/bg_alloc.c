@@ -34,7 +34,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110 - 1301  USA
 #endif
 
 #define FREEMEMCOOKIE ((int)0xDEADBE3F) // Any unlikely to be used value
-#define ROUNDBITS   (unsigned int)31       // Round to 32 bytes
+#define ROUNDBITS (unsigned int)31 // Round to 32 bytes
 
 typedef struct freeMemNode_s {
 	// Size of ROUNDBITS
@@ -47,7 +47,11 @@ static freeMemNode_t *freeHead;
 static int freeMem;
 
 /*
- * Returns qtrue if BG_Alloc will succeed, qfalse otherwise
+=======================================================================================================================================
+BG_CanAlloc
+
+Returns qtrue if BG_Alloc will succeed, qfalse otherwise.
+=======================================================================================================================================
 */
 qboolean BG_CanAlloc(unsigned int size) {
 	freeMemNode_t *fmn;
@@ -68,10 +72,14 @@ qboolean BG_CanAlloc(unsigned int size) {
 	return qfalse;
 }
 
+/*
+=======================================================================================================================================
+BG_Alloc
+=======================================================================================================================================
+*/
 void *BG_Alloc(unsigned int size) {
 	// Find a free block and allocate.
 	// Does two passes, attempts to fill same - sized free slot first.
-
 	freeMemNode_t *fmn, *prev, *next, *smallest;
 	int allocsize, smallestsize;
 	char *endptr;
@@ -79,27 +87,32 @@ void *BG_Alloc(unsigned int size) {
 
 	allocsize = (size + sizeof(int) + ROUNDBITS) & ~ROUNDBITS; // Round to 32 - byte boundary
 	ptr = NULL;
-
 	smallest = NULL;
 	smallestsize = POOLSIZE + 1; // Guaranteed not to miss any slots :)
+
 	for (fmn = freeHead; fmn; fmn = fmn->next) {
-		if (fmn->cookie != FREEMEMCOOKIE)
+		if (fmn->cookie != FREEMEMCOOKIE) {
 			Com_Error(ERR_DROP, "BG_Alloc: Memory corruption detected!\n");
+		}
 
 		if (fmn->size >= allocsize) {
 			// We've got a block
 			if (fmn->size == allocsize) {
 				// Same size, just remove
-
 				prev = fmn->prev;
 				next = fmn->next;
 
-				if (prev)
+				if (prev) {
 					prev->next = next; // Point previous node to next
-				if (next)
+				}
+
+				if (next) {
 					next->prev = prev; // Point next node to previous
-				if (fmn == freeHead)
+				}
+
+				if (fmn == freeHead) {
 					freeHead = next; // Set head pointer to next
+				}
 
 				ptr = (int *)fmn;
 				break; // Stop the loop, this is fine
@@ -131,16 +144,19 @@ void *BG_Alloc(unsigned int size) {
 	return (NULL);
 }
 
+/*
+=======================================================================================================================================
+BG_Free
+=======================================================================================================================================
+*/
 void BG_Free(void *ptr) {
 	// Release allocated memory, add it to the free list.
-
 	freeMemNode_t *fmn;
 	char *freeend;
 	int *freeptr;
 
 	freeptr = ptr;
 	freeptr--;
-
 	freeMem += *freeptr;
 
 	for (fmn = freeHead; fmn; fmn = fmn->next) {
@@ -148,13 +164,11 @@ void BG_Free(void *ptr) {
 
 		if (freeend == (char *)freeptr) {
 			// Released block can be merged to an existing node
-
 			fmn->size += *freeptr; // Add size of node.
 			return;
 		}
 	}
 	// No merging, add to head of list
-
 	fmn = (freeMemNode_t *)freeptr;
 	fmn->size = *freeptr; // Set this first to avoid corrupting *freeptr
 	fmn->cookie = FREEMEMCOOKIE;
@@ -164,9 +178,14 @@ void BG_Free(void *ptr) {
 	freeHead = fmn;
 }
 
+/*
+=======================================================================================================================================
+BG_InitMemory
+=======================================================================================================================================
+*/
 void BG_InitMemory(void) {
-	// Set up the initial node
 
+	// Set up the initial node
 	freeHead = (freeMemNode_t *)memoryPool;
 	freeHead->cookie = FREEMEMCOOKIE;
 	freeHead->size = POOLSIZE;
@@ -175,50 +194,64 @@ void BG_InitMemory(void) {
 	freeMem = sizeof(memoryPool);
 }
 
+/*
+=======================================================================================================================================
+BG_DefragmentMemory
+=======================================================================================================================================
+*/
 void BG_DefragmentMemory(void) {
-	// If there's a frenzy of deallocation and we want to
-	// allocate something big, this is useful. Otherwise...
-	// not much use.
 
+	// If there's a frenzy of deallocation and we want to allocate something big, this is useful. Otherwise...
+	// not much use.
 	freeMemNode_t *startfmn, *endfmn, *fmn;
 
 	for (startfmn = freeHead; startfmn;) {
 		endfmn = (freeMemNode_t *)(((char *)startfmn) + startfmn->size);
 
 		for (fmn = freeHead; fmn;) {
-			if (fmn->cookie != FREEMEMCOOKIE)
+			if (fmn->cookie != FREEMEMCOOKIE) {
 				Com_Error(ERR_DROP, "BG_DefragmentMemory: Memory corruption detected!\n");
+			}
 
 			if (fmn == endfmn) {
 				// We can add fmn onto startfmn.
-
-				if (fmn->prev)
+				if (fmn->prev) {
 					fmn->prev->next = fmn->next;
+				}
 
 				if (fmn->next) {
-					if (!(fmn->next->prev = fmn->prev))
+					if (!(fmn->next->prev = fmn->prev)) {
 						freeHead = fmn->next; // We're removing the head node
+					}
 				}
 
 				startfmn->size += fmn->size;
+
 				memset(fmn, 0, sizeof(freeMemNode_t)); // A redundant call, really.
 
 				startfmn = freeHead;
 				endfmn = fmn = NULL; // Break out of current loop
-			} else
+			} else {
 				fmn = fmn->next;
+			}
 		}
 
-		if (endfmn)
+		if (endfmn) {
 			startfmn = startfmn->next; // endfmn acts as a 'restart' flag here
+		}
 	}
 }
 
-// KK - OAX This was moved from g_mem.c to keep functionality from being broken. 
+/*
+=======================================================================================================================================
+Svcmd_GameMem_f
 
+This was moved from g_mem.c to keep functionality from being broken.
+=======================================================================================================================================
+*/
 void Svcmd_GameMem_f(void) {
-
 	int usedMem;
+
 	usedMem = POOLSIZE - freeMem;
 	G_Printf("Game memory status: %i out of %i bytes allocated\n", usedMem, POOLSIZE);
 }

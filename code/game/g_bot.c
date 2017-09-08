@@ -458,7 +458,9 @@ void G_CheckMinimumPlayers(void) {
 	}
 
 	checkminimumplayers_time = level.time;
+
 	trap_Cvar_Update(&bot_minplayers);
+
 	minplayers = bot_minplayers.integer;
 
 	if (minplayers <= 0) {
@@ -547,6 +549,7 @@ void G_CheckBotSpawn(void) {
 		}
 
 		ClientBegin(botSpawnQueue[n].clientNum);
+
 		botSpawnQueue[n].spawnTime = 0;
 
 		if (g_gametype.integer == GT_SINGLE_PLAYER) {
@@ -606,7 +609,9 @@ qboolean G_BotConnect(int clientNum, qboolean restart) {
 	trap_GetUserinfo(clientNum, userinfo, sizeof(userinfo));
 
 	Q_strncpyz(settings.characterfile, Info_ValueForKey(userinfo, "characterfile"), sizeof(settings.characterfile));
+
 	settings.skill = atof(Info_ValueForKey(userinfo, "skill"));
+
 	Q_strncpyz(settings.team, Info_ValueForKey(userinfo, "team"), sizeof(settings.team));
 
 	if (!trap_AAS_Initialized() || !BotAISetupClient(clientNum, &settings, restart)) {
@@ -888,6 +893,7 @@ static void G_SpawnBots(char *botList, int baseDelay) {
 	}
 
 	Q_strncpyz(bots, botList, sizeof(bots));
+
 	p = &bots[0];
 	delay = baseDelay;
 
@@ -980,6 +986,7 @@ static void G_LoadBots(void) {
 
 	for (i = 0; i < numdirs; i++, dirptr += dirlen + 1) {
 		dirlen = strlen(dirptr);
+
 		strcpy(filename, "scripts/");
 		strcat(filename, dirptr);
 		G_LoadBotsFromFile(filename);
@@ -1046,6 +1053,7 @@ void G_InitBots(qboolean restart) {
 	if (g_gametype.integer == GT_SINGLE_PLAYER) {
 		trap_GetServerinfo(serverinfo, sizeof(serverinfo));
 		Q_strncpyz(map, Info_ValueForKey(serverinfo, "mapname"), sizeof(map));
+
 		arenainfo = G_GetArenaInfoByMap(map);
 
 		if (!arenainfo) {
